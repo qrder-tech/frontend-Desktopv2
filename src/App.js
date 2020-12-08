@@ -1,25 +1,23 @@
 import logo from './logo.svg';
 import './App.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { setToken } from './redux/actions';
+import ApplicationRoutes from './ApplicationRoutes';
 
 function App() {
+  /*const token = useSelector(state => state.token);
+  const dispatch = useDispatch();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+    hey + {token}
+    <br/>
+    <button onClick={()=> dispatch(setToken("newtoken1"))}>setToken</button>
+    </>
+  );*/
+ /* const dispatch = useDispatch();
+  dispatch(setToken(localStorage.getItem("token")));*/
+    return ApplicationRoutes();
+  
 }
 
 export default App;

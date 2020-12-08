@@ -36,3 +36,116 @@
     transform: rotate(360deg);
   }
 }
+
+
+
+/**********************************************************************
+*********************************************************************** 
+                              Login Page styles
+*********************************************************************** 
+ ***********************************************************************/
+
+.App::before {    
+  content:"";
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  background-image: url("https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/chilis-3-1588018662.jpg");   
+  width: 100%;
+  height: 100%; 
+  background-size : cover;
+  filter: blur(8px);
+}
+
+.App{
+  text-align: center;
+}
+
+.App-Header{
+  background: linear-gradient(120deg, #282c34e8 10%,   #c4a748d0 40%);  
+  justify-content: center;  
+  align-items: center;
+  text-align: center;
+  display: flex;
+  flex-direction: column;    
+  font-size: calc(10px + 2vmin);
+  min-height: 20vh;  
+  color: white;
+}
+
+
+.title{
+  
+  font-size: 100%;
+  color: #000000d0;
+
+}
+
+
+.App-body {
+  
+  padding:40px;
+  min-height: 70vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: #c4a748d0;
+}
+
+
+.Panel{
+  background-color: #282c34e8;
+  border-radius: 25px;
+  padding:50px;
+  max-width: 1000px;
+  
+}
+
+
+.LoginPanel{
+  background-image: url("pngguru.com (2).png") ;
+  background-size : cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  min-width : 400px;
+  
+}
+
+.ButtonLayout{
+  padding-left:10px;
+}
+
+/*********************************************************************** 
+*********************************************************************** 
+                              Main Page  Styles 
+*********************************************************************** 
+***********************************************************************/
+
+/**************************************
+              Tab styles
+***************************************/
+
+.Tab-Length{
+  max-width: 500px;
+  border-radius: 25px;
+}
+
+.Tab-Color{
+  
+  background-color: #282c34e8;
+  color : #c4a748ef;   
+  border-radius: 25px;
+
+}
+
+.Indicator-Color{
+  background-color: #ffbb00ef;  
+  color: #ffbb00ef;
+}
+
+
+
+
