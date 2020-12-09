@@ -5,6 +5,8 @@ import {  Divider, Drawer,  List, ListItem, ListItemIcon, ListItemText,  withSty
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { AccountCircle,  Edit, Settings } from "@material-ui/icons";
 import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { setToken, setUser } from "../../redux/actions";
 
 class LeftDrawer extends React.Component {
 
@@ -15,8 +17,15 @@ class LeftDrawer extends React.Component {
   clickhandler(text){
     
     const { history ,match} = this.props;
-    if(text == "Logout"){      
-      history.push("/login");
+    
+    if(text == "Logout"){ 
+      console.log(localStorage);
+      this.props.dispatch(setToken("1"));
+      this.props.dispatch(setUser(""));   
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+       
+      history.push("/login");   
     }else{      
       //alert("hi " + text);
       //alert(token);
@@ -110,5 +119,9 @@ const useStyles ={
 
 const drawerWidth = 240;
 
+const mapStateToProps = state =>({
+  token : state.token,
+  user : state.user
+})
 
-export default withRouter(withStyles(useStyles)(LeftDrawer));
+export default connect(mapStateToProps,null)(withRouter(withStyles(useStyles)(LeftDrawer)));

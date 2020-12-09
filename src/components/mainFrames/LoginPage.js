@@ -10,29 +10,36 @@ import { getUserInfo } from '../../requests/restaurant';
 
 class LoginPage extends React.Component{
     
+    state = {
+        loading : false
+    };
+
     login = () => {
         const values = {username:"postman", password : "postman"};
         const { history } = this.props;
-        console.log(this.username.value + " : " + this.password.value);
-        //console.log(this.props);
-        this.props.dispatch(setToken(3));
 
-        alert("hi login");
 
         login(this.username.value,this.password.value).then((response)=>{
-            console.log("here is the response : " + response.token);            
-            this.props.dispatch(setToken(response.token));
-            getUserInfo(this.props.token).then((result)=>{
-                console.log(result);
-                this.props.dispatch(setUser(result));
-                history.push("/mainPage");
-            });
+            this.setState({loading : true});
+            if(response){            
+                this.props.dispatch(setToken(response.token));
+                getUserInfo(this.props.token).then((result)=>{
+                    console.log(result);
+                    this.props.dispatch(setUser(result));
+                    this.setState({loading:true});
+                    history.push("/mainPage");
+                });
+            } else{
+                
+            }
+                       
+        }).catch((error)=>{
+            console.log("error is : " + error );
         });       
 
     }
 
     register = () => {
-        const values = {username:"postman", password : "postman"};
         const { history } = this.props;
         alert("hi register");
 
@@ -41,6 +48,9 @@ class LoginPage extends React.Component{
     render(){
         const {classes } = this.props;
 
+        const {loading} = this.state;
+
+        
         return(
         <div className="App">
           <header className="App-Header">
@@ -49,8 +59,11 @@ class LoginPage extends React.Component{
         <body className="App-body">
         <div className="Panel"> 
           <div className="LoginPanel">
+            {loading ? (<>
+            loging in...</>
+                ):(
+                     <>
             <TextField id="username" label = "Username" 
-            defaultValue = "postman"
             className = {classes.main}
             inputRef={el => this.username = el} 
             InputProps={{
@@ -67,8 +80,7 @@ class LoginPage extends React.Component{
                  />
                  <br/>
                  <br/>
-                  <TextField id="password" label = "Password" 
-                  defaultValue = "postman"
+                  <TextField id="password" label = "Password"
                   type="password"
                   inputRef={el => this.password = el} 
                     className = {classes.main}
@@ -102,12 +114,15 @@ class LoginPage extends React.Component{
                     }}
                     onClick={this.register}
                 >SignUp</Button>
-                </span>
+                </span></>
+                )}
+           
           </div>
           </div>
         </body>
         
-      </div>);
+      </div>)
+        
     }
 }
 

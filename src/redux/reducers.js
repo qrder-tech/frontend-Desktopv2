@@ -5,7 +5,7 @@ export const setAuth = (state = "1", action) =>{
         case "setAuthToken" : // authentication set action
             return action.token;
         default :
-            return "1";
+            return state;
     }
 }
 
@@ -14,6 +14,6 @@ export const setUserInfo = (state = "", action) =>{
         case "setUserInfo" : // authentication set action
             return action.info;
         default :
-            return "";
+            return state;
     }
 }

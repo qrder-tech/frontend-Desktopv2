@@ -20,8 +20,7 @@ class MainPage extends React.Component {
   };
 
   componentDidMount() {
-
-    console.log(`token : ${localStorage.getItem("token")} -- user : ${localStorage.getItem("user")}` );
+    console.log(localStorage);
 
   }
 
