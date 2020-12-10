@@ -1,9 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch} from 'react-redux';
 import { setToken, setUser } from './redux/actions';
 import ApplicationRoutes from './ApplicationRoutes';
-import { setAuth } from './redux/reducers';
 
 function App() {
   /*const token = useSelector(state => state.token);
@@ -16,7 +15,7 @@ function App() {
     </>
   );*/   
   const dispatch = useDispatch();
-
+  
   if(localStorage.getItem("token")){   
     dispatch(setToken(localStorage.getItem("token")));
     dispatch(setUser(localStorage.getItem("user")));

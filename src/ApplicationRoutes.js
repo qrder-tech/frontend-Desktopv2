@@ -10,6 +10,7 @@ import { useState } from "react";
 import LoginPage from "./components/mainFrames/LoginPage";
 import MainPage from "./components/mainFrames/MainPage";
 import { useSelector } from "react-redux";
+import RegisterPage from "./components/mainFrames/RegisterPage";
 
 const ApplicationRoutes = () => {
 
@@ -25,17 +26,25 @@ const ApplicationRoutes = () => {
 
   return (
     <Router>      
-              <Switch>
               { (token != 1) ? (
-              <><Redirect from="/login" to="/mainPage" /> 
-              <Route path="/mainPage" component={MainPage} /> </>) :  (
-              <><Route path="/login" component={LoginPage} />
-                 <Redirect from="/mainPage" to="/login" /> </>
+                //Autheticated Routing
+                <Switch>
+                   <Route path="/mainPage" component={MainPage}/>
+                   <Redirect from="/login" to="/mainPage" /> 
+                   <Redirect from="/register" to="/mainPage" />                   
+                   <Redirect from="/" to="/mainPage" />
+                </Switch>
+              ) :  (
+                //Unauthenticated Routing
+                <Switch>
+                  <Route path="/login" component={LoginPage} />
+                  <Route path="/register" component={RegisterPage} />                  
+                  <Redirect from="/mainPage" to="/login" /> 
+                  <Redirect from="/" to="/login" /> 
+                </Switch>
+              
                   )}
-                
-                <Redirect from="/" to="/login" />
-                
-              </Switch>            
+                  
     </Router>
   );
 };

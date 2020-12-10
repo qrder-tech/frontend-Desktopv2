@@ -10,6 +10,8 @@ import { withRouter } from "react-router-dom";
 import LeftDrawer from "../drawers/LeftDrawer";
 import RightDrawer from "../drawers/RightDrawer";
 import OrderPanel from "../mainPanels/OrderPanel";
+import { connect } from "react-redux";
+import { setDisplayingPanel } from "../../redux/actions";
 
 
 
@@ -20,15 +22,26 @@ class MainPage extends React.Component {
   };
 
   componentDidMount() {
-    console.log(localStorage);
-
+    
   }
 
   handleTabChange = (event, newValue) => {
     this.setState({ value: newValue });
+    if(newValue == 0){
+      this.props.dispatch(setDisplayingPanel(null));
+    }else{
+      this.props.dispatch(setDisplayingPanel(
+        <OrderPanel />));
+    }
   };
 
+  setDisplay = (display)=>{
+      this.props.dispatch(setDisplayingPanel(display))
+  }
+
   render() {
+
+    
 
     return (
         <div className="App">   
@@ -58,11 +71,7 @@ class MainPage extends React.Component {
           <body className="App-body">
             <div className="Panel">
               <div className="MainPanel">
-                <TabPanel value={this.state.value} index={0}>
-                </TabPanel>
-                <TabPanel value={this.state.value} index={1}>
-                  <OrderPanel />
-                </TabPanel>
+                {this.props.display}                
               </div>
             </div>
           </body>
@@ -100,4 +109,9 @@ function TabPanel(props) {
     </div>
   );
 }
-export default withRouter(MainPage);
+const mapStateToProps = state =>({
+  token : state.token,
+  user : state.user,
+  display : state.display
+})
+export default connect(mapStateToProps,null)(withRouter(MainPage));

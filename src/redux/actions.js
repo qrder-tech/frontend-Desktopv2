@@ -12,9 +12,31 @@ export const setToken = (token) =>{
 
 export const setUser = (user) =>{
     
-    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("user", user);
     return{
         type: 'setUserInfo',
         info : user
+    }
+}
+
+export const setOrders = (orders) =>{
+    return{
+        type: 'setOrders',
+        orders : orders
+    }
+}
+
+
+export const setDisplayingPanel = (panel) =>{
+    return{
+        type : "setDisplayingPanel",
+        panel : panel
+    }
+}
+
+export const setMenu = (menu) =>{
+    return{
+        type : "setMenu",
+        menu : menu
     }
 }

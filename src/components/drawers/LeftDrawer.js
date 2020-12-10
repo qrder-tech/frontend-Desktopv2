@@ -3,10 +3,11 @@ import React from "react"
 import {  Divider, Drawer,  List, ListItem, ListItemIcon, ListItemText,  withStyles } from "@material-ui/core";
 
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { AccountCircle,  Edit, Settings } from "@material-ui/icons";
+import { AccountCircle,  Edit, MenuBook, Settings } from "@material-ui/icons";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { setToken, setUser } from "../../redux/actions";
+import { setDisplayingPanel, setToken, setUser } from "../../redux/actions";
+import MenuPanel from "../mainPanels/MenuPanel";
 
 class LeftDrawer extends React.Component {
 
@@ -26,8 +27,11 @@ class LeftDrawer extends React.Component {
       localStorage.removeItem("user");
        
       history.push("/login");   
+    }else if(text == "Menu"){   
+      this.props.dispatch(setDisplayingPanel(<MenuPanel/>))
+
     }else{      
-      //alert("hi " + text);
+      alert("hi " + text);
       //alert(token);
     }
   }
@@ -53,7 +57,8 @@ class LeftDrawer extends React.Component {
     
     const items = [{text:"User" , item:<AccountCircle style={{fontSize:145}}/>},
                     {text : "Edit" , item:<Edit style={{fontSize:70}}/>,label:"Edit"},
-                   {text : "Settings" , item:<Settings style={{fontSize:70}}/>,label:"Settings"}];
+                   {text : "Settings" , item:<Settings style={{fontSize:70}}/>,label:"Settings"},
+                   {text : "Menu" , item:<MenuBook style={{fontSize:70}}/>,label:"Menu"}];
     return (
       <Drawer anchor="left"variant="permanent" classes={{paper:classes.paper}}>
           <div className="Drawer">
@@ -121,7 +126,8 @@ const drawerWidth = 240;
 
 const mapStateToProps = state =>({
   token : state.token,
-  user : state.user
+  user : state.user,
+  display : state.display
 })
 
 export default connect(mapStateToProps,null)(withRouter(withStyles(useStyles)(LeftDrawer)));

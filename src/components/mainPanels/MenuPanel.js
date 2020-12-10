@@ -2,10 +2,11 @@ import React from "react";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@material-ui/core";
 import { AccountBalanceWallet, CheckBox, Face, HourglassFull } from "@material-ui/icons";
 import { connect } from "react-redux";
-import { requestOrders } from "../../requests/restaurant";
-import { setOrders } from "../../redux/actions";
+import { requestMenu, requestOrders } from "../../requests/restaurant";
+import { setMenu, setOrders, setUser } from "../../redux/actions";
+import { setRestaurantMenu } from "../../redux/reducers";
 
-class OrderPanel extends React.Component {
+class MenuPanel extends React.Component {
   state = {
     info: {
       OrderCount: null,
@@ -16,23 +17,24 @@ class OrderPanel extends React.Component {
   };
 
   columns = [
+    
     {
-      id: "table",
-      label: "Table",
+      id: "image",
+      label: "Image",
       minWidth: 170,
-      align: "right",
+      align: "left",
     },
     {
-      id: "time",
-      label: "Time",
-      minWidth: 170,
-      align: "right",
-    },
+        id: "name",
+        label: "Name",
+        minWidth: 170,
+        align: "left",
+      },
     {
-      id: "status",
-      label: "Status",
+      id: "price",
+      label: "Price",
       minWidth: 170,
-      align: "right",
+      align: "center",
     },
   ];
 
@@ -77,14 +79,14 @@ class OrderPanel extends React.Component {
 
   componentDidMount() {
     //console.log("orderpanel : " + this.props.token);
-    if(this.props.orders){
-      console.log("1");
-    }
-    else{
-      requestOrders(this.props.token).then((response) => {
-        this.props.dispatch(setOrders(response.orders));
+
+    
+        
+      requestMenu(this.props.token).then((response) => {
+          this.props.dispatch(setMenu(response.data.menu));    
       });
-    }
+      
+    
     /*this.setState({info : getOrders()});
     setInterval(function(){      
       this.setState({info : getOrders()});
@@ -94,7 +96,7 @@ class OrderPanel extends React.Component {
   render() {
     const {classes,rowsPerPage,page} = this.state;
     const columns = this.columns;
-    const rows = this.state.info.orders;
+    const rows = this.props.menu;
     const handleChangePage = this.handleChangePage.bind(this);
     const handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
     const icons = [<CheckBox style={{fontSize:"40"}}/>,<AccountBalanceWallet style={{fontSize:"40"}}/>,<Face  style={{fontSize:"40"}}/>,<HourglassFull  style={{fontSize:"40"}}/>];
@@ -160,8 +162,9 @@ class OrderPanel extends React.Component {
 const mapStateToProps = state =>({
   token : state.token,
   user : state.user,
-  orders : state.orders
+  menu : state.menu,
+  order : state.test
 })
 
-export default connect(mapStateToProps,null)(OrderPanel);
+export default connect(mapStateToProps,null)(MenuPanel);
 

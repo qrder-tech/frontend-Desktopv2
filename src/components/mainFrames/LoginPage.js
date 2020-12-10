@@ -15,7 +15,6 @@ class LoginPage extends React.Component{
     };
 
     login = () => {
-        const values = {username:"postman", password : "postman"};
         const { history } = this.props;
 
 
@@ -41,8 +40,7 @@ class LoginPage extends React.Component{
 
     register = () => {
         const { history } = this.props;
-        alert("hi register");
-
+        history.push("/register");
     }
 
     render(){
@@ -64,6 +62,7 @@ class LoginPage extends React.Component{
                 ):(
                      <>
             <TextField id="username" label = "Username" 
+            defaultValue = "postman"
             className = {classes.main}
             inputRef={el => this.username = el} 
             InputProps={{
@@ -80,7 +79,8 @@ class LoginPage extends React.Component{
                  />
                  <br/>
                  <br/>
-                  <TextField id="password" label = "Password"
+                  <TextField id="password" label = "Password" 
+                  defaultValue = "postman"
                   type="password"
                   inputRef={el => this.password = el} 
                     className = {classes.main}

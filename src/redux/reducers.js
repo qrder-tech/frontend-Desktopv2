@@ -17,3 +17,30 @@ export const setUserInfo = (state = "", action) =>{
             return state;
     }
 }
+
+export const setOrderList = (state = "", action) =>{
+    switch(action.type){
+        case "setOrders" : // authentication set action
+            return action.orders;
+        default :
+            return state;
+    }
+}
+
+export const setDisplay = (state = null, action) =>{
+    switch(action.type){
+        case "setDisplayingPanel" : 
+            return action.panel;
+        default : 
+            return state;
+    }
+}
+
+export const setRestaurantMenu = (state = null , action) => {
+    switch(action.type){
+        case "setMenu" : 
+            return action.menu;
+        default : 
+            return state;
+    }
+}
