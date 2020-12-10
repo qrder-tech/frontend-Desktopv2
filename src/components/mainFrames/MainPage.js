@@ -31,7 +31,7 @@ class MainPage extends React.Component {
       this.props.dispatch(setDisplayingPanel(null));
     }else{
       this.props.dispatch(setDisplayingPanel(
-        <OrderPanel />));
+        <OrderPanel/>));
     }
   };
 
@@ -41,6 +41,7 @@ class MainPage extends React.Component {
 
   render() {
 
+    console.log("hi");
     
 
     return (

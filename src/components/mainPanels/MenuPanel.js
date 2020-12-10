@@ -22,7 +22,7 @@ class MenuPanel extends React.Component {
       id: "image",
       label: "Image",
       minWidth: 170,
-      align: "left",
+      align: "left"
     },
     {
         id: "name",
@@ -128,9 +128,10 @@ class MenuPanel extends React.Component {
                     const value = row[column.id];
                     return (
                       <TableCell key={column.id} align={column.align} >
-                        <div className="OrderCell">                                                    
+                        {(column.id == "image")?(<img alt={row.img} src={row.img} width ="50"/>):(<div className="OrderCell">                                                    
                           {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?(icons[value-1]):(value))}
-                        </div>
+                        </div>)}
+                        
                       </TableCell>
                     );
                   })}

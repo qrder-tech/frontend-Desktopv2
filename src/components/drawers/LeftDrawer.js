@@ -3,10 +3,11 @@ import React from "react"
 import {  Divider, Drawer,  List, ListItem, ListItemIcon, ListItemText,  withStyles } from "@material-ui/core";
 
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { AccountCircle,  Edit, MenuBook, Settings } from "@material-ui/icons";
+import { AccountCircle,  Edit, Fastfood, MenuBook, Settings } from "@material-ui/icons";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { setDisplayingPanel, setToken, setUser } from "../../redux/actions";
+import ItemPanel from "../mainPanels/ItemPanel";
 import MenuPanel from "../mainPanels/MenuPanel";
 
 class LeftDrawer extends React.Component {
@@ -18,8 +19,28 @@ class LeftDrawer extends React.Component {
   clickhandler(text){
     
     const { history ,match} = this.props;
-    
-    if(text == "Logout"){ 
+    switch(text){
+      case "Logout":
+        console.log(localStorage);
+        this.props.dispatch(setToken("1"));
+        this.props.dispatch(setUser(""));   
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        
+        history.push("/login");
+      case "Menu":
+        console.log("menu");
+        this.props.dispatch(setDisplayingPanel(<MenuPanel/>));
+        break;
+      case "AddItem":        
+        console.log("item");
+        this.props.dispatch(setDisplayingPanel(<ItemPanel/>));
+        break;
+      default:
+        alert("hi " + text);
+        
+    }
+    /*if(text == "Logout"){ 
       console.log(localStorage);
       this.props.dispatch(setToken("1"));
       this.props.dispatch(setUser(""));   
@@ -28,12 +49,12 @@ class LeftDrawer extends React.Component {
        
       history.push("/login");   
     }else if(text == "Menu"){   
-      this.props.dispatch(setDisplayingPanel(<MenuPanel/>))
+      this.props.dispatch(setDisplayingPanel(<MenuPanel/>));
 
     }else{      
       alert("hi " + text);
       //alert(token);
-    }
+    }*/
   }
   
   handleLogout(){
@@ -58,7 +79,8 @@ class LeftDrawer extends React.Component {
     const items = [{text:"User" , item:<AccountCircle style={{fontSize:145}}/>},
                     {text : "Edit" , item:<Edit style={{fontSize:70}}/>,label:"Edit"},
                    {text : "Settings" , item:<Settings style={{fontSize:70}}/>,label:"Settings"},
-                   {text : "Menu" , item:<MenuBook style={{fontSize:70}}/>,label:"Menu"}];
+                   {text : "Menu" , item:<MenuBook style={{fontSize:70}}/>,label:"Menu"},
+                   {text : "AddItem" , item:<Fastfood style={{fontSize:70}}/>,label:"AddItem"}];
     return (
       <Drawer anchor="left"variant="permanent" classes={{paper:classes.paper}}>
           <div className="Drawer">
@@ -74,15 +96,12 @@ class LeftDrawer extends React.Component {
          
             
           <Divider classes={{root: classes.divider}}/>
-            {["Logout"].map((text, index) => (
-              <ListItem button key={text} onClick={()=>this.clickhandler(text)} classes={{root:classes.padding}}>
-                <ListItemIcon  classes={{root:classes.padding2}} style={{color:"#c4a748d0"}}>
+              <ListItem button key="Logout" onClick={()=>this.clickhandler("Logout")} classes={{root:classes.padding}}style={{backgroundColor:"#c4a748d0"}}>
+                <ListItemIcon  classes={{root:classes.padding2}} style={{color:"#282c34e8"}}>
                   <ExitToAppIcon style={{fontSize:70}}/> 
                 </ListItemIcon>
-                <ListItemText><p style={{marginLeft:"10px"}}>Logout</p></ListItemText>
-              </ListItem>
-            ))}
-            
+                <ListItemText><p style={{marginLeft:"10px"},{color : "#282c34e8"}}>Logout</p></ListItemText>
+              </ListItem>            
           <Divider classes={{root: classes.divider}}/>
           </List>
           
@@ -103,6 +122,11 @@ const useStyles ={
   },
   paper: {
     backgroundColor: "#282c34e8",
+    overflowX: 'hidden',
+    width: 200,
+  },
+  paper2: {
+    backgroundColor: "#ffffff",
     overflowX: 'hidden',
     width: 200,
   },
