@@ -12,14 +12,13 @@ class ItemPanel extends React.Component {
         loading : false
     };
 
-    add = ()=> {
+    add = (formVars)=> {
             var values = [];
-            values["img"]= this.img.value;
-            values["name"]= this.name.value;
-            values["price"]= this.price.value;
-            values["desc"]= this.desc.value;
-            values["metadata"]= this.metadata.value;
-            
+            values["img"]= formVars[0].reference.value;
+            values["name"]= formVars[1].reference.value;
+            values["price"]= formVars[2].reference.value;
+            values["desc"]= formVars[3].reference.value;
+            values["metadata"]= formVars[4].reference.value;
             addItem(values,this.props.token).then((response)=>{
                 console.log(response);
             });
@@ -32,12 +31,12 @@ class ItemPanel extends React.Component {
     render() {
         const {classes} = this.props;
         
-        const formVariables = [
-            {id:"img",label : "Image(URL)",type:"text"},
-            {id:"name",label : "Name",type:"text"},
-            {id:"price",label : "Price",type:"text"},
-            {id:"desc",label : "Description",type:"text"},
-            {id:"metadata",label : "Optionals",type:"text"}]
+        var formVariables = [
+            {id:"img",label : "Image(URL)",type:"text",reference : null},
+            {id:"name",label : "Name",type:"text",reference : null},
+            {id:"price",label : "Price",type:"text",reference : null},
+            {id:"desc",label : "Description",type:"text",reference : null},
+            {id:"metadata",label : "Optionals",type:"text",reference : null}]
         return (
             <>
             
@@ -45,7 +44,7 @@ class ItemPanel extends React.Component {
                     <>
                     <TextField id={index.id} label = {index.label} 
                     type={index.type}
-                    inputRef={el =>eval("this." + index.id + "= el")} 
+                    inputRef={el =>index.reference = el} 
                     className = {classes.main}
                     InputProps={{
                             classes:{
@@ -68,7 +67,7 @@ class ItemPanel extends React.Component {
                         root: classes.buttonRoot, // class name, e.g. `classes-nesting-root-x`
                         label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
                     }}
-                    onClick={this.add}
+                    onClick={this.add.bind(this,formVariables)}
                 >Add</Button>
                 </span>
                 </>
