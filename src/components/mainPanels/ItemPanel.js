@@ -8,6 +8,9 @@ import { setRestaurantMenu } from "../../redux/reducers";
 
 class ItemPanel extends React.Component {
 
+    state = {
+        loading : false
+    };
 
     add = ()=> {
             var values = [];
@@ -37,6 +40,7 @@ class ItemPanel extends React.Component {
             {id:"metadata",label : "Optionals",type:"text"}]
         return (
             <>
+            
             {formVariables.map((index)=>(
                     <>
                     <TextField id={index.id} label = {index.label} 

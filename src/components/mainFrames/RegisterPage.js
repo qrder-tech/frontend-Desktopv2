@@ -72,13 +72,13 @@ class RegisterPage extends React.Component{
              {id:"phoneNumber",label : "Phone Number",type:"tel"},
              {id:"email",label : "Email",type:"email"},
              {id:"username",label : "Username",type:"text"},
-             {id:"password",label : "Password",type:"password"}]
+             {id:"password",label : "Password",type:"password"}];
             
          
         //console.log(formVariables);
         formVariables.map((index)=>{
             console.log(index);
-        })
+        });
         
         return(
         <div className="App">
