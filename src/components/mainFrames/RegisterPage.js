@@ -23,17 +23,23 @@ class RegisterPage extends React.Component{
 
     }
 
-    register = () => {
+    register = (formVars) => {
         const { history } = this.props;
-
+        //console.log(formVars);
         var values = [];
-        values["name"]= this.name.value;
+        /*values["name"]= this.name.value;
         values["address"]= this.address.value;
         values["phoneNumber"]= this.phoneNumber.value;
         values["email"]= this.email.value;
         values["username"]= this.username.value;
-        values["password"]= this.password.value;
-
+        values["password"]= this.password.value;*/
+        values["name"]= formVars[0].id.value;
+        values["address"]= formVars[1].id.value;
+        values["phoneNumber"]= formVars[2].id.value;
+        values["email"]= formVars[3].id.value;
+        values["username"]= formVars[4].id.value;
+        values["password"]= formVars[5].id.value;
+        console.log(values);
         registration(values).then((response)=>{
 
             console.log(response);
@@ -66,14 +72,21 @@ class RegisterPage extends React.Component{
         const {classes } = this.props;
 
         const {loading} = this.state;
-         const formVariables = [
+         /*const formVariables = [
              {id:"name",label : "Name",type:"text"},
              {id:"address",label : "Address",type:"text"},
              {id:"phoneNumber",label : "Phone Number",type:"tel"},
              {id:"email",label : "Email",type:"email"},
              {id:"username",label : "Username",type:"text"},
              {id:"password",label : "Password",type:"password"}];
-            
+           */ 
+          var formVariables = [
+            {name:"name", id:null,label : "Name",type:"text"},
+            {name : "address",id:null,label : "Address",type:"text"},
+            {name : "phoneNumber",id:null,label : "Phone Number",type:"tel"},
+            {name : "email",id:null,label : "Email",type:"email"},
+            {name : "username",id:null,label : "Username",type:"text"},
+            {name : "password",id:null,label : "Password",type:"password"}];
          
         //console.log(formVariables);
         formVariables.map((index)=>{
@@ -94,10 +107,10 @@ class RegisterPage extends React.Component{
                      <>
             {formVariables.map((index)=>(
                 <>
-                <TextField id={index.id} label = {index.label} 
+                <TextField id={index.name} label = {index.label} 
                 type={index.type}
                 defaultValue = "postman"
-                inputRef={el =>eval("this." + index.id + "= el")} 
+                inputRef={el =>index.id = el} 
                 className = {classes.main}
                 InputProps={{
                         classes:{
@@ -121,7 +134,7 @@ class RegisterPage extends React.Component{
                         root: classes.buttonRoot, // class name, e.g. `classes-nesting-root-x`
                         label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
                     }}
-                    onClick={this.register}
+                    onClick={this.register.bind(this,formVariables)}
                 >Register</Button>
                 </span>
                 <span className="ButtonLayout">
