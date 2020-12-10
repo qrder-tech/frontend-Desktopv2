@@ -36,7 +36,7 @@ export const setDisplay = (state = null, action) =>{
     }
 }
 
-export const setRestaurantMenu = (state = null , action) => {
+export const setRestaurantMenu = (state = [] , action) => {
     switch(action.type){
         case "setMenu" : 
             return action.menu;
