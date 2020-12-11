@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { requestMenu, requestOrders } from "../../requests/restaurant";
 import { setDisplayingPanel, setMenu, setOrders, setUser } from "../../redux/actions";
 import { setRestaurantMenu } from "../../redux/reducers";
-import ItemDetailsPanel from "./ItemDetailsPanel";
+import ItemDetailsPanel from "./Item/ItemDetailsPanel";
 
 class MenuPanel extends React.Component {
   state = {

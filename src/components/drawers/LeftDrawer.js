@@ -7,8 +7,9 @@ import { AccountCircle,  Edit, Fastfood, MenuBook, Settings } from "@material-ui
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { setDisplayingPanel, setToken, setUser } from "../../redux/actions";
-import ItemPanel from "../mainPanels/ItemPanel";
 import MenuPanel from "../mainPanels/MenuPanel";
+import ItemPanel from "../mainPanels/Item/ItemPanel";
+import OrderPanel from "../mainPanels/order/OrderPanel";
 
 class LeftDrawer extends React.Component {
 
@@ -35,7 +36,12 @@ class LeftDrawer extends React.Component {
       case "AddItem":        
         console.log("item");
         this.props.dispatch(setDisplayingPanel(<ItemPanel/>));
-        break;
+        break;        
+      case "AddOrder":        
+        console.log("order");        
+        this.props.dispatch(setDisplayingPanel(<OrderPanel/>));
+        
+      break;
       default:
         alert("hi " + text);
         
@@ -80,7 +86,8 @@ class LeftDrawer extends React.Component {
                     {text : "Edit" , item:<Edit style={{fontSize:70}}/>,label:"Edit"},
                    {text : "Settings" , item:<Settings style={{fontSize:70}}/>,label:"Settings"},
                    {text : "Menu" , item:<MenuBook style={{fontSize:70}}/>,label:"Menu"},
-                   {text : "AddItem" , item:<Fastfood style={{fontSize:70}}/>,label:"AddItem"}];
+                   {text : "AddItem" , item:<Fastfood style={{fontSize:70}}/>,label:"AddItem"},
+                   {text : "AddOrder" , item:<><Fastfood style={{fontSize:20}}/><Fastfood style={{fontSize:50}}/></>,label:"AddOrder"}];
     return (
       <Drawer anchor="left"variant="permanent" classes={{paper:classes.paper}}>
           <div className="Drawer">

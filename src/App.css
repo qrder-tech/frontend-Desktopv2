@@ -208,6 +208,10 @@
 .Chart-header-specs{
   background: linear-gradient(0deg, #c4a748ef 100%, #fb6161 100%); 
 }
+.Chart-header-specs2{
+  background: linear-gradient(0deg, #c4a748ef 100%, #fb6161 100%);   
+  min-width: 100%;
+}
 
 .OrderCell{
   color:#ffda61;
@@ -258,4 +262,14 @@
 .GridElement{  
   justify-content: center;
   display: flex; 
+}
+/**************************************
+              Order Menu Container
+***************************************/
+.TableContainer::-webkit-scrollbar {
+  display: none;
+}
+.TableContainer{  
+  min-width: 100%;
+  max-Height : 300px; 
 }

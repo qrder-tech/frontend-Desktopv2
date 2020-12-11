@@ -2,8 +2,8 @@ import React from "react";
 import {  Button, Grid, withStyles } from "@material-ui/core";
 import { connect } from "react-redux";
 import { CheckSharp, Edit, Fastfood, LocalOffer, Note } from "@material-ui/icons";
-import { setDisplayingPanel } from "../../redux/actions";
 import ItemPanel from "./ItemPanel";
+import { setDisplayingPanel } from "../../../redux/actions";
 
 class ItemDetailsPanel extends React.Component {
 
