@@ -3,6 +3,8 @@ import { Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, Table
 import { AccountBalanceWallet, CheckBox,  Face, HourglassFull } from "@material-ui/icons";
 import { connect } from "react-redux";
 import { addItem, requestMenu, requestOrders, UpdateItem } from "../../../requests/restaurant";
+import MenuPanel from "../MenuPanel";
+import { setDisplayingPanel } from "../../../redux/actions";
 
 class ItemPanel extends React.Component {
 
@@ -24,12 +26,15 @@ class ItemPanel extends React.Component {
             if(this.props.item){
                 //console.log(this.state.item);
                 UpdateItem(values,this.props.token,this.state.item.uuid).then((response)=>{
-                    console.log(response);
+                    console.log(response);                    
+                    this.props.dispatch(setDisplayingPanel(<MenuPanel/>));
                 });
             }else{
                 addItem(values,this.props.token).then((response)=>{
                     console.log(response);
+                    this.props.dispatch(setDisplayingPanel(<MenuPanel/>));
                 });
+
             }
             /**/
 
@@ -157,7 +162,8 @@ const mapStateToProps = state =>({
   token : state.token,
   user : state.user,
   menu : state.menu,
-  order : state.test
+  order : state.test,
+  display : state.display
 })
 
 export default connect(mapStateToProps,null)(withStyles(useStyles)(ItemPanel));

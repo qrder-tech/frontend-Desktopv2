@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import { setDisplayingPanel, setToken, setUser } from "../../redux/actions";
 import MenuPanel from "../mainPanels/MenuPanel";
 import ItemPanel from "../mainPanels/Item/ItemPanel";
-import OrderPanel from "../mainPanels/order/OrderPanel";
+import OrderCreatePanel from "../mainPanels/order/OrderCreatePanel";
 
 class LeftDrawer extends React.Component {
 
@@ -39,7 +39,7 @@ class LeftDrawer extends React.Component {
         break;        
       case "AddOrder":        
         console.log("order");        
-        this.props.dispatch(setDisplayingPanel(<OrderPanel/>));
+        this.props.dispatch(setDisplayingPanel(<OrderCreatePanel/>));
         
       break;
       default:

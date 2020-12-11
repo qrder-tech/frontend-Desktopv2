@@ -1,8 +1,8 @@
 import React from "react";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@material-ui/core";
-import { AccountBalanceWallet, CheckBox, Edit, Face, HourglassFull } from "@material-ui/icons";
+import { AccountBalanceWallet, CheckBox, Edit, Face, HighlightOff, HourglassFull } from "@material-ui/icons";
 import { connect } from "react-redux";
-import { requestMenu, requestOrders } from "../../requests/restaurant";
+import { removeItem, requestMenu, requestOrders } from "../../requests/restaurant";
 import { setDisplayingPanel, setMenu, setOrders, setUser } from "../../redux/actions";
 import { setRestaurantMenu } from "../../redux/reducers";
 import ItemDetailsPanel from "./Item/ItemDetailsPanel";
@@ -35,6 +35,13 @@ class MenuPanel extends React.Component {
       id: "price",
       label: "Price",
       minWidth: 170,
+      align: "center",
+    }
+    ,
+    {
+      id: "buttons",
+      label: "",
+      minWidth: 30,
       align: "center",
     }
   ];
@@ -79,6 +86,18 @@ class MenuPanel extends React.Component {
   detailsHandler = (item) => {
     console.log(item);
     this.props.dispatch(setDisplayingPanel(<ItemDetailsPanel item = {item}/>));
+  }
+
+  removeItem = (item) =>{
+    /*console.log("remove");
+    console.log(item);
+    console.log(this.props.token);*/
+    removeItem(item.uuid,this.props.token).then((response)=>{
+      console.log(response);
+      requestMenu(this.props.token).then((response) => {
+        this.props.dispatch(setMenu(response.data.menu));    
+      });
+    });
   }
 
 
@@ -133,10 +152,11 @@ class MenuPanel extends React.Component {
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (
-                      <TableCell key={column.id} align={column.align} onClick={this.detailsHandler.bind(this,row)} style={{cursor:"pointer"}}>
-                        {(column.id == "image")?(<img alt={row.img} src={row.img} width ="50"/>):(<div className="OrderCell">                                                    
+                      <TableCell key={column.id} align={column.align} onClick={(column.id == "buttons")?(null):(this.detailsHandler.bind(this,row))} style={{cursor:"pointer"}}>
+                        {(column.id == "image")?(<img alt={row.img} src={row.img} width ="50"/>):(
+                        (column.id == "buttons")?(<HighlightOff style={{color:"#ffda61"}} onClick={this.removeItem.bind(this,row)}></HighlightOff>):(<div className="OrderCell">                                                    
                           {column.format && typeof value === 'number' ? column.format(value) : (value)}
-                        </div>)}
+                        </div>))}
                         
                       </TableCell>
                     );

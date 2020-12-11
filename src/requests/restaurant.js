@@ -13,6 +13,7 @@ export const getUserInfo = (token) => {
       
       return axios(config)
       .then(function (response) {
+        console.log("here");
         return response.data;
       })
       .catch(function (error) {
@@ -117,3 +118,57 @@ export const UpdateItem = (values,token, uuid) =>{
   });
 }
 
+export const removeItem = (uuid,token)=>{
+  var config = {
+    method: 'delete',
+    url: `https://qrder-web.herokuapp.com/restaurant/item?itemUuid=${uuid}`,
+    headers: { 
+      'Authorization': `Bearer ${token}`
+    }
+  };
+  
+  return axios(config)
+  .then(function (response) {
+    //console.log(JSON.stringify(response.data));
+    return response;
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+}
+
+export const addOrder = (token,order) =>{
+
+  var tempItems = [];
+
+  order.items.map((item)=>{
+    console.log(item);
+    tempItems.push({"uuid":item.uuid,"metadata":item.metadata,"quantity" : `${item.quantity}`});
+  });
+  console.log(tempItems);
+
+  var data = JSON.stringify({
+    "restaurantUuid":"56bc78e9-05fd-454c-99ad-18d479aa8ad9",
+    "userUuid":"3d9b7b60-741f-45aa-b94a-68daa30b7ea6",
+    "table_id":"af92bacf-a01a-4903-99d6-2887359c1d23",
+    "items":tempItems});
+
+  var config = {
+    method: 'post',
+    url: 'https://qrder-web.herokuapp.com/order/new',
+    headers: { 
+      'Content-Type': 'application/json', 
+      'Authorization': `Bearer ${token}`
+    },
+    data : data
+  };
+
+  return axios(config)
+  .then(function (response) {
+    console.log(JSON.stringify(response.data));
+    return response;
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+}

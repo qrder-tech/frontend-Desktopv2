@@ -22,7 +22,7 @@ class LoginPage extends React.Component{
             this.setState({loading : true});
             if(response){            
                 this.props.dispatch(setToken(response.token));
-                getUserInfo(this.props.token).then((result)=>{
+                getUserInfo(response.token).then((result)=>{
                     console.log(result);
                     this.props.dispatch(setUser(result));
                     this.setState({loading:true});
