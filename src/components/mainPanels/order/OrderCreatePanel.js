@@ -99,7 +99,7 @@ class OrderCreatePanel extends React.Component {
     
         
       requestMenu(this.props.token).then((response) => {
-          this.props.dispatch(setMenu(response.data.menu));    
+          this.props.dispatch(setMenu(response.data));    
       });
       
     

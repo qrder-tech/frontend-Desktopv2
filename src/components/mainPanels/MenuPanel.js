@@ -95,7 +95,7 @@ class MenuPanel extends React.Component {
     removeItem(item.uuid,this.props.token).then((response)=>{
       console.log(response);
       requestMenu(this.props.token).then((response) => {
-        this.props.dispatch(setMenu(response.data.menu));    
+        this.props.dispatch(setMenu(response.data));    
       });
     });
   }
@@ -108,7 +108,7 @@ class MenuPanel extends React.Component {
     
         
       requestMenu(this.props.token).then((response) => {
-          this.props.dispatch(setMenu(response.data.menu));    
+          this.props.dispatch(setMenu(response.data));    
       });
       
     
