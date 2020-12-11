@@ -213,3 +213,49 @@
   color:#ffda61;
 }
 
+
+
+/**************************************
+              Details Image Body
+***************************************/
+
+.BigImage{
+  background-color : #282c34e8;
+  position: relative;
+  border-radius: 25px;
+  border-color: #837032;
+  border-style:solid;
+  border-width: 10px;
+  padding:10px;
+  width:60%;
+  height:60%;  
+  justify-content: center;
+  display: flex;  
+  color : #000000;
+}
+
+/**************************************
+              Details Tag Body
+***************************************/
+
+.BigTag{
+  background-color : #837032;
+  position: relative;
+  border-radius: 25px;
+  border-color: #837032;
+  border-style:solid;
+  border-width: 10px;
+  padding:10px;
+  width:60%; 
+  justify-content: center;
+  display: flex;  
+  color : #000000;
+}
+
+/**************************************
+              Grid layout
+***************************************/
+.GridElement{  
+  justify-content: center;
+  display: flex; 
+}

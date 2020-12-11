@@ -1,10 +1,11 @@
 import React from "react";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@material-ui/core";
-import { AccountBalanceWallet, CheckBox, Face, HourglassFull } from "@material-ui/icons";
+import { AccountBalanceWallet, CheckBox, Edit, Face, HourglassFull } from "@material-ui/icons";
 import { connect } from "react-redux";
 import { requestMenu, requestOrders } from "../../requests/restaurant";
-import { setMenu, setOrders, setUser } from "../../redux/actions";
+import { setDisplayingPanel, setMenu, setOrders, setUser } from "../../redux/actions";
 import { setRestaurantMenu } from "../../redux/reducers";
+import ItemDetailsPanel from "./ItemDetailsPanel";
 
 class MenuPanel extends React.Component {
   state = {
@@ -35,7 +36,7 @@ class MenuPanel extends React.Component {
       label: "Price",
       minWidth: 170,
       align: "center",
-    },
+    }
   ];
 
  /* columns = [
@@ -75,6 +76,11 @@ class MenuPanel extends React.Component {
     this.setState({page:0});
   };
 
+  detailsHandler = (item) => {
+    console.log(item);
+    this.props.dispatch(setDisplayingPanel(<ItemDetailsPanel item = {item}/>));
+  }
+
 
 
   componentDidMount() {
@@ -99,7 +105,7 @@ class MenuPanel extends React.Component {
     const rows = this.props.menu;
     const handleChangePage = this.handleChangePage.bind(this);
     const handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
-    const icons = [<CheckBox style={{fontSize:"40"}}/>,<AccountBalanceWallet style={{fontSize:"40"}}/>,<Face  style={{fontSize:"40"}}/>,<HourglassFull  style={{fontSize:"40"}}/>];
+
     return (
       <div >
         <TableContainer  className="Test2">
@@ -127,9 +133,9 @@ class MenuPanel extends React.Component {
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (
-                      <TableCell key={column.id} align={column.align} >
+                      <TableCell key={column.id} align={column.align} onClick={this.detailsHandler.bind(this,row)} style={{cursor:"pointer"}}>
                         {(column.id == "image")?(<img alt={row.img} src={row.img} width ="50"/>):(<div className="OrderCell">                                                    
-                          {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?(icons[value-1]):(value))}
+                          {column.format && typeof value === 'number' ? column.format(value) : (value)}
                         </div>)}
                         
                       </TableCell>
@@ -164,7 +170,8 @@ const mapStateToProps = state =>({
   token : state.token,
   user : state.user,
   menu : state.menu,
-  order : state.test
+  order : state.test,
+  display : state.display
 })
 
 export default connect(mapStateToProps,null)(MenuPanel);

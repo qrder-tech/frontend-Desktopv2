@@ -2,14 +2,16 @@ import React from "react";
 import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, withStyles } from "@material-ui/core";
 import { AccountBalanceWallet, CheckBox, Face, HourglassFull } from "@material-ui/icons";
 import { connect } from "react-redux";
-import { addItem, requestMenu, requestOrders } from "../../requests/restaurant";
+import { addItem, requestMenu, requestOrders, UpdateItem } from "../../requests/restaurant";
 import { setMenu, setOrders, setUser } from "../../redux/actions";
 import { setRestaurantMenu } from "../../redux/reducers";
 
 class ItemPanel extends React.Component {
 
     state = {
-        loading : false
+        loading : false,
+        item : {},
+        formVariables : []
     };
 
     add = (formVars)=> {
@@ -19,24 +21,43 @@ class ItemPanel extends React.Component {
             values["price"]= formVars[2].reference.value;
             values["desc"]= formVars[3].reference.value;
             values["metadata"]= formVars[4].reference.value;
-            addItem(values,this.props.token).then((response)=>{
-                console.log(response);
-            });
+            if(this.props.item){
+                //console.log(this.state.item);
+                UpdateItem(values,this.props.token,this.state.item.uuid).then((response)=>{
+                    console.log(response);
+                });
+            }else{
+                addItem(values,this.props.token).then((response)=>{
+                    console.log(response);
+                });
+            }
+            /**/
 
     }
     componentDidMount() {
-
+        var formVariables = [
+            {id:"img",label : "Image(URL)",type:"text",reference : null,default: null},
+            {id:"name",label : "Name",type:"text",reference : null,default: null},
+            {id:"price",label : "Price",type:"text",reference : null,default: null},
+            {id:"desc",label : "Description",type:"text",reference : null,default: null},
+            {id:"metadata",label : "Optionals",type:"text",reference : null,default: null
+        }];
+        
+        if(this.props.item){
+            this.setState({item : this.props.item})
+            formVariables.map((index)=>{index.default = this.props.item[index.id]});
+        }
+        this.setState({formVariables});
     }
 
     render() {
         const {classes} = this.props;
-        
-        var formVariables = [
-            {id:"img",label : "Image(URL)",type:"text",reference : null},
-            {id:"name",label : "Name",type:"text",reference : null},
-            {id:"price",label : "Price",type:"text",reference : null},
-            {id:"desc",label : "Description",type:"text",reference : null},
-            {id:"metadata",label : "Optionals",type:"text",reference : null}]
+        console.log(this.state.formVariables);
+
+        var formVariables = this.state.formVariables;
+
+            formVariables.map((index)=>{index.default = this.state.item[index.id]});
+            var test = "test";
         return (
             <>
             
@@ -46,6 +67,7 @@ class ItemPanel extends React.Component {
                     type={index.type}
                     inputRef={el =>index.reference = el} 
                     className = {classes.main}
+                    defaultValue = {index.default}
                     InputProps={{
                             classes:{
                                 input:classes.font
@@ -68,7 +90,7 @@ class ItemPanel extends React.Component {
                         label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
                     }}
                     onClick={this.add.bind(this,formVariables)}
-                >Add</Button>
+                >{(this.props.item) ? (<>Update</>):(<>Add</>)}</Button>
                 </span>
                 </>
         );
