@@ -3,8 +3,9 @@ import React from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { login } from '../../requests/auth';
-import {setToken, setUser} from '../../redux/actions'
+import {setDisplayingPanel, setToken, setUser} from '../../redux/actions'
 import { getUserInfo } from '../../requests/restaurant';
+import TablePanel from '../mainPanels/tables/TablePanel';
 
 
 
@@ -26,6 +27,7 @@ class LoginPage extends React.Component{
                     console.log(result);
                     this.props.dispatch(setUser(result));
                     this.setState({loading:true});
+                    this.props.dispatch(setDisplayingPanel(<TablePanel/>))
                     history.push("/mainPage");
                 });
             } else{

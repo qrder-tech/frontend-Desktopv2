@@ -34,8 +34,10 @@ class Table extends React.Component {
   render() {
     return (
       
-        <div className="Table"  style={{background: getViewValues(this.state.earliestOrderTime) }}>
+        <div className="Table"  style={{background: (this.state.earliestOrderTime)?(getViewValues(this.state.earliestOrderTime)):("#c4a748") }}>
+            <span className="TableContent">
             {this.props.tableInfo.name}
+            </span>
         </div>   
     );
   }
@@ -64,6 +66,7 @@ function componentToHex(c) {
   
       
       //Base
+      time = (time/45)*255;
       const alpha = "d0";
       const firstColor = rgbToHexFirst(0,255,0)+alpha;
       const secondColor =  rgbToHexFirst(255,255,0)+alpha;

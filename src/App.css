@@ -303,6 +303,12 @@
   justify-content: center;
   display: flex;  
   color : #000000;
+  font-size: 20px;
+}
+
+.TableContent{
+  width : 90%;
+  overflow-wrap: break-word;
 }
 
 /**************************************

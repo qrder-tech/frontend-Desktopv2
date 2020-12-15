@@ -142,8 +142,7 @@ class MenuPanel extends React.Component {
                                     
                                     onClick={this.addType.bind(this)}
                                 >Add</Button>
-        <br/>              
-        <br/>
+        <hr/>
         <Table stickyHeader aria-label="sticky table" >
           <TableHead >
             <TableRow >

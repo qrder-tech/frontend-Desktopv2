@@ -1,9 +1,10 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Table from "./Table"
-import { getTablesRequest } from "../../../requests/restaurant";
+import { createTable, getTablesRequest } from "../../../requests/restaurant";
 import { connect } from "react-redux";
 import { setTables } from "../../../redux/actions";
+import { Button, TextField, withStyles } from "@material-ui/core";
 
 class TablePanel extends React.Component {
   
@@ -57,12 +58,44 @@ class TablePanel extends React.Component {
     
   }
 
+  add = () =>{
+    //alert(document.getElementById("tableAddTextField").value);
+    createTable(document.getElementById("tableAddTextField").value,this.props.token).then(()=>{
+      this.componentDidMount();
+    });
+  }
+
   render() {
-    
+    const {classes} = this.props;
     
       
     return (
       <div className="TablePanel">
+        
+        <span style={{float:"center"}}>
+        <TextField id="tableAddTextField" label = "TableName"                                     
+                                    type="text"                                     
+                                    className = {classes.main}  
+                                    InputProps={{
+                                            classes:{
+                                                input:classes.font
+                                            }
+                                        }}
+                                        InputLabelProps={{
+                                            classes:{
+                                                root: classes.font,
+                                            }
+                                        }}
+                                    />
+                                    <Button                                    
+                                    classes={{
+                                      root: classes.buttonRoot, // class name, e.g. `classes-nesting-root-x`
+                                      label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
+                                  }}
+                                  onClick={this.add.bind(this)}
+                                    >Add</Button>
+          </span>
+          <hr/>
         <Grid container spacing={1}>
           {this.state.columns}
         </Grid>
@@ -78,6 +111,35 @@ const mapStateToProps = state =>({
     display : state.display,
     tables : state.tables
   })
+
+  const useStyles = {
+    main:{
+        '& label.Mui-focused': {
+            color: '#c4a748d0',
+          },          
+    '& .MuiInput-underline:after': {
+        borderBottomColor: '#c4a748d0',
+      },
+    },
+    font:{
+        color : "#c4a748d0",
+        '&:-webkit-autofill': {
+            transitionDelay: '9999s',
+            transitionProperty: 'background-color, color',
+          },
+    },
+    buttonRoot: {
+        background: 'linear-gradient(45deg, #c4a748d0 30%, #c4a748d0 90%)',
+        borderRadius: 3,
+        border: 0,
+        color: 'black',
+        height: 48,
+        padding: '0 30px',
+      },
+    buttonLabel: {
+        textTransform: 'capitalize',
+    },
+}
   
 
-export default  connect(mapStateToProps,null)(TablePanel);
+export default  connect(mapStateToProps,null)(withStyles(useStyles)(TablePanel));

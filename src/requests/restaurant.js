@@ -224,3 +224,30 @@ export const getTablesRequest = (token) =>{
   });
   
 }
+
+export const createTable = (name,token) =>{
+    var qs = require('qs');
+    var data = qs.stringify({
+    'name': name 
+    });
+    var config = {
+      method: 'post',
+      url: 'https://qrder-web.herokuapp.com/restaurant/tables',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      data : data
+    };
+
+    return axios(config)
+    .then(function (response) {
+      //console.log(JSON.stringify(response.data));
+      return response;
+    })
+    .catch(function (error) {
+      //console.log(error);
+      return error;
+    });
+
+}

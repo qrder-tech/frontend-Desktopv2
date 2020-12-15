@@ -1,8 +1,10 @@
 import logo from './logo.svg';
 import './App.css';
 import { useDispatch} from 'react-redux';
-import { setToken, setUser } from './redux/actions';
+import { setDisplayingPanel, setToken, setUser } from './redux/actions';
 import ApplicationRoutes from './ApplicationRoutes';
+import TablePanel from './components/mainPanels/tables/TablePanel';
+import { removeItem } from './requests/restaurant';
 
 function App() {
   /*const token = useSelector(state => state.token);
@@ -18,7 +20,8 @@ function App() {
   
   if(localStorage.getItem("token")){   
     dispatch(setToken(localStorage.getItem("token")));
-    dispatch(setUser(localStorage.getItem("user")));
+    dispatch(setUser(JSON.parse(localStorage.getItem("user"))));
+    dispatch(setDisplayingPanel(<TablePanel/>));
   }
 
  /* const dispatch = useDispatch();
