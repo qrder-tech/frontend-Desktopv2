@@ -1,6 +1,6 @@
 
 const { combineReducers } = require("redux");
-const {setAuth, setUserInfo, setOrderList, setPanelList, setDisplay, setRestaurantMenu, setRestaurantTables } = require("./reducers");
+const {setAuth, setUserInfo, setOrderList, setPanelList, setDisplay, setRestaurantMenu, setRestaurantTables, setTabDisplayValue } = require("./reducers");
 
 
 
@@ -11,7 +11,8 @@ const setReducers = combineReducers({
     orders : setOrderList,
     display : setDisplay,
     menu : setRestaurantMenu,
-    tables : setRestaurantTables
+    tables : setRestaurantTables,
+    displayValue : setTabDisplayValue
 })
 
 export default setReducers;

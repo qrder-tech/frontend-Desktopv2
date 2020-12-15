@@ -18,7 +18,7 @@ import TablePanel from "../mainPanels/tables/TablePanel";
 
 class MainPage extends React.Component {
   state = {
-    value: 0,
+    value: -1,
     drawerStyle:null
   };
 
@@ -114,6 +114,7 @@ function TabPanel(props) {
 const mapStateToProps = state =>({
   token : state.token,
   user : state.user,
-  display : state.display
+  display : state.display,
+  displayValue : state.value
 })
 export default connect(mapStateToProps,null)(withRouter(MainPage));

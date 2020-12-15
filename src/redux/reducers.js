@@ -36,6 +36,15 @@ export const setDisplay = (state = null, action) =>{
     }
 }
 
+export const setTabDisplayValue = (state = 0,action)=>{
+    switch(action.type){
+        case "SetDisplayValue":
+            return action.value;
+        default:
+            return state;
+    }
+}
+
 export const setRestaurantMenu = (state = [] , action) => {
     switch(action.type){
         case "setMenu" : 

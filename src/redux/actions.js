@@ -35,6 +35,13 @@ export const setDisplayingPanel = (panel) =>{
     }
 }
 
+export const setDisplayValue = (value) =>{
+    return{
+        type: "SetDisplayValue",
+        value : value
+    }
+}
+
 export const setMenu = (menu) =>{
     return{
         type : "setMenu",
