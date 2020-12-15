@@ -20,7 +20,8 @@ function App() {
   
   if(localStorage.getItem("token")){   
     dispatch(setToken(localStorage.getItem("token")));
-    dispatch(setUser(JSON.parse(localStorage.getItem("user"))));
+    var user = localStorage.getItem("user");
+    dispatch(setUser(JSON.parse(user)));
     dispatch(setDisplayingPanel(<TablePanel/>));
   }
 
