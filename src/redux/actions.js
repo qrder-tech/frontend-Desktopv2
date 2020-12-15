@@ -13,8 +13,6 @@ export const setToken = (token) =>{
 export const setUser = (user) =>{
     
     localStorage.setItem("user", JSON.stringify(user));
-    console.log(user);
-    console.log(JSON.stringify(user))
     return{
         type: 'setUserInfo',
         info : user
