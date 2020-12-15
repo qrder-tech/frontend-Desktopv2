@@ -124,14 +124,14 @@ export const UpdateItem = (values,token, uuid) =>{
 export const removeItem = (uuid,token)=>{
   var config = {
     method: 'delete',
-    url: `https://qrder-web.herokuapp.com/restaurant/item?itemUuid=${uuid}`,
+    url: `https://qrder-web.herokuapp.com/restaurant/item?uuid=${uuid}`,
     headers: { 
       'Authorization': `Bearer ${token}`
     }
   };
   
   return axios(config)
-  .then(function (response) {
+  .then(function (response) {    
     //console.log(JSON.stringify(response.data));
     return response;
   })
