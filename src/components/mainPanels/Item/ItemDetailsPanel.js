@@ -1,7 +1,7 @@
 import React from "react";
 import {  Button, Grid, withStyles } from "@material-ui/core";
 import { connect } from "react-redux";
-import { CheckSharp, Edit, Fastfood, LocalOffer, Note } from "@material-ui/icons";
+import { Bookmark, CheckSharp, Edit, Fastfood, LocalOffer, Note } from "@material-ui/icons";
 import ItemPanel from "./ItemPanel";
 import { setDisplayingPanel } from "../../../redux/actions";
 
@@ -14,8 +14,10 @@ class ItemDetailsPanel extends React.Component {
     };
     componentDidMount() {
         console.log(this.props.item);
-        this.setState({item : this.props.item});        
-        var temp = this.props.item.metadata.split(";");
+        this.setState({item : this.props.item});  
+        if(this.props.item.metadata){            
+            var temp = this.props.item.metadata.split(";");
+        }      
         this.setState({ingredients : temp});
         
     }
@@ -59,14 +61,18 @@ class ItemDetailsPanel extends React.Component {
                     <Grid item xs={6} className="GridElement">
                         <div className="BigTag">
                             <div style={{textAlign:"left"}}>
-                                <Fastfood/>{this.state.item.name} 
+                                <Fastfood/>{this.state.item.name}
+                                
+                                <span style={{float:"right"}}>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;{this.props.type.name}<Bookmark/>
+                                    </span> 
                                 <hr/>
                                 <Note/>{this.state.item.desc}
                                 <br/>
                                 <br/> 
                                 Ingredients:
                                 <br/>                           
-                                {this.state.ingredients.slice().map((ingredient)=>(<><CheckSharp/>{ingredient}<br/></>))}
+                                {(this.props.item.metadata)?(this.state.ingredients.slice().map((ingredient)=>(<><CheckSharp/>{ingredient}<br/></>))):(<></>)}
                                 <hr/>
                                 <div style={{textAlign:"center"}}>
                                 <LocalOffer/>{this.state.item.price}TL

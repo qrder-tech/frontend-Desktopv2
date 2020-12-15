@@ -16,13 +16,16 @@ class ItemPanel extends React.Component {
     };
 
     add = (formVars)=> {
-        console.log(this.state.img);
             var values = [];
+            formVars[1].reference = document.getElementById("types");
             values["img"]= formVars[0].reference.value;
-            values["name"]= formVars[1].reference.value;
-            values["price"]= formVars[2].reference.value;
-            values["desc"]= formVars[3].reference.value;
-            values["metadata"]= formVars[4].reference.value;
+            values["subtopicUuid"] = formVars[1].reference.value;
+            values["name"]= formVars[2].reference.value;
+            values["price"]= formVars[3].reference.value;
+            values["desc"]= formVars[4].reference.value;
+            values["metadata"]= formVars[5].reference.value;            
+            //console.log(values["type"].reference);
+            console.log(values);
             if(this.props.item){
                 //console.log(this.state.item);
                 UpdateItem(values,this.props.token,this.state.item.uuid).then((response)=>{
@@ -42,13 +45,15 @@ class ItemPanel extends React.Component {
     componentDidMount() {
         var formVariables = [
             {id:"img",label : "Image(URL)",type:"text",reference : null,default: null},
+            {id:"type",label : "type",type:"select",reference : null,default: null},
             {id:"name",label : "Name",type:"text",reference : null,default: null},
             {id:"price",label : "Price",type:"text",reference : null,default: null},
             {id:"desc",label : "Description",type:"text",reference : null,default: null},
-            {id:"metadata",label : "Optionals",type:"text",reference : null,default: null
-        }];
+            {id:"metadata",label : "Optionals",type:"text",reference : null,default: null}
+        ];
         
         if(this.props.item){
+            console.log(this.props.item);
             this.setState({item : this.props.item})
             formVariables.map((index)=>{index.default = this.props.item[index.id]});
             this.setState({img:this.props.item.img})
@@ -97,27 +102,36 @@ class ItemPanel extends React.Component {
                     <Grid item xs={6} className="GridElement">
                             <div style={{textAlign:"left"}}>
                             {formVariables.map((index)=>(
-                                <>
-                                <TextField id={index.id} label = {index.label} 
-                                type={index.type}
-                                inputRef={el =>index.reference = el} 
-                                className = {classes.main}
-                                defaultValue = {index.default}
-                                onChange = {(index.id == "img") ? (this.imageRender):(null)}
-                                InputProps={{
-                                        classes:{
-                                            input:classes.font
-                                        }
-                                    }}
-                                    InputLabelProps={{
-                                        classes:{
-                                            root: classes.font,
-                                        }
-                                    }}
-                                />                             
+                                (index.id == "type")?(<>
+                                <div className="SelectLabel">Type</div> 
+                                <select name="type" id="types" className="Select">
+                                    {this.props.menu.map((type)=>(
+                                <option value={type.uuid} className="Option">{type.name}</option>))}
+                              </select><br/>
                                 <br/>
-                                <br/>
-                                </>
+                                </>):(<>
+                                    <TextField id={index.id} label = {index.label} 
+                                    
+                                    type={index.type}
+                                    inputRef={el =>index.reference = el} 
+                                    className = {classes.main}
+                                    defaultValue = {index.default}
+                                    onChange = {(index.id == "img") ? (this.imageRender):(null)}
+                                    InputProps={{
+                                            classes:{
+                                                input:classes.font
+                                            }
+                                        }}
+                                        InputLabelProps={{
+                                            classes:{
+                                                root: classes.font,
+                                            }
+                                        }}
+                                    />                             
+                                    <br/>
+                                    <br/>
+                                    </>)
+                                
                             ))}
                             </div>                      
                     </Grid>

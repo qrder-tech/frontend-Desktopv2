@@ -40,3 +40,11 @@ export const setMenu = (menu) =>{
         menu : menu
     }
 }
+
+export const setTables = (tables) =>{    
+    console.log(tables);
+    return {
+        type : "setTables",
+        tables : tables
+    }
+}

@@ -44,3 +44,15 @@ export const setRestaurantMenu = (state = [] , action) => {
             return state;
     }
 }
+
+export const setRestaurantTables = (state = [] , action) =>{
+    console.log(action);
+    switch(action.type){
+        case "setTables" :
+            console.log(action.tables);
+            return action.tables;
+        default :
+            console.log("nope");
+            return state;
+    }
+}

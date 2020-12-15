@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { setDisplayingPanel, setMenu } from "../../../redux/actions";
 import ItemDetailsPanel from "../Item/ItemDetailsPanel";
 import { addOrder, requestMenu } from "../../../requests/restaurant";
+import MiniItemPanel from "../Item/MiniItemPanel";
 
 class OrderCreatePanel extends React.Component {
   state = {
@@ -20,22 +21,10 @@ class OrderCreatePanel extends React.Component {
     
     {
         id: "name",
-        label: "Name",
+        label: "Menu",
         minWidth: 200,
-        align: "left",
-      },
-    {
-      id: "price",
-      label: "Price",
-      minWidth: 10,
-      align: "center",
-    },
-    {
-      id: "add",
-      label: "",
-      minWidth: 10,
-      align: "center",
-    }
+        align: "Center",
+      }
   ];
  
   
@@ -99,7 +88,7 @@ class OrderCreatePanel extends React.Component {
     
         
       requestMenu(this.props.token).then((response) => {
-          this.props.dispatch(setMenu(response.data));    
+          this.props.dispatch(setMenu(response.data.menu));    
       });
       
     
@@ -130,63 +119,51 @@ class OrderCreatePanel extends React.Component {
                                 </Grid>
                                 <Grid item xs={12} className="GridElement">
                                     <div className="BigMenu">
-                                        <TableContainer  className="TableContainer">
-                                        <Table stickyHeader aria-label="sticky table" >
+                                    <TableContainer  className="Test2">
+                                      <Table stickyHeader aria-label="sticky table" >
                                         <TableHead >
-                                            <TableRow >
+                                          <TableRow >
                                             {columns.map((column) => (
-                                                <TableCell
+                                              <TableCell
                                                 key={column.id}
                                                 align={column.align}
                                                 style={{ minWidth: column.minWidth }}
                                                 classes={{
-                                                    root:"Chart-header-specs"
+                                                  root:"Chart-header-specs"
                                                 }}
-                                                >
+                                              >
                                                 {column.label}
-                                                </TableCell>
+                                              </TableCell>
                                             ))}
-                                            </TableRow>
+                                          </TableRow>
                                         </TableHead>
                                         <TableBody  >
-                                            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                            return (
-                                                <TableRow hover role="checkbox" tabIndex={-1} key={row.code} >
-                                                {columns.map((column) => {
-                                                    const value = row[column.id];
-                                                    return (
-                                                    <TableCell key={column.id} align={column.align} style={{cursor:"pointer"}}>
-                                                        {(column.id == "add")?(<AddCircle style={{color:"#ffda61"}} onClick={this.addItemToOrderHandler.bind(this,row)} />):(<div className="OrderCell">                                                    
-                                                        {column.format && typeof value === 'number' ? column.format(value) : (value)}
-                                                        </div>)}
-                                                        
+                                          {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                                            return (<>
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.code} >
+                                                
+                                                    <TableCell align="center" classes={{
+                                                        root:"Chart-header-specs3"
+                                                      }} >
+                                                        {row.name}
                                                     </TableCell>
-                                                    );
+                                                    
+                                              </TableRow>
+                                              <TableRow hover role="checkbox" tabIndex={-1} key={row.code} >
+                                                {columns.map((column) => {
+                                                  const value = row[column.id];
+                                                  return (<>                     
+                                                    <MiniItemPanel items = {row.Items} addHandler = {this.addItemToOrderHandler}/>
+                                                    </>
+                                                  );
                                                 })}
-                                                </TableRow>
-                                            );
-                                            })}
+                                              </TableRow>
+                                            </>);
+                                          })}
                                         </TableBody>
-                                        </Table>
+                                      </Table>
                                     </TableContainer>
-                                    
                                     </div>
-                                </Grid>
-                                <Grid item xs={12} className="GridElement">
-                                <TablePagination
-                                    
-                                    rowsPerPageOptions={[ 10]}
-                                    component="div"
-                                    count={rows.length}
-                                    rowsPerPage={rowsPerPage}
-                                    page={page}
-                                    onChangePage={handleChangePage}
-                                    onChangeRowsPerPage={handleChangeRowsPerPage}  
-                                    className="Test3"      
-                                    classes={{
-                                    root:"Chart-header-specs2"
-                                    }}
-                                />
                                 </Grid>
                             </Grid>
                             

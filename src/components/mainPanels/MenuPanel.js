@@ -1,11 +1,12 @@
 import React from "react";
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@material-ui/core";
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow,  TextField,  withStyles } from "@material-ui/core";
 import { AccountBalanceWallet, CheckBox, Edit, Face, HighlightOff, HourglassFull } from "@material-ui/icons";
 import { connect } from "react-redux";
-import { removeItem, requestMenu, requestOrders } from "../../requests/restaurant";
+import { addSubtopic, removeItem, requestMenu, requestOrders } from "../../requests/restaurant";
 import { setDisplayingPanel, setMenu, setOrders, setUser } from "../../redux/actions";
 import { setRestaurantMenu } from "../../redux/reducers";
 import ItemDetailsPanel from "./Item/ItemDetailsPanel";
+import ItemsPanel from "./Item/ItemsPanel";
 
 class MenuPanel extends React.Component {
   state = {
@@ -18,32 +19,12 @@ class MenuPanel extends React.Component {
   };
 
   columns = [
-    
-    {
-      id: "image",
-      label: "Image",
-      minWidth: 170,
-      align: "left"
-    },
     {
         id: "name",
-        label: "Name",
+        label: "Menu",
         minWidth: 170,
-        align: "left",
-      },
-    {
-      id: "price",
-      label: "Price",
-      minWidth: 170,
-      align: "center",
-    }
-    ,
-    {
-      id: "buttons",
-      label: "",
-      minWidth: 30,
-      align: "center",
-    }
+        align: "center",
+      }
   ];
 
  /* columns = [
@@ -72,7 +53,14 @@ class MenuPanel extends React.Component {
     },
   ];
 */
- 
+ addType = () => {
+  var value = document.getElementById("addType").value;
+  addSubtopic(value,this.props.token).then((result)=>{
+    requestMenu(this.props.token).then((response) => {
+        this.props.dispatch(setMenu(response.data.menu));    
+    });
+  })
+ }
   
   handleChangePage = (event, newPage) => {
     this.setState({page:newPage});
@@ -95,7 +83,7 @@ class MenuPanel extends React.Component {
     removeItem(item.uuid,this.props.token).then((response)=>{
       console.log(response);
       requestMenu(this.props.token).then((response) => {
-        this.props.dispatch(setMenu(response.data));    
+        this.props.dispatch(setMenu(response.data.menu));    
       });
     });
   }
@@ -108,7 +96,7 @@ class MenuPanel extends React.Component {
     
         
       requestMenu(this.props.token).then((response) => {
-          this.props.dispatch(setMenu(response.data));    
+          this.props.dispatch(setMenu(response.data.menu));    
       });
       
     
@@ -119,7 +107,8 @@ class MenuPanel extends React.Component {
   }
 
   render() {
-    const {classes,rowsPerPage,page} = this.state;
+    const {classes} = this.props;
+    const {rowsPerPage,page} = this.state;
     const columns = this.columns;
     const rows = this.props.menu;
     const handleChangePage = this.handleChangePage.bind(this);
@@ -128,6 +117,33 @@ class MenuPanel extends React.Component {
     return (
       <div >
         <TableContainer  className="Test2">
+        <TextField id="addType" label = "Add Type"                                     
+                                    type="text"                                     
+                                    className = {classes.main}
+                                    InputProps={{
+                                            classes:{
+                                                input:classes.font
+                                            }
+                                        }}
+                                        InputLabelProps={{
+                                            classes:{
+                                                root: classes.font,
+                                            }
+                                        }}
+                                    />   
+                                    &nbsp;                                    
+                                    &nbsp;                                    
+                                    &nbsp;
+                                    <Button
+                                    classes={{
+                                        root: classes.buttonRoot, // class name, e.g. `classes-nesting-root-x`
+                                        label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
+                                    }}
+                                    
+                                    onClick={this.addType.bind(this)}
+                                >Add</Button>
+        <br/>              
+        <br/>
         <Table stickyHeader aria-label="sticky table" >
           <TableHead >
             <TableRow >
@@ -147,43 +163,62 @@ class MenuPanel extends React.Component {
           </TableHead>
           <TableBody  >
             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-              return (
+              return (<>
+              <TableRow hover role="checkbox" tabIndex={-1} key={row.code} >
+                   
+                      <TableCell align="center" classes={{
+                          root:"Chart-header-specs3"
+                        }} >
+                          {row.name}
+                      </TableCell>
+                       
+                </TableRow>
                 <TableRow hover role="checkbox" tabIndex={-1} key={row.code} >
                   {columns.map((column) => {
                     const value = row[column.id];
-                    return (
-                      <TableCell key={column.id} align={column.align} onClick={(column.id == "buttons")?(null):(this.detailsHandler.bind(this,row))} style={{cursor:"pointer"}}>
-                        {(column.id == "image")?(<img alt={row.img} src={row.img} width ="50"/>):(
-                        (column.id == "buttons")?(<HighlightOff style={{color:"#ffda61"}} onClick={this.removeItem.bind(this,row)}></HighlightOff>):(<div className="OrderCell">                                                    
-                          {column.format && typeof value === 'number' ? column.format(value) : (value)}
-                        </div>))}
-                        
-                      </TableCell>
+                    return (<>                     
+                      <ItemsPanel items = {row.Items} type={row}/>
+                      </>
                     );
                   })}
                 </TableRow>
-              );
+              </>);
             })}
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-      
-        rowsPerPageOptions={[ 10]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}  
-        className="Test3"      
-        classes={{
-          root:"Chart-header-specs"
-        }}
-      />
     </div>
     );
   }
+}
+
+const useStyles = {
+  main:{
+      '& label.Mui-focused': {
+          color: '#c4a748d0',
+        },          
+  '& .MuiInput-underline:after': {
+      borderBottomColor: '#c4a748d0',
+    },
+  },
+  font:{
+      color : "#c4a748d0",
+      '&:-webkit-autofill': {
+          transitionDelay: '9999s',
+          transitionProperty: 'background-color, color',
+        },
+  },
+  buttonRoot: {
+      background: 'linear-gradient(45deg, #c4a748d0 30%, #c4a748d0 90%)',
+      borderRadius: 3,
+      border: 0,
+      color: 'black',
+      height: 48,
+      padding: '0 30px',
+    },
+  buttonLabel: {
+      textTransform: 'capitalize',
+  },
 }
 
 const mapStateToProps = state =>({
@@ -194,5 +229,5 @@ const mapStateToProps = state =>({
   display : state.display
 })
 
-export default connect(mapStateToProps,null)(MenuPanel);
+export default connect(mapStateToProps,null)(withStyles(useStyles)(MenuPanel));
 

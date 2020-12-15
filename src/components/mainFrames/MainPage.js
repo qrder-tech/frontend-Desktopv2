@@ -12,6 +12,7 @@ import RightDrawer from "../drawers/RightDrawer";
 import OrderPanel from "../mainPanels/OrderPanel";
 import { connect } from "react-redux";
 import { setDisplayingPanel } from "../../redux/actions";
+import TablePanel from "../mainPanels/tables/TablePanel";
 
 
 
@@ -28,7 +29,7 @@ class MainPage extends React.Component {
   handleTabChange = (event, newValue) => {
     this.setState({ value: newValue });
     if(newValue == 0){
-      this.props.dispatch(setDisplayingPanel(null));
+      this.props.dispatch(setDisplayingPanel(<TablePanel/>));
     }else{
       this.props.dispatch(setDisplayingPanel(
         <OrderPanel/>));

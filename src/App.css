@@ -170,7 +170,7 @@
   background-size : cover;
   background-repeat: no-repeat;
   background-position: center;
-  min-width : 400px;
+  min-width : 800px;
   max-height: 500px;
   overflow-y: scroll;
   
@@ -211,6 +211,10 @@
 .Chart-header-specs2{
   background: linear-gradient(0deg, #c4a748ef 100%, #fb6161 100%);   
   min-width: 100%;
+}
+
+.Chart-header-specs3{
+  background: linear-gradient(0deg, #eee0b3ef 100%, #fb6161 100%); 
 }
 
 .OrderCell{
@@ -256,6 +260,11 @@
   color : #000000;
 }
 
+.BigMenu{
+  
+  min-width: 100%;
+}
+
 /**************************************
               Grid layout
 ***************************************/
@@ -266,6 +275,7 @@
 /**************************************
               Order Menu Container
 ***************************************/
+
 .TableContainer::-webkit-scrollbar {
   display: none;
 }
@@ -273,3 +283,54 @@
   min-width: 100%;
   max-Height : 300px; 
 }
+
+/**************************************
+              Table
+***************************************/
+
+.TablePanel{
+  min-height: 500px;
+}
+.Table{
+  position: relative;
+  border-radius: 25px;
+  border-color: #837032;
+  border-style:solid;
+  border-width: 10px;
+  padding:10px;
+  width:60%;
+  height:60%;  
+  justify-content: center;
+  display: flex;  
+  color : #000000;
+}
+
+/**************************************
+              Additional Components
+***************************************/
+
+.Select{
+  background :#ffda6100;
+  width : 100%;
+  height : 40px;  
+  font-size: 20px;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  border-radius: 5%;
+  border-color: #ffda6100;  
+  color: #ffda61;
+}
+
+
+Select option {
+  margin: 40px;
+  background: #282c34e8;
+  color: #ffda61;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);  
+  font-size: 20px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.SelectLabel{
+  font-size: 20px;
+}
+
