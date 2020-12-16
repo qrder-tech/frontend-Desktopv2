@@ -1,4 +1,4 @@
-import { Button, TextField, withStyles } from '@material-ui/core';
+import { Button, Switch, TextField, withStyles } from '@material-ui/core';
 import React from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -11,7 +11,8 @@ import { getUserInfo } from '../../requests/restaurant';
 class RegisterPage extends React.Component{
     
     state = {
-        loading : false
+        loading : false,
+        type : "normal"
     };
 
     login = () => {
@@ -23,9 +24,16 @@ class RegisterPage extends React.Component{
 
     }
 
+    typeChange= () => {
+        //console.log(document.getElementById("registerSwitch").checked);
+        var s = document.getElementById("registerSwitch").checked;
+        this.setState({type:(s)?("self-service"):("normal")})
+    }
+
     register = (formVars) => {
         const { history } = this.props;
-
+        //alert(document.getElementById("registerSwitch").value);
+        
         var values = [];
         values["name"]= formVars[0].id.value;
         values["address"]= formVars[1].id.value;
@@ -87,10 +95,9 @@ class RegisterPage extends React.Component{
                 ):(
                      <>
             {formVariables.map((index)=>(
-                <>
+            (index.name == "password")?( <>&nbsp;&nbsp;
                 <TextField id={index.name} label = {index.label} 
                 type={index.type}
-                defaultValue = "postman"
                 inputRef={el =>index.id = el} 
                 className = {classes.main}
                 InputProps={{
@@ -106,9 +113,39 @@ class RegisterPage extends React.Component{
                 />                             
                 <br/>
                 <br/>
-                </>
+                </>):( <>
+                <TextField id={index.name} label = {index.label}
+                multiline rowsmax = {4} 
+                type={index.type}
+                inputRef={el =>index.id = el} 
+                className = {classes.main}
+                InputProps={{
+                        classes:{
+                            input:classes.font
+                        }
+                    }}
+                    InputLabelProps={{
+                        classes:{
+                            root: classes.font,
+                        }
+                    }}
+                />                             
+                <br/>
+                <br/>
+                </>)
+               
             ))}
+                <span style={{float:"left",color:"#000000"}}>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Switch
+                        color="default"
+                        id = "registerSwitch"
+
+                        onChange={this.typeChange.bind(this)}
+                        />{this.state.type}
+                </span>
                 
+                <br/>
+                <br/>
                  <span className="ButtonLayout">
                  <Button
                     classes={{

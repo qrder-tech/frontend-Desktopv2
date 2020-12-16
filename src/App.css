@@ -50,13 +50,18 @@
  }
 .RegisterPanel{
   
-  background-image: url("pngguru.com (2).png") ;
+  background-image: url("guru.png") ;
+  background-color: #00000000;
+  
   background-size : cover;
   background-repeat: no-repeat;
   background-position: center;  
+  background-blend-mode: exclusion;
   min-width : 300px
   
 }
+
+
 
 /**********************************************************************
 *********************************************************************** 
@@ -116,6 +121,10 @@
 
 
 .Panel{
+  background-image: url("pngguru.com (2).png") ;
+  background-size : cover;
+  background-repeat: no-repeat;
+  background-position: center;
   background-color: #282c34e8;
   border-radius: 25px;
   padding:50px;
@@ -125,10 +134,6 @@
 
 
 .LoginPanel{
-  background-image: url("pngguru.com (2).png") ;
-  background-size : cover;
-  background-repeat: no-repeat;
-  background-position: center;
   min-width : 400px;
   
 }
@@ -259,6 +264,8 @@
   display: flex;  
   color : #000000;
 }
+
+
 
 .BigMenu{
   

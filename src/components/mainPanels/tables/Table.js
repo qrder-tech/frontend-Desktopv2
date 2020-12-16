@@ -1,4 +1,7 @@
 import React from "react";
+import { connect } from "react-redux";
+import { setDisplayingPanel } from "../../../redux/actions";
+import TableDetails from "./TableDetails";
 const moment = require('moment');
 
 class Table extends React.Component {
@@ -8,6 +11,15 @@ class Table extends React.Component {
           orders:[{}],
           earliestOrderTime : null
        };
+
+       tableDetails(table){
+       //alert("hi");
+        console.log(table);
+        
+        this.props.dispatch(setDisplayingPanel(<TableDetails table={this.props.tableInfo}/>));
+        
+
+       }
 
        componentDidMount(){
            if(this.props.tableInfo.RecentOrders.length != 0){
@@ -31,10 +43,11 @@ class Table extends React.Component {
             }
             
        }
+
   render() {
     return (
       
-        <div className="Table"  style={{background: (this.state.earliestOrderTime)?(getViewValues(this.state.earliestOrderTime)):("#c4a748") }}>
+        <div className="Table"  onClick= {this.tableDetails.bind(this,this.props.tableInfo)}style={{cursor:"pointer" , background: (this.state.earliestOrderTime)?(getViewValues(this.state.earliestOrderTime)):("#c4a748") }}>
             <span className="TableContent">
             {this.props.tableInfo.name}
             </span>
@@ -43,8 +56,15 @@ class Table extends React.Component {
   }
 }
 
+const mapStateToProps = state =>({
+    token : state.token,
+    user : state.user,
+    menu : state.menu,
+    order : state.test,
+    display : state.display
+  })
 
-export default Table;
+export default connect(mapStateToProps,null)(Table);
 
 
 function componentToHex(c) {

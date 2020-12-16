@@ -1,13 +1,13 @@
 import React from "react";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@material-ui/core";
-import { AccountBalanceWallet, CheckBox, Face, HourglassFull } from "@material-ui/icons";
+import { AccountBalanceWallet, CheckBox, DeleteForever, Face, HourglassFull } from "@material-ui/icons";
 import { connect } from "react-redux";
-import { requestOrders } from "../../requests/restaurant";
-import { setOrders } from "../../redux/actions";
+import { requestOrders } from "../../../requests/restaurant";
+import { setOrders } from "../../../redux/actions";
 
 const moment = require('moment');
 
-class OrderPanel extends React.Component {
+class MiniOrderPanel extends React.Component {
   state = {
     info: {
       OrderCount: null,
@@ -21,21 +21,27 @@ class OrderPanel extends React.Component {
     {
       id: "orderNo",
       label: "Order No",
-      minWidth: 170,
+      minWidth: 30,
       align: "left",
     },
     {
       id: "time",
       label: "Time",
-      minWidth: 170,
+      minWidth: 30,
       align: "center",
     },
     {
       id: "status",
       label: "Status",
-      minWidth: 170,
+      minWidth: 30,
       align: "right",
-    },
+    },    
+    {
+        id: "actions",
+        label: "Edit",
+        minWidth: 30,
+        align: "right",
+      },
   ];
  
   
@@ -52,32 +58,18 @@ class OrderPanel extends React.Component {
 
   componentDidMount() {
     //console.log("orderpanel : " + this.props.token);
-    if(this.props.orders){
-      console.log("11111111");
-      var temp = [];
-        this.props.orders.map((order,index)=>{
-            temp.push({orderNo:index+1,
-                time : moment().diff(moment(order.createdAt),"minutes"),
-                status : "waiting" });
-        })
-        this.setState({info:{OrderCount:this.props.orders.length,
-                      orders : temp}});
-    }
-    else{
-      requestOrders(this.props.token).then((response) => {
-        
-        this.props.dispatch(setOrders(response.orders));
-        var temp = [];
-        response.orders.map((order,index)=>{
-            temp.push({orderNo:index+1,
-                time : moment().diff(moment(order.createdAt),"minutes"),
-                status : (order.isPaid)?("served"):("waiting") });
-        })
-        temp.sort(function(a,b){return b.time-a.time});
-        this.setState({info:{OrderCount:response.orders.length,
-                      orders : temp}});
-      });
-    }
+    console.log("here");
+    console.log(this.props.tableOrders);
+    var temp = [];
+    this.props.tableOrders.map((order,index)=>{        
+        temp.push({orderNo:index+1,
+            time : moment().diff(moment(order.createdAt),"minutes"),
+            status : (order.isPaid)?("served"):("waiting") ,
+            actions : <div><CheckBox/><br/><AccountBalanceWallet/><br/><DeleteForever/></div>});
+    });
+
+    this.setState({info:{orderCount:temp.length,
+                        orders :temp}});
     /*this.setState({info : getOrders()});
     setInterval(function(){      
       this.setState({info : getOrders()});
@@ -135,20 +127,6 @@ class OrderPanel extends React.Component {
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-      
-        rowsPerPageOptions={[ 10]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}  
-        className="Test3"      
-        classes={{
-          root:"Chart-header-specs"
-        }}
-      />
     </div>
     );
   }
@@ -160,5 +138,5 @@ const mapStateToProps = state =>({
   orders : state.orders
 })
 
-export default connect(mapStateToProps,null)(OrderPanel);
+export default connect(mapStateToProps,null)(MiniOrderPanel);
 

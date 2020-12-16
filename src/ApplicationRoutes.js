@@ -26,7 +26,7 @@ const ApplicationRoutes = () => {
 
   return (
     <Router>      
-              { (token != 1) ? (
+              { (token != 1 && token != "undefined") ? (
                 //Autheticated Routing
                 <Switch>
                    <Route path="/mainPage" component={MainPage}/>

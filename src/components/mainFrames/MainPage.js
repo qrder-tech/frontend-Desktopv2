@@ -31,8 +31,7 @@ class MainPage extends React.Component {
     if(newValue == 0){
       this.props.dispatch(setDisplayingPanel(<TablePanel/>));
     }else{
-      this.props.dispatch(setDisplayingPanel(
-        <OrderPanel/>));
+      this.props.dispatch(setDisplayingPanel(<OrderPanel/>));
     }
   };
 
