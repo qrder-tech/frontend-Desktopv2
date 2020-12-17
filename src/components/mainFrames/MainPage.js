@@ -29,9 +29,11 @@ class MainPage extends React.Component {
   handleTabChange = (event, newValue) => {
     this.setState({ value: newValue });
     if(newValue == 0){
-      this.props.dispatch(setDisplayingPanel(<TablePanel/>));
-    }else{
+      
       this.props.dispatch(setDisplayingPanel(<OrderPanel/>));
+    }else{
+      
+      this.props.dispatch(setDisplayingPanel(<TablePanel/>));
     }
   };
 
@@ -64,8 +66,9 @@ class MainPage extends React.Component {
                       }}
                       indicatorColor=""
                     >
-                      <Tab label="Tables" {...a11yProps(0)} />
-                      <Tab label="Orders" {...a11yProps(1)} />
+                      <Tab label="Orders" {...a11yProps(0)} />
+                      {this.props.user== null ? null:this.props.user.restaurantType == "normal"?<Tab label="Tables" {...a11yProps(1)} />:null}                      
+                      
                     </Tabs>
                   </AppBar>    
           </header>

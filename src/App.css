@@ -87,7 +87,7 @@
 }
 
 .App-Header{
-  background: linear-gradient(120deg, #282c34e8 10%,   #c4a748d0 40%);  
+  background: linear-gradient(120deg, #282c34e8 10%,   #c4a748d0 30%);  
   justify-content: center;  
   align-items: center;
   text-align: center;
@@ -176,7 +176,7 @@
   background-repeat: no-repeat;
   background-position: center;
   min-width : 800px;
-  max-height: 500px;
+  height: 500px;
   overflow-y: scroll;
   
 }
@@ -241,7 +241,7 @@
   border-width: 10px;
   padding:10px;
   width:60%;
-  height:60%;  
+  min-height:100px;  
   justify-content: center;
   display: flex;  
   color : #000000;
@@ -265,10 +265,77 @@
   color : #000000;
 }
 
+.BigTag2::-webkit-scrollbar {
+  display: none;
+}
+
+.BigTag2{
+  background-color : #837032;
+  position: relative;
+  border-radius: 25px;
+  border-color: #837032;
+  border-style:solid;
+  border-width: 10px;
+  padding:10px;
+  width:60%; 
+  height:250px;
+  justify-content: center;
+  display: flex;  
+  color : #000000;
+  overflow-y: scroll;
+}
+
+.BigTag3::-webkit-scrollbar {
+  display: none;
+}
+
+.BigTag3{
+  background-color : #ffda6100;
+  position: relative;
+  border-radius: 25px;
+  border-color: #837032;
+  border-style:solid;
+  border-width: 10px;
+  padding:10px;
+  width:60%; 
+  height:40%;
+  justify-content: center;
+  display: flex;  
+  color : #000000;
+}
+
+
+.BigTag4::-webkit-scrollbar {
+  display: none;
+}
+
+.BigTag4{
+  background-color : #837032;
+  position: relative;
+  border-radius: 25px;
+  border-color: #837032;
+  border-style:solid;
+  border-width: 10px;
+  padding:10px;
+  width: 60%;
+  min-height:200px;
+  justify-content: center;
+  display: flex;  
+  color : #000000;
+}
+
 
 
 .BigMenu{
   
+  min-width: 100%;
+}
+
+.BigMenu2::-webkit-scrollbar {
+  display: none;
+}
+.BigMenu2{
+  max-height: 100%;
   min-width: 100%;
 }
 
@@ -278,6 +345,15 @@
 .GridElement{  
   justify-content: center;
   display: flex; 
+}
+
+.GridElement2{  
+  display: flex;   
+  justify-content: center;
+}
+.GridElement3{  
+  display: flex;   
+  justify-content: center;
 }
 /**************************************
               Order Menu Container
@@ -333,6 +409,17 @@
   color: #ffda61;
 }
 
+.Select2{
+  background :#ffda6100;
+  width : 50%;
+  height : 40px;  
+  font-size: 20px;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  border-radius: 5%;
+  border-color: #ffda6100;  
+  color: #ffda61;
+}
+
 
 Select option {
   margin: 40px;
@@ -345,5 +432,33 @@ Select option {
 
 .SelectLabel{
   font-size: 20px;
+}
+
+/**************************************
+              Notifications
+***************************************/
+.Done{
+  position: absolute;
+  top :90%;
+  left:80%;  
+}
+
+.Payment{
+  position: absolute;
+  bottom:90%;
+  right:80%;
+}
+
+.Waiter{
+  position:absolute;
+  bottom:90%;
+  left:80%;
+}
+
+.Waiting{
+  
+  position:absolute;  
+  top:90%;
+  right: 80%;
 }
 

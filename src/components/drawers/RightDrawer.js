@@ -2,15 +2,25 @@ import React from "react"
 
 import {  Divider, Drawer, List, ListItem, ListItemIcon, ListItemText,  withStyles } from "@material-ui/core";
 import { AccountBalanceWallet,  CheckBox,  Face,  HourglassFull } from "@material-ui/icons";
+import { connect } from "react-redux";
+import MainPage from "../mainFrames/MainPage";
+import { setDisplayingPanel } from "../../redux/actions";
 
 class RightDrawer extends React.Component {
 
   state ={
-    open : false
+    open : false,
+    items : []
+  }
+
+  componentDidMount(){
+    
+
   }
 
   clickhandler(item){
     alert(item.text + " : " + item.count );
+    
   }
 
   handleDrawerOpen = () => {
@@ -23,11 +33,20 @@ class RightDrawer extends React.Component {
 
   render() {
     const { classes } = this.props;
-    
-    const items = [{text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:3},
-                    {text : "Payment" , item:<AccountBalanceWallet style={{fontSize:90}}/>,count : 5},
-                    {text:"Waiter" , item:<Face style={{fontSize:90}}/>,count : 2},
-                   {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : 4}];
+    var items =[];
+    if(this.props.user != null){
+      if(this.props.user.restaurantType == "normal"){   
+        items = [{text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:3},
+        {text : "Payment" , item:<AccountBalanceWallet style={{fontSize:90}}/>,count : 5},
+        {text:"Waiter" , item:<Face style={{fontSize:90}}/>,count : 2},
+      {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : 4}];
+      }else{
+        items = [{text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:3},
+  {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : 4}];
+      }
+    }else{
+      
+    }
     return (
       <Drawer anchor="right"variant="permanent" classes={{paper:classes.paper}}>
           <div className="Drawer">
@@ -88,6 +107,11 @@ const useStyles ={
   
 };
 
+const mapStateToProps = state =>({
+  token : state.token,
+  user : state.user,
+  display : state.display,
+  displayValue : state.value
+})
 
-
-export default withStyles(useStyles)(RightDrawer)
+export default connect(mapStateToProps,null)(withStyles(useStyles)(RightDrawer))

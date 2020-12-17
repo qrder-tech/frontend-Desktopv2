@@ -106,7 +106,7 @@ class MiniItemPanel extends React.Component {
 
     return (
       <div >
-        <TableContainer  className="Test2">
+        <TableContainer  >
         <Table stickyHeader aria-label="sticky table" >
           <TableHead >
             <TableRow >

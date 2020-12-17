@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { login, registration } from '../../requests/auth';
 import {setToken, setUser} from '../../redux/actions'
 import { getUserInfo } from '../../requests/restaurant';
+import { AccountBox, LocationOn, Mail, Note, Phone, VpnKey } from '@material-ui/icons';
 
 
 
@@ -74,12 +75,12 @@ class RegisterPage extends React.Component{
         const {loading} = this.state;
 
           var formVariables = [
-            {name:"name", id:null,label : "Name",type:"text"},
-            {name : "address",id:null,label : "Address",type:"text"},
-            {name : "phoneNumber",id:null,label : "Phone Number",type:"tel"},
-            {name : "email",id:null,label : "Email",type:"email"},
-            {name : "username",id:null,label : "Username",type:"text"},
-            {name : "password",id:null,label : "Password",type:"password"}];
+            {name:"name", id:null,label : "Name",type:"text",icon:<Note  style={{fontSize:"50px",color:"black"}}/>},
+            {name : "address",id:null,label : "Address",type:"text",icon:<LocationOn style={{fontSize:"50px",color:"black"}}/>},
+            {name : "phoneNumber",id:null,label : "Phone Number",type:"tel",icon:<Phone style={{fontSize:"50px",color:"black"}}/>},
+            {name : "email",id:null,label : "Email",type:"email",icon:<Mail style={{fontSize:"50px",color:"black"}}/>},
+            {name : "username",id:null,label : "Username",type:"text",icon:<AccountBox style={{fontSize:"50px",color:"black"}}/>},
+            {name : "password",id:null,label : "Password",type:"password",icon:<VpnKey style={{fontSize:"50px",color:"black"}}/>}];
          
         
         return(
@@ -110,7 +111,7 @@ class RegisterPage extends React.Component{
                             root: classes.font,
                         }
                     }}
-                />                             
+                />{index.icon}                          
                 <br/>
                 <br/>
                 </>):( <>
@@ -129,10 +130,11 @@ class RegisterPage extends React.Component{
                             root: classes.font,
                         }
                     }}
-                />                             
+                />   {index.icon}                            
                 <br/>
                 <br/>
                 </>)
+                
                
             ))}
                 <span style={{float:"left",color:"#000000"}}>

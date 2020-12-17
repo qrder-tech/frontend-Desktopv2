@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@material-ui/core";
+import { Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, withStyles } from "@material-ui/core";
 import { AccountBalanceWallet, AddCircle, CheckBox, Edit, Face, HourglassFull } from "@material-ui/icons";
 import { connect } from "react-redux";
 import { setDisplayingPanel, setMenu } from "../../../redux/actions";
@@ -99,14 +99,14 @@ class OrderCreatePanel extends React.Component {
   }
 
   render() {
-    const {classes,rowsPerPage,page} = this.state;
+    const {classes} = this.props;
+    const {rowsPerPage,page} = this.state;
     const columns = this.columns;
     const rows = this.props.menu;
     const handleChangePage = this.handleChangePage.bind(this);
     const handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
 /**/
     return (
-      <div >
           
           <Grid container spacing={1}>
                     <Grid item xs={6} className="GridElement">
@@ -117,9 +117,8 @@ class OrderCreatePanel extends React.Component {
                                         Order
                                     </div>
                                 </Grid>
-                                <Grid item xs={12} className="GridElement">
-                                    <div className="BigMenu">
-                                    <TableContainer  className="Test2">
+                                <Grid item xs={12} className="GridElement" style={{maxHeight:"390px"}}>
+                                    <TableContainer  className="BigMenu2">
                                       <Table stickyHeader aria-label="sticky table" >
                                         <TableHead >
                                           <TableRow >
@@ -163,31 +162,85 @@ class OrderCreatePanel extends React.Component {
                                         </TableBody>
                                       </Table>
                                     </TableContainer>
-                                    </div>
                                 </Grid>
                             </Grid>
                             
                     </Grid>
                     <Grid item xs={6} className="GridElement">
-                        <div className="BigTag">
-                            <div style={{textAlign:"left"}}>
-                                {this.state.order.items.map((item) =>(
-                                <>{item.name}
-                                    <span style={{float:"right"}}>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;{item.price}
-                                    </span><br/></>))}
-                                <hr/>
-                                <div style={{textAlign:"right"}}>
-                                   Price :  {this.state.order.totalPrice}
-                                </div>
-                            </div>
-                        </div>                            
+                      <Grid container spacing={1}>
+                        <Grid item xs={12} className="GridElement">
+                          <div className="BigTag2">
+                              <div style={{textAlign:"left"}}>
+                                  {this.state.order.items.map((item) =>(
+                                  <>{item.name}
+                                      <span style={{float:"right"}}>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;{item.price}
+                                      </span><br/></>))}
+                                  <hr/>
+                                  <div style={{textAlign:"right"}}>
+                                    Price :  {this.state.order.totalPrice}
+                                  </div>
+                              </div>
+                          </div>
+                          </Grid> 
+                                           
+                          <Grid item xs={12} className="GridElement">                            
+                            
+                              {this.props.user == null ? (null):(this.props.user.restaurantType == "normal" ? (<div className="BigTag3"><select name="tables" id="types" className="Select2">
+                                      {this.props.tables.map((table)=>(
+                                  <option value={table.uuid} className="Option">{table.name}</option>))}
+                                </select><br/></div>):(null))}
+                              
+                          </Grid>
+                          <Grid item xs={12} className="GridElement">                            
+                              <Button
+                                            classes={{
+                                                root: classes.buttonRoot, // class name, e.g. `classes-nesting-root-x`
+                                                label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
+                                            }}
+                                        >Done</Button>&nbsp;
+                                        <Button
+                                        classes={{
+                                            root: classes.buttonRoot, // class name, e.g. `classes-nesting-root-x`
+                                            label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
+                                        }}
+                                    >Remove</Button>
+                              </Grid>
+                        </Grid>                           
                     </Grid>
                 </Grid>
        
-    </div>
     );
   }
+}
+
+const useStyles = {
+  main:{
+      '& label.Mui-focused': {
+          color: '#c4a748d0',
+        },          
+  '& .MuiInput-underline:after': {
+      borderBottomColor: '#c4a748d0',
+    },
+  },
+  font:{
+      color : "#c4a748d0",
+      '&:-webkit-autofill': {
+          transitionDelay: '9999s',
+          transitionProperty: 'background-color, color',
+        },
+  },
+  buttonRoot: {
+      background: 'linear-gradient(45deg, #c4a748d0 30%, #c4a748d0 90%)',
+      borderRadius: 3,
+      border: 0,
+      color: 'black',
+      height: 48,
+      padding: '0 30px',
+    },
+  buttonLabel: {
+      textTransform: 'capitalize',
+  },
 }
 
 const mapStateToProps = state =>({
@@ -195,8 +248,10 @@ const mapStateToProps = state =>({
   user : state.user,
   menu : state.menu,
   order : state.test,
+  tables : state.tables,
   display : state.display
-})
+});
 
-export default connect(mapStateToProps,null)(OrderCreatePanel);
+
+export default connect(mapStateToProps,null)(withStyles(useStyles)(OrderCreatePanel));
 

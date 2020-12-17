@@ -6,6 +6,8 @@ import { login } from '../../requests/auth';
 import {setDisplayingPanel, setToken, setUser} from '../../redux/actions'
 import { getUserInfo } from '../../requests/restaurant';
 import TablePanel from '../mainPanels/tables/TablePanel';
+import { AccountBox, VpnKey } from '@material-ui/icons';
+import OrderPanel from '../mainPanels/OrderPanel';
 
 
 
@@ -27,7 +29,13 @@ class LoginPage extends React.Component{
                     console.log(result);
                     this.props.dispatch(setUser(result));
                     this.setState({loading:true});
-                    this.props.dispatch(setDisplayingPanel(<TablePanel/>))
+                    if( result.restaurantType!=null){
+                        if(result.restaurantType == "normal"){
+                            this.props.dispatch(setDisplayingPanel(<TablePanel/>));
+                        }else{                            
+                            this.props.dispatch(setDisplayingPanel(<OrderPanel/>))
+                        }
+                    }
                     history.push("/mainPage");
                 });
             } else{
@@ -63,6 +71,7 @@ class LoginPage extends React.Component{
             loging in...</>
                 ):(
                      <>
+                     
             <TextField id="username" label = "Username" 
             defaultValue = "test10"
             className = {classes.main}
@@ -79,6 +88,7 @@ class LoginPage extends React.Component{
                 }}
 
                  />
+                 <AccountBox style={{fontSize:"50px"}}/>
                  <br/>
                  <br/>
                   <TextField id="password" label = "Password" 
@@ -97,6 +107,7 @@ class LoginPage extends React.Component{
                             }
                         }}
                  ><input type="password"/></TextField>                 
+                 <VpnKey style={{fontSize:"50px"}}/>                
                  <br/>
                  <br/>
                  <span className="ButtonLayout">

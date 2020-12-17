@@ -1,12 +1,12 @@
 import React from "react";
-import { Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, withStyles } from "@material-ui/core";
-import { AccountBalanceWallet, AddCircle, Bookmark, CheckBox,  CheckSharp,  Face, Fastfood, HighlightOff, HourglassFull, LocalOffer, Note } from "@material-ui/icons";
+import { Button, Grid, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, withStyles } from "@material-ui/core";
+import { AccountBox,AccountBalanceWallet, AddCircle, Bookmark, CheckBox,  CheckSharp,  Face, Fastfood, HighlightOff, HourglassFull, LocalOffer, Note, LocationOn, Phone, Mail, VpnKey, AccountCircle } from "@material-ui/icons";
 import { connect } from "react-redux";
-import { addItem, requestMenu, requestOrders, UpdateItem } from "../../../requests/restaurant";
-import MenuPanel from "../MenuPanel";
-import { setDisplayingPanel } from "../../../redux/actions";
+import { addItem, UpdateItem } from "../../requests/restaurant";
+import { setDisplayingPanel } from "../../redux/actions";
+import MenuPanel from "./MenuPanel";
 
-class ItemPanel extends React.Component {
+class ProfileEditPanel extends React.Component {
 
     state = {
         loading : false,
@@ -14,11 +14,13 @@ class ItemPanel extends React.Component {
         formVariables : [],
         img : null,
         preview:{
-            subtopicName:0,
-            name : 0,
-            price : 0,
-            desc : 0,
-            metadata : [],
+            name : "",
+            address : "",
+            phoneNumber : "",
+            email : "",
+            username : "",
+            password : "",
+            type : "",
         }
     };
 
@@ -51,12 +53,12 @@ class ItemPanel extends React.Component {
     }
     componentDidMount() {
         var formVariables = [
-            {id:"img",label : "Image(URL)",type:"text",reference : null,default: null},
-            {id:"type",label : "type",type:"select",reference : null,default: null},
-            {id:"name",label : "Name",type:"text",reference : null,default: null},
-            {id:"price",label : "Price",type:"text",reference : null,default: null},
-            {id:"desc",label : "Description",type:"text",reference : null,default: null},
-            {id:"metadata",label : "Optionals",type:"text",reference : null,default: null}
+            {id:"name",label : "RestaurantName",type:"text",reference : null,default: null},
+            {id:"address",label : "Address",type:"text",reference : null,default: null},
+            {id:"phone",label : "PhoneNumber",type:"text",reference : null,default: null},
+            {id:"email",label : "Email",type:"text",reference : null,default: null},
+            {id:"username",label : "Username",type:"text",reference : null,default: null},
+            {id:"password",label : "Password",type:"password",reference : null,default: null}
         ];
         
         if(this.props.item){
@@ -98,12 +100,22 @@ class ItemPanel extends React.Component {
             case "name":
                 temp.preview.name = value;
                 break;
-            case "price":
-                temp.preview.price = value;
+            case "address":
+                temp.preview.address = value;
                 break;
-            case "desc":
-                temp.preview.desc = value;
+            case "phone":
+                temp.preview.phoneNumber = value;
                 break;
+            case "email":
+                temp.preview.email = value;
+                break;
+            case "username":
+                temp.preview.username = value;
+                break;
+            case "password":
+                temp.preview.password = value;
+                break;
+                    
         }
         this.setState(temp);
     }
@@ -124,33 +136,25 @@ class ItemPanel extends React.Component {
                                 
                                 <Grid item xs={12} className="GridElement">
                                     <div className="BigImage">
-                                        <img  src={this.state.img} width ="60%" height ="100%"/>                                        
+                                        <AccountCircle style={{fontSize:145,color:"#c4a748d0"}}/>                                        
                                     </div>
                                 </Grid>
                                 <Grid item xs={12} className="GridElement">
                                     <div className="BigTag4"> 
                                         <div style={{textAlign:"left",minWidth:"100%",fontSize:"15px"}}>
-                                        <Fastfood/>{this.state.preview.name}
-                                    
-                                            <span style={{float:"right"}}>
-                                                &nbsp;&nbsp;&nbsp;&nbsp;{this.state.preview.subtopicName}<Bookmark/>
-                                            </span> 
-                                            <hr/>
-                                            <Note/>{this.state.preview.desc}
-                                            <br/>
-                                            <br/> 
-                                            Optionals:
-                                            <br/>              
-                                        {this.state.preview.metadata.map((ingredient)=>(
-                                            <>
-                                            <CheckSharp/>{ingredient} <HighlightOff style={{fontSize:"12px"}}/>
-                                            <br/>
-                                            </>
-                                        ))}  
-                                        <hr/>  
-                                        <div style={{textAlign:"center"}}>
-                                        <LocalOffer/>Price : {this.state.preview.price} TL
-                                        </div>                             
+                                        <Note/>{this.state.preview.name}<br/>
+                                        <LocationOn/>{this.state.preview.address}<br/>
+                                        <Phone/>{this.state.preview.phoneNumber}<br/>
+                                        <Mail/>{this.state.preview.email}<br/>                                        
+                                        <AccountBox/>{this.state.preview.username}<br/>                                        
+                                        <VpnKey/>{this.state.preview.password}<br/> 
+                                        <LocalOffer/>self service<span style={{color:"#000000"}}>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Switch
+                                                color="default"
+                                                id = "registerSwitch"
+                                                />
+                                        </span>
+                                        <br/>                            
                                         </div>                                
                                     </div>
                                 </Grid>
@@ -162,7 +166,7 @@ class ItemPanel extends React.Component {
                                             label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
                                         }}
                                         onClick={this.add.bind(this,formVariables)}
-                                    >{(this.props.item) ? (<>Update</>):(<>Add</>)}</Button>
+                                    >Update</Button>
                                     </span>
                                 </Grid>
                             </Grid>
@@ -202,6 +206,7 @@ class ItemPanel extends React.Component {
                                     </>)
                                 
                             ))}
+                            
                             </div>                      
                     </Grid>
                 </Grid>
@@ -249,5 +254,5 @@ const mapStateToProps = state =>({
   display : state.display
 })
 
-export default connect(mapStateToProps,null)(withStyles(useStyles)(ItemPanel));
+export default connect(mapStateToProps,null)(withStyles(useStyles)(ProfileEditPanel));
 

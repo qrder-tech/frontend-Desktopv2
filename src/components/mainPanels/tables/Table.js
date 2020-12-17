@@ -1,3 +1,4 @@
+import { AccountBalanceWallet, CheckBox, Face, HourglassFull } from "@material-ui/icons";
 import React from "react";
 import { connect } from "react-redux";
 import { setDisplayingPanel } from "../../../redux/actions";
@@ -9,13 +10,13 @@ class Table extends React.Component {
     state = {
           orderCount:null,
           orders:[{}],
-          earliestOrderTime : null
+          earliestOrderTime : null,
+          notifications : []
        };
 
        tableDetails(table){
        //alert("hi");
-        console.log(table);
-        
+       
         this.props.dispatch(setDisplayingPanel(<TableDetails table={this.props.tableInfo}/>));
         
 
@@ -23,10 +24,14 @@ class Table extends React.Component {
 
        componentDidMount(){
            if(this.props.tableInfo.RecentOrders.length != 0){
-            var temp = {orderCount : this.props.tableInfo.RecentOrders.length,
+                var temp = {orderCount : this.props.tableInfo.RecentOrders.length,
                             orders : this.props.tableInfo.RecentOrders,
-                            earliestOrderTime : -1};
-                
+                            earliestOrderTime : -1,
+                            notifications : []};
+                temp.notifications.push({name:"waiting",icon:<HourglassFull className="Waiting"/>});
+                temp.notifications.push({name:"waiter",icon:<Face className="Waiter"/>});
+                temp.notifications.push({name:"served",icon:<CheckBox className="Done"/>});
+                temp.notifications.push({name:"payment",icon:<AccountBalanceWallet className="Payment"/>});
                 temp.orders.map((order)=>{
                     console.log("here");
                     
@@ -50,7 +55,10 @@ class Table extends React.Component {
         <div className="Table"  onClick= {this.tableDetails.bind(this,this.props.tableInfo)}style={{cursor:"pointer" , background: (this.state.earliestOrderTime)?(getViewValues(this.state.earliestOrderTime)):("#c4a748") }}>
             <span className="TableContent">
             {this.props.tableInfo.name}
+            
             </span>
+            {this.state.notifications.map((notification)=>{return (notification.icon)})
+            }
         </div>   
     );
   }

@@ -10,6 +10,7 @@ import { setDisplayingPanel, setToken, setUser } from "../../redux/actions";
 import MenuPanel from "../mainPanels/MenuPanel";
 import ItemPanel from "../mainPanels/Item/ItemPanel";
 import OrderCreatePanel from "../mainPanels/order/OrderCreatePanel";
+import ProfileEditPanel from "../mainPanels/ProfileEditPanel";
 
 class LeftDrawer extends React.Component {
 
@@ -41,7 +42,10 @@ class LeftDrawer extends React.Component {
         console.log("order");        
         this.props.dispatch(setDisplayingPanel(<OrderCreatePanel/>));
         
-      break;
+        break;
+      case "Edit":        
+        this.props.dispatch(setDisplayingPanel(<ProfileEditPanel/>));
+        break;
       default:
         alert("hi " + text);
         
@@ -84,7 +88,6 @@ class LeftDrawer extends React.Component {
     
     const items = [{text:"User" , item:<AccountCircle style={{fontSize:145}}/>},
                     {text : "Edit" , item:<Edit style={{fontSize:70}}/>,label:"Edit"},
-                   {text : "Settings" , item:<Settings style={{fontSize:70}}/>,label:"Settings"},
                    {text : "Menu" , item:<MenuBook style={{fontSize:70}}/>,label:"Menu"},
                    {text : "AddItem" , item:<Fastfood style={{fontSize:70}}/>,label:"AddItem"},
                    {text : "AddOrder" , item:<><Fastfood style={{fontSize:20}}/><Fastfood style={{fontSize:50}}/></>,label:"AddOrder"}];

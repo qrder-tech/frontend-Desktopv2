@@ -1,6 +1,6 @@
 import React from "react";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@material-ui/core";
-import { AccountBalanceWallet, CheckBox, Face, HourglassFull } from "@material-ui/icons";
+import { AccountBalanceWallet, CheckBox, Face, HourglassFull, NotificationsActive } from "@material-ui/icons";
 import { connect } from "react-redux";
 import { requestOrders } from "../../requests/restaurant";
 import { setOrders } from "../../redux/actions";
@@ -53,7 +53,6 @@ class OrderPanel extends React.Component {
   componentDidMount() {
     //console.log("orderpanel : " + this.props.token);
     if(this.props.orders){
-      console.log("11111111");
       var temp = [];
         this.props.orders.map((order,index)=>{
             temp.push({orderNo:index+1,
@@ -91,7 +90,13 @@ class OrderPanel extends React.Component {
     const handleChangePage = this.handleChangePage.bind(this);
     const handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
     const icons = [];
+    
     icons["waiting"] = <HourglassFull  style={{fontSize:"40"}}/>;
+    if(this.props.user != null){
+      if(this.props.user.restaurantType != "normal"){        
+        icons["waiting"] = <><HourglassFull  style={{fontSize:"40"}}/><NotificationsActive style={{fontSize:"40"}}/></>;
+      }
+    }
     icons["served"] = <CheckBox style={{fontSize:"40"}}/>;
     //<CheckBox style={{fontSize:"40"}}/>,<AccountBalanceWallet style={{fontSize:"40"}}/>,<Face  style={{fontSize:"40"}}/>,<HourglassFull  style={{fontSize:"40"}}/>
     return (

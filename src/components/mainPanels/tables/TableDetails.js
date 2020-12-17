@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@material-ui/core";
+import { Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, withStyles } from "@material-ui/core";
 import { AccountBalanceWallet, AddCircle, CheckBox, Edit, Face, HourglassFull } from "@material-ui/icons";
 import { connect } from "react-redux";
 import { setDisplayingPanel, setMenu } from "../../../redux/actions";
@@ -102,7 +102,8 @@ class TableDetails extends React.Component {
   }
 
   render() {
-    const {classes,rowsPerPage,page} = this.state;
+    const {classes} = this.props;
+    const {rowsPerPage,page} = this.state;
     const handleChangePage = this.handleChangePage.bind(this);
     const handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
 /**/
@@ -118,15 +119,22 @@ class TableDetails extends React.Component {
                                         
                                         
                     </Grid>
-                    <Grid item xs={12} className="GridElement">
-                                    todos las chicas        
-                    </Grid>
-                    <Grid item xs={6} className="GridElement">
+                    <Grid item xs={6} className="GridElement" >
                             <Grid container spacing={1}>
                                 
-                                <Grid item xs={12} className="GridElement">
+                                <Grid item xs={12} className="GridElement"style={{maxHeight:"300px"}} >
                                     <div className="BigMenu">
-                                    <TableContainer  className="Test2">
+                                      <br/>
+                                    <Button
+                                        classes={{
+                                            root: classes.buttonRoot, // class name, e.g. `classes-nesting-root-x`
+                                            label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
+                                        }}
+                                        
+                                          >Add Order</Button>
+                                          <br/>
+                                          <br/>
+                                    <TableContainer  className="BigMenu2">
                                       <Table stickyHeader aria-label="sticky table" >
                                         <TableBody  >
                                               <TableRow hover role="checkbox" tabIndex={-1} key={this.state.table.name} >
@@ -137,7 +145,6 @@ class TableDetails extends React.Component {
                                                   );
                                                 })}
                                               </TableRow>
-                                            
                                           
                                         </TableBody>
                                       </Table>
@@ -148,8 +155,19 @@ class TableDetails extends React.Component {
                             
                     </Grid>
                     <Grid item xs={6} className="GridElement">                        
-                        <Grid item xs={12} className="GridElement"><div className="BigMenu">
-                                    <TableContainer  className="Test2">
+                        <Grid item xs={12} className="GridElement" style={{maxHeight:"300px"}} >
+                          <div className="BigMenu">
+                        <br/>
+                          <Button
+                                        classes={{
+                                            root: classes.buttonRoot, // class name, e.g. `classes-nesting-root-x`
+                                            label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
+                                        }}
+                                        
+                                          >Remove Table</Button>
+                                          <br/>
+                                          <br/>
+                                    <TableContainer  className="BigMenu2">
                                       <Table stickyHeader aria-label="sticky table" >
                                         <TableBody  >
                                               <TableRow hover role="checkbox" tabIndex={-1} key={this.state.table.name} >
@@ -175,6 +193,35 @@ class TableDetails extends React.Component {
   }
 }
 
+const useStyles = {
+  main:{
+      '& label.Mui-focused': {
+          color: '#c4a748d0',
+        },          
+  '& .MuiInput-underline:after': {
+      borderBottomColor: '#c4a748d0',
+    },
+  },
+  font:{
+      color : "#c4a748d0",
+      '&:-webkit-autofill': {
+          transitionDelay: '9999s',
+          transitionProperty: 'background-color, color',
+        },
+  },
+  buttonRoot: {
+      background: 'linear-gradient(45deg, #c4a748d0 30%, #c4a748d0 90%)',
+      borderRadius: 3,
+      border: 0,
+      color: 'black',
+      height: 48,
+      padding: '0 30px',
+    },
+  buttonLabel: {
+      textTransform: 'capitalize',
+  },
+}
+
 const mapStateToProps = state =>({
   token : state.token,
   user : state.user,
@@ -183,5 +230,5 @@ const mapStateToProps = state =>({
   display : state.display
 })
 
-export default connect(mapStateToProps,null)(TableDetails);
+export default connect(mapStateToProps,null)(withStyles(useStyles)(TableDetails));
 

@@ -5,6 +5,7 @@ import { setDisplayingPanel, setToken, setUser } from './redux/actions';
 import ApplicationRoutes from './ApplicationRoutes';
 import TablePanel from './components/mainPanels/tables/TablePanel';
 import { removeItem } from './requests/restaurant';
+import OrderPanel from './components/mainPanels/OrderPanel';
 
 function App() {
   /*const token = useSelector(state => state.token);
@@ -22,7 +23,7 @@ function App() {
     dispatch(setToken(localStorage.getItem("token")));
     var user = localStorage.getItem("user");
     dispatch(setUser(JSON.parse(user)));
-    dispatch(setDisplayingPanel(<TablePanel/>));
+    dispatch(setDisplayingPanel(<OrderPanel/>));
   }
 
  /* const dispatch = useDispatch();
