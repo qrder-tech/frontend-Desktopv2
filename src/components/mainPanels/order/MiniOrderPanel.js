@@ -4,6 +4,7 @@ import { AccountBalanceWallet, CheckBox, DeleteForever, Face, HourglassFull } fr
 import { connect } from "react-redux";
 import { requestOrders } from "../../../requests/restaurant";
 import { setOrders } from "../../../redux/actions";
+import { getSpecificOrder } from "../../../requests/order";
 
 const moment = require('moment');
 
@@ -29,6 +30,12 @@ class MiniOrderPanel extends React.Component {
       label: "Time",
       minWidth: 30,
       align: "center",
+    },
+    {
+      id: "price",
+      label: "Price",
+      minWidth: 30,
+      align: "right",
     },
     {
       id: "status",
@@ -61,15 +68,20 @@ class MiniOrderPanel extends React.Component {
     console.log("here");
     console.log(this.props.tableOrders);
     var temp = [];
-    this.props.tableOrders.map((order,index)=>{        
-        temp.push({orderNo:index+1,
-            time : moment().diff(moment(order.createdAt),"minutes"),
-            status : (order.isPaid)?("served"):("waiting") ,
-            actions : <div><CheckBox/><br/><AccountBalanceWallet/><br/><DeleteForever/></div>});
-    });
 
-    this.setState({info:{orderCount:temp.length,
-                        orders :temp}});
+    this.props.tableOrders.map((order)=>{
+         getSpecificOrder(this.props.token,order.uuid).then((result)=>{
+            console.log(result);
+            temp.push({orderNo:result.no,
+              time : moment().diff(moment(result.createdAt),"minutes"),
+              status : result.status ,
+              price : result.totalPrice,
+              actions : <div>{(result.status == "waiting")?(<CheckBox/>):(<AccountBalanceWallet/>) }<br/><DeleteForever/></div>});
+                
+            this.setState({info:{orderCount:temp.length,
+              orders :temp}});
+         });
+    });
     /*this.setState({info : getOrders()});
     setInterval(function(){      
       this.setState({info : getOrders()});

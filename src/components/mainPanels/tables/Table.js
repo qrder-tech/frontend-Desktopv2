@@ -17,7 +17,7 @@ class Table extends React.Component {
        tableDetails(table){
        //alert("hi");
        
-        this.props.dispatch(setDisplayingPanel(<TableDetails table={this.props.tableInfo}/>));
+        this.props.dispatch(setDisplayingPanel(<TableDetails table={table}/>));
         
 
        }

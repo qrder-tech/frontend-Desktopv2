@@ -119,7 +119,7 @@ class TableDetails extends React.Component {
                                         
                                         
                     </Grid>
-                    <Grid item xs={6} className="GridElement" >
+                    <Grid item xs={9} className="GridElement" >
                             <Grid container spacing={1}>
                                 
                                 <Grid item xs={12} className="GridElement"style={{maxHeight:"300px"}} >
@@ -140,7 +140,7 @@ class TableDetails extends React.Component {
                                               <TableRow hover role="checkbox" tabIndex={-1} key={this.state.table.name} >
                                                 {this.state.columns.map((column) => {
                                                   return (<>                     
-                                                    <MiniOrderPanel tableOrders = {this.state.table.RecentOrders}/>
+                                                    <MiniOrderPanel tableOrders = {this.state.table.Orders}/>
                                                     </>
                                                   );
                                                 })}
@@ -154,7 +154,7 @@ class TableDetails extends React.Component {
                             </Grid>
                             
                     </Grid>
-                    <Grid item xs={6} className="GridElement">                        
+                    <Grid item xs={3} className="GridElement">                        
                         <Grid item xs={12} className="GridElement" style={{maxHeight:"300px"}} >
                           <div className="BigMenu">
                         <br/>
@@ -173,7 +173,7 @@ class TableDetails extends React.Component {
                                               <TableRow hover role="checkbox" tabIndex={-1} key={this.state.table.name} >
                                                 {this.state.columns.map((column) => {
                                                   return (<>   
-                                                        <MiniServicePanel tableServices = {this.state.table.Services}/>
+                                                        <MiniServicePanel tableServices = {this.state.table.services}/>
                                                     </>
                                                   );
                                                 })}

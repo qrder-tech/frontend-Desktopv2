@@ -33,7 +33,7 @@ class MiniServicePanel extends React.Component {
     {
         id: "actions",
         label: "Edit",
-        minWidth: 30,
+        minWidth: 20,
         align: "right",
       },
   ];
@@ -58,10 +58,10 @@ class MiniServicePanel extends React.Component {
     var serviceIcon;
     this.props.tableServices.map((service,index)=>{     
         switch(service.name){
-            case "callWaiter":
+            case "waiter":
                 serviceIcon = <Face/>;
                 break;
-            case "RequestPayment":
+            case "payment":
                 serviceIcon = <AccountBalanceWallet/>
                 break;
             default:
