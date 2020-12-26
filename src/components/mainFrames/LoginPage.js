@@ -38,13 +38,7 @@ class LoginPage extends React.Component{
                         }
                         this.props.dispatch(setMenu({catalog:response2.data.catalog,
                                                     items:temp}));
-                        if( result.serviceType!=null){
-                            if(result.serviceType == "normal"){
-                                this.props.dispatch(setDisplayingPanel(<TablePanel/>));
-                            }else{                            
-                                this.props.dispatch(setDisplayingPanel(<OrderPanel/>))
-                            }
-                        }
+                        this.props.dispatch(setDisplayingPanel(<OrderPanel/>));
                     });
                     
                     history.push("/mainPage");

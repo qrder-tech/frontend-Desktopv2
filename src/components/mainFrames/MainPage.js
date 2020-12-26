@@ -18,7 +18,7 @@ import TablePanel from "../mainPanels/tables/TablePanel";
 
 class MainPage extends React.Component {
   state = {
-    value: -1,
+    value: 0,
     drawerStyle:null
   };
 
