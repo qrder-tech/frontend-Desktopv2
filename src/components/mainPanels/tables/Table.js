@@ -1,5 +1,4 @@
 import { AccountBalanceWallet, CheckBox, Face, HourglassFull } from "@material-ui/icons";
-import renderEmpty from "antd/lib/config-provider/renderEmpty";
 import React from "react";
 import { connect } from "react-redux";
 import { setDisplayingPanel } from "../../../redux/actions";
