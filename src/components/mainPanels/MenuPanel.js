@@ -10,6 +10,7 @@ import ItemsPanel from "./Item/ItemsPanel";
 
 class MenuPanel extends React.Component {
   state = {
+    rows : [],
     info: {
       OrderCount: null,
       orders: [{}],
@@ -83,9 +84,32 @@ class MenuPanel extends React.Component {
     removeItem(item.uuid,this.props.token).then((response)=>{
       console.log(response);
       requestMenu(this.props.token).then((response) => {
-        this.props.dispatch(setMenu(response.data.menu));    
+        this.props.dispatch(setMenu(response.data));    
       });
     });
+  }
+
+  updateHandler = () =>{
+    var temp = [];
+    requestMenu(this.props.token).then((response) => {   
+      for (const [key, value] of Object.entries(response.data.items)) {                                    //check missing arguments
+        temp.push({name:key,
+                  Items:value});
+    }
+    this.setState({rows:temp});
+    this.props.dispatch(setMenu({catalog:response.data.catalog,
+                                  items:temp}));
+  });
+
+    /*
+    
+    var temp = [];
+    for (const [key, value] of Object.entries(this.props.menu.items)) {                                    //check missing arguments
+      temp.push({name:key,
+                Items:value});
+    }
+    
+    this.setState({rows:temp});*/
   }
 
 
@@ -93,12 +117,17 @@ class MenuPanel extends React.Component {
   componentDidMount() {
     //console.log("orderpanel : " + this.props.token);
 
-    
+    var temp = [];
         
-      requestMenu(this.props.token).then((response) => {
-          this.props.dispatch(setMenu(response.data.menu));    
+      requestMenu(this.props.token).then((response) => {   
+          for (const [key, value] of Object.entries(response.data.items)) {                                    //check missing arguments
+            temp.push({name:key,
+                      Items:value});
+        }
+        this.setState({rows:temp});
+        this.props.dispatch(setMenu({catalog:response.data.catalog,
+                                      items:temp}));
       });
-      
     
     /*this.setState({info : getOrders()});
     setInterval(function(){      
@@ -110,39 +139,14 @@ class MenuPanel extends React.Component {
     const {classes} = this.props;
     const {rowsPerPage,page} = this.state;
     const columns = this.columns;
-    const rows = this.props.menu;
+    const rows = this.state.rows;
     const handleChangePage = this.handleChangePage.bind(this);
     const handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
 
     return (
       <div >
         <TableContainer  className="Test2">
-        <TextField id="addType" label = "Add Type"                                     
-                                    type="text"                                     
-                                    className = {classes.main}
-                                    InputProps={{
-                                            classes:{
-                                                input:classes.font
-                                            }
-                                        }}
-                                        InputLabelProps={{
-                                            classes:{
-                                                root: classes.font,
-                                            }
-                                        }}
-                                    />   
-                                    &nbsp;                                    
-                                    &nbsp;                                    
-                                    &nbsp;
-                                    <Button
-                                    classes={{
-                                        root: classes.buttonRoot, // class name, e.g. `classes-nesting-root-x`
-                                        label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
-                                    }}
-                                    
-                                    onClick={this.addType.bind(this)}
-                                >Add</Button>
-        <hr/>
+       
         <Table stickyHeader aria-label="sticky table" >
           <TableHead >
             <TableRow >
@@ -176,7 +180,7 @@ class MenuPanel extends React.Component {
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (<>                     
-                      <ItemsPanel items = {row.Items} type={row}/>
+                      <ItemsPanel items = {row.Items} type={row} update={this.updateHandler}/>
                       </>
                     );
                   })}

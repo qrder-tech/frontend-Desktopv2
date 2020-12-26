@@ -14,27 +14,28 @@ class ItemPanel extends React.Component {
         formVariables : [],
         img : null,
         preview:{
-            subtopicName:0,
+            type:0,
             name : 0,
             price : 0,
             desc : 0,
-            metadata : [],
+            options : [],
         }
     };
 
     add = (formVars)=> {
             var values = [];
-            formVars[1].reference = document.getElementById("types");
-            values["img"]= formVars[0].reference.value;
-            values["subtopicUuid"] = formVars[1].reference.value;
+            formVars[1].reference = document.getElementById("types");            
             values["name"]= formVars[2].reference.value;
-            values["price"]= formVars[3].reference.value;
             values["desc"]= formVars[4].reference.value;
-            values["metadata"]= formVars[5].reference.value;            
-            //console.log(values["type"].reference);
-            console.log(values);
-            if(this.props.item){
+            values["type"] = formVars[1].reference.value;
+            values["options"]= this.state.preview.options;
+            values["price"]= formVars[3].reference.value;
+            values["img"]= formVars[0].reference.value;            
+               console.log(values); 
+               console.log(this.state.item);        
+           if(this.props.item){
                 //console.log(this.state.item);
+
                 UpdateItem(values,this.props.token,this.state.item.uuid).then((response)=>{
                     console.log(response);                    
                     this.props.dispatch(setDisplayingPanel(<MenuPanel/>));
@@ -56,13 +57,36 @@ class ItemPanel extends React.Component {
             {id:"name",label : "Name",type:"text",reference : null,default: null},
             {id:"price",label : "Price",type:"text",reference : null,default: null},
             {id:"desc",label : "Description",type:"text",reference : null,default: null},
-            {id:"metadata",label : "Optionals",type:"text",reference : null,default: null}
+            {id:"options",label : "Optionals",type:"text",reference : null,default: null}
         ];
         
         if(this.props.item){
             console.log(this.props.item);
             this.setState({item : this.props.item})
-            formVariables.map((index)=>{index.default = this.props.item[index.id]});
+            var tempPrev = {                
+                type:0,
+                name : 0,
+                price : 0,
+                desc : 0,
+                options : [],
+            }
+            formVariables.map((index)=>{
+                index.default = this.props.item[index.id];
+                if(tempPrev[index.id] == 0){                    
+                    console.log("index : " + index.id + " : " + this.state.preview[index.id]);
+                    console.log("here");
+                    console.log({preview:{[index.id]:this.props.item[index.id]}});
+                    tempPrev[index.id] =  this.props.item[index.id];
+                }
+            });
+            var temp = [];
+            if(this.props.item.options){
+                this.props.item.options.split(";").map((option)=>{
+                temp.push(option);
+                });
+            }
+            tempPrev.options = temp;            
+            this.setState({preview:tempPrev});
             this.setState({img:this.props.item.img})
         }
         this.setState({formVariables});
@@ -75,18 +99,25 @@ class ItemPanel extends React.Component {
 
     typeRender = () =>{
         
-        console.log(document.getElementById("types").value);
-        var typeName = document.getElementById(document.getElementById("types").value).innerHTML;
         var temp = this.state;
-        temp.preview.subtopicName = typeName;
+        temp.preview.type = document.getElementById("types").value;
+        console.log(temp);
         this.setState(temp); 
     }
 
     addMetadata = () =>{
         var temp = this.state;
         console.log(temp);
-        temp.preview.metadata.push(document.getElementById("metadata").value);
-        document.getElementById("metadata").value = "";
+        temp.preview.options.push(document.getElementById("options").value);
+        document.getElementById("options").value = "";
+        console.log(temp);
+        this.setState(temp);
+    }
+
+    removeOption = (ingredient) =>{
+        
+        var temp = this.state;
+        temp.preview.options.splice(temp.preview.options.indexOf(ingredient),1);
         this.setState(temp);
     }
 
@@ -133,7 +164,7 @@ class ItemPanel extends React.Component {
                                         <Fastfood/>{this.state.preview.name}
                                     
                                             <span style={{float:"right"}}>
-                                                &nbsp;&nbsp;&nbsp;&nbsp;{this.state.preview.subtopicName}<Bookmark/>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;{this.state.preview.type}<Bookmark/>
                                             </span> 
                                             <hr/>
                                             <Note/>{this.state.preview.desc}
@@ -141,9 +172,9 @@ class ItemPanel extends React.Component {
                                             <br/> 
                                             Optionals:
                                             <br/>              
-                                        {this.state.preview.metadata.map((ingredient)=>(
+                                        {this.state.preview.options.map((ingredient)=>(
                                             <>
-                                            <CheckSharp/>{ingredient} <HighlightOff style={{fontSize:"12px"}}/>
+                                            <CheckSharp/>{ingredient} <HighlightOff style={{fontSize:"12px"}} onClick={this.removeOption.bind(this,ingredient)}/>
                                             <br/>
                                             </>
                                         ))}  
@@ -173,10 +204,12 @@ class ItemPanel extends React.Component {
                             {formVariables.map((index)=>(
                                 (index.id == "type")?(<>
                                 <div className="SelectLabel">Type</div> 
-                                <select name="type" id="types" className="Select" onChange={this.typeRender}>
-                                    {this.props.menu.map((type)=>(
-                                <option id = {type.uuid} value={type.uuid} className="Option">{type.name}</option>))}
-                              </select><br/>
+                                <input id="types" className="Select" type="text" list="typelist" onChange={this.typeRender} defaultValue={index.default}/>
+                                <datalist id="typelist" className="Select">
+                                    {this.props.menu.catalog.map((type)=>(
+                                    <option id = {type.uuid} value={type} className="Option">{type}</option>))}
+                                </datalist> 
+                                <br/>
                                 <br/>
                                 </>):(<>
                                     <TextField id={index.id} label = {index.label} 
@@ -185,7 +218,7 @@ class ItemPanel extends React.Component {
                                     inputRef={el =>index.reference = el} 
                                     className = {classes.main}
                                     defaultValue = {index.default}
-                                    onChange = {(index.id == "img") ? (this.imageRender):((index.id == "metadata")?(null):(this.changeHandler.bind(this,index.id)))}
+                                    onChange = {(index.id == "img") ? (this.imageRender):((index.id == "options")?(null):(this.changeHandler.bind(this,index.id)))}
                                     InputProps={{
                                             classes:{
                                                 input:classes.font
@@ -196,7 +229,7 @@ class ItemPanel extends React.Component {
                                                 root: classes.font,
                                             }
                                         }}
-                                    />   {(index.id == "metadata")?(<AddCircle style={{paddingTop:"20px"}} onClick={this.addMetadata} />):(null)}                          
+                                    />   {(index.id == "options")?(<AddCircle style={{paddingTop:"20px"}} onClick={this.addMetadata} />):(null)}                          
                                     <br/>
                                     <br/>
                                     </>)

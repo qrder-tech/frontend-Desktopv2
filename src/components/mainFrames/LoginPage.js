@@ -29,8 +29,8 @@ class LoginPage extends React.Component{
                     console.log(result);
                     this.props.dispatch(setUser(result));
                     this.setState({loading:true});
-                    if( result.restaurantType!=null){
-                        if(result.restaurantType == "normal"){
+                    if( result.serviceType!=null){
+                        if(result.serviceType == "normal"){
                             this.props.dispatch(setDisplayingPanel(<TablePanel/>));
                         }else{                            
                             this.props.dispatch(setDisplayingPanel(<OrderPanel/>))

@@ -13,7 +13,6 @@ export const getUserInfo = (token) => {
       
       return axios(config)
       .then(function (response) {
-        console.log("here");
         return response.data;
       })
       .catch(function (error) {
@@ -52,7 +51,6 @@ export const requestMenu = (token) =>{
   
   return axios(config)
   .then(function (response) {
-    console.log(JSON.stringify(response.data));
     return response;
   })
   .catch(function (error) {
@@ -62,21 +60,19 @@ export const requestMenu = (token) =>{
 } 
 
 export const addItem = (values,token) =>{
-    var qs = require('qs');
-    var data = qs.stringify({
-    'name': values["name"],
-    'price': values["price"],
-    'desc': values["desc"],
-    'metadata': values["metadata"],
-    'img': values["img"],
-    'subtopicUuid' : values["subtopicUuid"]
-    });
+    var data = JSON.stringify({
+      "name":values["name"],
+      "desc":values["desc"],
+      "type":values["type"],
+      "options":values["options"],
+      "price":values["price"],
+      "img":values["img"]});
     var config = {
-      method: 'post',
-      url: 'https://qrder-web.herokuapp.com/restaurant/item',
-      headers: { 
+        method: 'post',
+        url: 'https://qrder-web.herokuapp.com/restaurant/item',
+        headers: {  
         'Authorization': `Bearer ${token}`, 
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/json'
       },
       data : data
     };
@@ -92,31 +88,29 @@ export const addItem = (values,token) =>{
 }
 
 export const UpdateItem = (values,token, uuid) =>{
-  var qs = require('qs');
-  var data = qs.stringify({
-    'name': values["name"],
-    'price': values["price"],
-    'desc': values["desc"],
-    'metadata': values["metadata"],
-    'img': values["img"],    
-    'subtopicUuid' : values["subtopicUuid"]
-  });
+  var data = JSON.stringify({
+    "name":values["name"],
+    "desc":values["desc"],
+    "type":values["type"],
+    "options":values["options"],
+    "price":values["price"],
+    "img":values["img"]});
   var config = {
-    method: 'post',
-    url: `https://qrder-web.herokuapp.com/restaurant/item?itemUuid=${uuid}`,
-    headers: { 
+      method: 'post',
+      url: `https://qrder-web.herokuapp.com/restaurant/item?uuid=${uuid}`,
+      headers: {  
       'Authorization': `Bearer ${token}`, 
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/json'
     },
     data : data
   };
 
   return axios(config)
   .then(function (response) {
-    console.log(JSON.stringify(response.data));
     return response;
   })
-  .catch(function (error) {    
+  .catch(function (error) {
+    console.log(error);
     return error.response.data || error.response || error;
   });
 }
@@ -140,15 +134,35 @@ export const removeItem = (uuid,token)=>{
   });
 }
 
+export const changeItemStatus = (uuid,token,status) =>{
+  var data = JSON.stringify({"enabled":status});
+
+  var config = {
+    method: 'post',
+    url: `https://qrder-web.herokuapp.com/restaurant/item?uuid=${uuid}`,
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    data : data
+  };
+  
+  return axios(config)
+  .then(function (response) {
+    return response.data;
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+}
+
 export const addOrder = (token,order) =>{
 
   var tempItems = [];
 
   order.items.map((item)=>{
-    console.log(item);
     tempItems.push({"uuid":item.uuid,"metadata":item.metadata,"quantity" : `${item.quantity}`});
   });
-  console.log(tempItems);
 
   var data = JSON.stringify({
     "restaurantUuid":"56bc78e9-05fd-454c-99ad-18d479aa8ad9",
@@ -214,7 +228,6 @@ export const getTablesRequest = (token) =>{
   
   return axios(config)
   .then(function (response) {
-    console.log(JSON.stringify(response.data));
     return response;
   })
   .catch(function (error) {

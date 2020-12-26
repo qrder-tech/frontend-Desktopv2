@@ -186,7 +186,7 @@ class OrderCreatePanel extends React.Component {
                                            
                           <Grid item xs={12} className="GridElement">                            
                             
-                              {this.props.user == null ? (null):(this.props.user.restaurantType == "normal" ? (<div className="BigTag3"><select name="tables" id="types" className="Select2">
+                              {this.props.user == null ? (null):(this.props.user.serviceType == "normal" ? (<div className="BigTag3"><select name="tables" id="types" className="Select2">
                                       {this.props.tables.map((table)=>(
                                   <option value={table.uuid} className="Option">{table.name}</option>))}
                                 </select><br/></div>):(null))}

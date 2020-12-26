@@ -18,7 +18,7 @@ export const setUserInfo = (state = "", action) =>{
     }
 }
 
-export const setOrderList = (state = "", action) =>{
+export const setOrderList = (state = [], action) =>{
     switch(action.type){
         case "setOrders" : // authentication set action
             return action.orders;
@@ -55,13 +55,10 @@ export const setRestaurantMenu = (state = [] , action) => {
 }
 
 export const setRestaurantTables = (state = [] , action) =>{
-    console.log(action);
     switch(action.type){
         case "setTables" :
-            console.log(action.tables);
             return action.tables;
         default :
-            console.log("nope");
             return state;
     }
 }

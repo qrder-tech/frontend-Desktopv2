@@ -1,10 +1,10 @@
 import React from "react";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@material-ui/core";
-import { AccountBalanceWallet, CheckBox, Edit, Face, HighlightOff, HourglassFull } from "@material-ui/icons";
+import { AccountBalanceWallet, Block, CheckBox, CheckCircle, CheckCircleOutline, Edit, Face, HighlightOff, HourglassFull } from "@material-ui/icons";
 import { connect } from "react-redux";
 import { setDisplayingPanel, setMenu } from "../../../redux/actions";
 import ItemDetailsPanel from "./ItemDetailsPanel";
-import { removeItem, requestMenu } from "../../../requests/restaurant";
+import { changeItemStatus, removeItem, requestMenu } from "../../../requests/restaurant";
 
 class ItemsPanel extends React.Component {
   state = {
@@ -93,8 +93,20 @@ class ItemsPanel extends React.Component {
     removeItem(item.uuid,this.props.token).then((response)=>{
       console.log(response);
       requestMenu(this.props.token).then((response) => {
-        this.props.dispatch(setMenu(response.data.menu));    
+        this.props.dispatch(setMenu(response.data)); 
+        this.props.update();   
       });
+    });
+  }
+
+  disableHandler = (item)=>{
+    changeItemStatus(item.uuid,this.props.token,false).then(()=>{
+      this.props.update();
+    });
+  }
+  enableHandler = (item) =>{
+    changeItemStatus(item.uuid,this.props.token,true).then(()=>{
+        this.props.update();   
     });
   }
 
@@ -139,7 +151,8 @@ class ItemsPanel extends React.Component {
                     return (
                       <TableCell key={column.id} align={column.align} onClick={(column.id == "buttons")?(null):(this.detailsHandler.bind(this,row))} style={{cursor:"pointer"}}>
                         {(column.id == "image")?(<img alt={row.img} src={row.img} width ="50"/>):(
-                        (column.id == "buttons")?(<HighlightOff style={{color:"#ffda61"}} onClick={this.removeItem.bind(this,row)}></HighlightOff>):(<div className="OrderCell">                                                    
+                        (column.id == "buttons")?(<>{(!row.enabled)?(<Block  style={{color:"#ffda61"}} onClick={this.enableHandler.bind(this,row)}></Block>):(<CheckCircleOutline  onClick={this.disableHandler.bind(this,row)} style={{color:"#ffda61"}}></CheckCircleOutline>)}
+                        <HighlightOff style={{color:"#ffda61"}} onClick={this.removeItem.bind(this,row)}></HighlightOff></>):(<div className="OrderCell">                                                    
                           {column.format && typeof value === 'number' ? column.format(value) : (value)}
                         </div>))}
                         

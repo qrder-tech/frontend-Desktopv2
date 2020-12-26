@@ -52,7 +52,7 @@ class OrderPanel extends React.Component {
 
   componentDidMount() {
     //console.log("orderpanel : " + this.props.token);
-    if(this.props.orders){
+   /* if(this.props.orders.length != 0 ){
       var temp = [];
         this.props.orders.map((order,index)=>{
             temp.push({orderNo:index+1,
@@ -64,7 +64,7 @@ class OrderPanel extends React.Component {
     }
     else{
       requestOrders(this.props.token).then((response) => {
-        
+        console.log(response);
         this.props.dispatch(setOrders(response.orders));
         var temp = [];
         response.orders.map((order,index)=>{
@@ -76,7 +76,7 @@ class OrderPanel extends React.Component {
         this.setState({info:{OrderCount:response.orders.length,
                       orders : temp}});
       });
-    }
+    }*/
     /*this.setState({info : getOrders()});
     setInterval(function(){      
       this.setState({info : getOrders()});
@@ -93,7 +93,7 @@ class OrderPanel extends React.Component {
     
     icons["waiting"] = <HourglassFull  style={{fontSize:"40"}}/>;
     if(this.props.user != null){
-      if(this.props.user.restaurantType != "normal"){        
+      if(this.props.user.serviceType != "normal"){        
         icons["waiting"] = <><HourglassFull  style={{fontSize:"40"}}/><NotificationsActive style={{fontSize:"40"}}/></>;
       }
     }

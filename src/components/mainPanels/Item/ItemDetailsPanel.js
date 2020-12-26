@@ -15,8 +15,8 @@ class ItemDetailsPanel extends React.Component {
     componentDidMount() {
         console.log(this.props.item);
         this.setState({item : this.props.item});  
-        if(this.props.item.metadata){            
-            var temp = this.props.item.metadata.split(";");
+        if(this.props.item.options){            
+            var temp = this.props.item.options.split(";");
         }      
         this.setState({ingredients : temp});
         
@@ -72,7 +72,7 @@ class ItemDetailsPanel extends React.Component {
                                 <br/> 
                                 Ingredients:
                                 <br/>                           
-                                {(this.props.item.metadata)?(this.state.ingredients.slice().map((ingredient)=>(<><CheckSharp/>{ingredient}<br/></>))):(<></>)}
+                                {(this.props.item.options)?(this.state.ingredients.slice().map((ingredient)=>(<><CheckSharp/>{ingredient}<br/></>))):(<></>)}
                                 <hr/>
                                 <div style={{textAlign:"center"}}>
                                 <LocalOffer/>{this.state.item.price}TL

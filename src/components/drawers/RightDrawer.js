@@ -35,9 +35,9 @@ class RightDrawer extends React.Component {
     const { classes } = this.props;
     var items =[];
     if(this.props.user != null){
-      if(this.props.user.restaurantType == "normal"){   
-        items = [{text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:3},
-        {text : "Payment" , item:<AccountBalanceWallet style={{fontSize:90}}/>,count : 5},
+      if(this.props.user.serviceType == "normal"){   
+        items = [{text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:1},
+        {text : "Payment" , item:<AccountBalanceWallet style={{fontSize:90}}/>,count : 1},
         {text:"Waiter" , item:<Face style={{fontSize:90}}/>,count : 2},
       {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : 4}];
       }else{
@@ -52,7 +52,7 @@ class RightDrawer extends React.Component {
           <div className="Drawer">
           <List >
             <ListItem>
-              <ListItemText style={{color:"black"}}><p style={{fontSize:15}}>Occupied Tables : 3<hr className="Test4"/>Free Tables : 12<hr className="Test4"/>Most Delayed Table: 10<hr className="Test4"/></p></ListItemText>
+              <ListItemText style={{color:"black"}}><p style={{fontSize:15}}>Occupied Tables : 6<hr className="Test4"/>Free Tables : 14<hr className="Test4"/>Most Delayed Table: 14<hr className="Test4"/></p></ListItemText>
             </ListItem>
             <Divider classes={{root : classes.divider}}/>
           {items.map((text,index) => (

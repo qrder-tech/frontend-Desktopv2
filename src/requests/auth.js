@@ -31,6 +31,7 @@ export const registration = (values) =>{
         'address': values["address"],
         'phoneNumber': values["phoneNumber"],
         'email': values["email"],
+        'serviceType': values["service"],
         'username': values["username"],
         'password': values["password"] 
     });

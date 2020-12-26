@@ -67,7 +67,7 @@ class MainPage extends React.Component {
                       indicatorColor=""
                     >
                       <Tab label="Orders" {...a11yProps(0)} />
-                      {this.props.user== null ? null:this.props.user.restaurantType == "normal"?<Tab label="Tables" {...a11yProps(1)} />:null}                      
+                      {this.props.user== null ? null:this.props.user.serviceType == "normal"?<Tab label="Tables" {...a11yProps(1)} />:null}                      
                       
                     </Tabs>
                   </AppBar>    

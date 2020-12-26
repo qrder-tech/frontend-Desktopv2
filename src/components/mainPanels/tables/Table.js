@@ -23,7 +23,7 @@ class Table extends React.Component {
        }
 
        componentDidMount(){
-           if(this.props.tableInfo.RecentOrders.length != 0){
+           if(this.props.tableInfo.Orders.length != 0){
                 var temp = {orderCount : this.props.tableInfo.RecentOrders.length,
                             orders : this.props.tableInfo.RecentOrders,
                             earliestOrderTime : -1,

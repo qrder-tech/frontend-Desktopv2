@@ -35,13 +35,13 @@ class TablePanel extends React.Component {
         this.setState({columns});
       }else{
         getTablesRequest(this.props.token).then((response)=>{
-            this.props.dispatch(setTables(response.data.table));
+            this.props.dispatch(setTables(response.data));
             var rows = [];
             const columns = [];
-            for (var i = 0; i < response.data.table.length; i++) {
+            for (var i = 0; i < response.data.length; i++) {
             rows.push(
                 <Grid item xs={2} className="GridElement">
-                <Table tableInfo={response.data.table[i]}/>
+                <Table tableInfo={response.data[i]}/>
                 </Grid>
             );
             }
