@@ -22,13 +22,13 @@ export const getUserInfo = (token) => {
 }
 
 export const requestOrders = (token) =>{
-    var config = {
-      method: 'get',
-      url: 'https://qrder-web.herokuapp.com/restaurant/orders',
-      headers: { 
-        'Authorization':  `Bearer ${token}`
+  var config = {
+    method: 'get',
+    url: 'https://qrder-web.herokuapp.com/order/all',
+    headers: { 
+      'Authorization':  `Bearer ${token}`
       }
-    };
+  };
 
     return axios(config)
     .then(function (response) {

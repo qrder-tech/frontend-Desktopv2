@@ -1,4 +1,5 @@
 import { AccountBalanceWallet, CheckBox, Face, HourglassFull } from "@material-ui/icons";
+import renderEmpty from "antd/lib/config-provider/renderEmpty";
 import React from "react";
 import { connect } from "react-redux";
 import { setDisplayingPanel } from "../../../redux/actions";
@@ -23,28 +24,35 @@ class Table extends React.Component {
        }
 
        componentDidMount(){
-           if(this.props.tableInfo.Orders.length != 0){
+           if(this.props.tableInfo.status){
                 var temp = {orderCount : this.props.tableInfo.Orders.length,
                             orders : this.props.tableInfo.Orders,
                             earliestOrderTime : -1,
                             notifications : []};
-                temp.notifications.push({name:"waiting",icon:<HourglassFull className="Waiting"/>});
-                temp.notifications.push({name:"waiter",icon:<Face className="Waiter"/>});
-                temp.notifications.push({name:"served",icon:<CheckBox className="Done"/>});
-                temp.notifications.push({name:"payment",icon:<AccountBalanceWallet className="Payment"/>});
-                temp.orders.map((order)=>{
-                    console.log("here");
-                    
-                    if(moment().diff(moment(order.createdAt),"minutes") > temp.earliestOrderTime){
-                        temp.earliestOrderTime=moment().diff(moment(order.createdAt),"minutes");
+                this.props.tableInfo.services.map((service)=>{
+                    switch(service.name){
+                        case "waiter":
+                            temp.notifications.push({name:"waiter",icon:<Face className="Waiter"/>});
+                            break;
+                        case "payment":
+                            temp.notifications.push({name:"payment",icon:<AccountBalanceWallet className="Payment"/>});
+                            break;
                     }
-                    console.log(order.createdAt);
+                });
+                temp.earliestOrderTime = moment().diff(moment(this.props.tableInfo.mostDelayedDate),"minutes");
+                temp.notifications.push({name:"served",icon:<CheckBox className="Done"/>});
+                temp.orders.map((order)=>{
+                    if(order.status == "waiting"){
+                        temp.notifications.pop();
+                        temp.notifications.push({name:"waiting",icon:<HourglassFull className="Waiting"/>});
+                    }
                 });
                 this.setState(temp);
-                
+                /*
                 setInterval(function(){
                     this.setState({earliestOrderTime : this.state.earliestOrderTime+1});
                 }.bind(this),60000);
+                */
             }
             
        }

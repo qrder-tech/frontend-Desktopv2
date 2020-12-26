@@ -1,6 +1,6 @@
 import React from "react";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@material-ui/core";
-import { AccountBalanceWallet, CheckBox, Face, HourglassFull, NotificationsActive } from "@material-ui/icons";
+import { AccountBalanceWallet, CheckBox, Face, History, HourglassFull, NotificationsActive } from "@material-ui/icons";
 import { connect } from "react-redux";
 import { requestOrders } from "../../requests/restaurant";
 import { setOrders } from "../../redux/actions";
@@ -31,6 +31,12 @@ class OrderPanel extends React.Component {
       align: "center",
     },
     {
+      id: "price",
+      label: "Price",
+      minWidth: 170,
+      align: "right",
+    },
+    {
       id: "status",
       label: "Status",
       minWidth: 170,
@@ -52,7 +58,7 @@ class OrderPanel extends React.Component {
 
   componentDidMount() {
     //console.log("orderpanel : " + this.props.token);
-   /* if(this.props.orders.length != 0 ){
+    /*if(this.props.orders.length != 0 ){
       var temp = [];
         this.props.orders.map((order,index)=>{
             temp.push({orderNo:index+1,
@@ -62,21 +68,23 @@ class OrderPanel extends React.Component {
         this.setState({info:{OrderCount:this.props.orders.length,
                       orders : temp}});
     }
-    else{
+    else{*/
       requestOrders(this.props.token).then((response) => {
         console.log(response);
-        this.props.dispatch(setOrders(response.orders));
+        this.props.dispatch(setOrders(response));
         var temp = [];
-        response.orders.map((order,index)=>{
-            temp.push({orderNo:index+1,
-                time : moment().diff(moment(order.createdAt),"minutes"),
-                status : (order.isPaid)?("served"):("waiting") });
+        response.map((order)=>{
+            temp.push({orderNo:order.no,
+                time : (order.status == "waiting")?(moment().diff(moment(order.createdAt),"minutes")):("-"),
+                status : order.status ,
+                price : order.totalPrice});
         })
-        temp.sort(function(a,b){return b.time-a.time});
-        this.setState({info:{OrderCount:response.orders.length,
+        console.log(temp);
+        
+        this.setState({info:{OrderCount:response.length,
                       orders : temp}});
       });
-    }*/
+    //}
     /*this.setState({info : getOrders()});
     setInterval(function(){      
       this.setState({info : getOrders()});
@@ -97,6 +105,7 @@ class OrderPanel extends React.Component {
         icons["waiting"] = <><HourglassFull  style={{fontSize:"40"}}/><NotificationsActive style={{fontSize:"40"}}/></>;
       }
     }
+    icons["paid"] = <History style={{fontSize:"40"}}/>;
     icons["served"] = <CheckBox style={{fontSize:"40"}}/>;
     //<CheckBox style={{fontSize:"40"}}/>,<AccountBalanceWallet style={{fontSize:"40"}}/>,<Face  style={{fontSize:"40"}}/>,<HourglassFull  style={{fontSize:"40"}}/>
     return (

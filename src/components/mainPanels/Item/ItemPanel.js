@@ -204,7 +204,7 @@ class ItemPanel extends React.Component {
                             {formVariables.map((index)=>(
                                 (index.id == "type")?(<>
                                 <div className="SelectLabel">Type</div> 
-                                <input id="types" className="Select" type="text" list="typelist" onChange={this.typeRender} defaultValue={index.default}/>
+                                <input id="types" autoComplete="off" className="Select" type="text" list="typelist" onChange={this.typeRender} defaultValue={index.default}/>
                                 <datalist id="typelist" className="Select">
                                     {this.props.menu.catalog.map((type)=>(
                                     <option id = {type.uuid} value={type} className="Option">{type}</option>))}

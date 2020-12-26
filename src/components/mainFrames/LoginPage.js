@@ -3,8 +3,8 @@ import React from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { login } from '../../requests/auth';
-import {setDisplayingPanel, setToken, setUser} from '../../redux/actions'
-import { getUserInfo } from '../../requests/restaurant';
+import {setDisplayingPanel, setMenu, setToken, setUser} from '../../redux/actions'
+import { getUserInfo, requestMenu } from '../../requests/restaurant';
 import TablePanel from '../mainPanels/tables/TablePanel';
 import { AccountBox, VpnKey } from '@material-ui/icons';
 import OrderPanel from '../mainPanels/OrderPanel';
@@ -29,13 +29,24 @@ class LoginPage extends React.Component{
                     console.log(result);
                     this.props.dispatch(setUser(result));
                     this.setState({loading:true});
-                    if( result.serviceType!=null){
-                        if(result.serviceType == "normal"){
-                            this.props.dispatch(setDisplayingPanel(<TablePanel/>));
-                        }else{                            
-                            this.props.dispatch(setDisplayingPanel(<OrderPanel/>))
+                    var temp = [];        
+                    requestMenu(response.token).then((response2) => {   
+                        console.log(response2);
+                        for (const [key, value] of Object.entries(response2.data.items)) {                                    //check missing arguments
+                            temp.push({name:key,
+                                    Items:value});
                         }
-                    }
+                        this.props.dispatch(setMenu({catalog:response2.data.catalog,
+                                                    items:temp}));
+                        if( result.serviceType!=null){
+                            if(result.serviceType == "normal"){
+                                this.props.dispatch(setDisplayingPanel(<TablePanel/>));
+                            }else{                            
+                                this.props.dispatch(setDisplayingPanel(<OrderPanel/>))
+                            }
+                        }
+                    });
+                    
                     history.push("/mainPage");
                 });
             } else{
@@ -170,7 +181,8 @@ const useStyles = {
 
 const mapStateToProps = state =>({
     token : state.token,
-    user : state.user
+    user : state.user,
+    menu : state.menu,
 })
 
 export default connect(mapStateToProps,null)(withRouter(withStyles(useStyles)(LoginPage)));
