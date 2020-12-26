@@ -24,8 +24,8 @@ class Table extends React.Component {
 
        componentDidMount(){
            if(this.props.tableInfo.Orders.length != 0){
-                var temp = {orderCount : this.props.tableInfo.RecentOrders.length,
-                            orders : this.props.tableInfo.RecentOrders,
+                var temp = {orderCount : this.props.tableInfo.Orders.length,
+                            orders : this.props.tableInfo.Orders,
                             earliestOrderTime : -1,
                             notifications : []};
                 temp.notifications.push({name:"waiting",icon:<HourglassFull className="Waiting"/>});
