@@ -2,9 +2,9 @@ import React from "react";
 import { Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, withStyles } from "@material-ui/core";
 import { AccountBalanceWallet, AddCircle, CheckBox, Edit, Face, HourglassFull } from "@material-ui/icons";
 import { connect } from "react-redux";
-import { setDisplayingPanel, setMenu } from "../../../redux/actions";
+import { setDisplayingPanel, setMenu, setTables } from "../../../redux/actions";
 import ItemDetailsPanel from "../Item/ItemDetailsPanel";
-import { requestMenu } from "../../../requests/restaurant";
+import { getTablesRequest, requestMenu } from "../../../requests/restaurant";
 import MiniItemPanel from "../Item/MiniItemPanel";
 import { addOrder, getSpecificOrder } from "../../../requests/order";
 
@@ -71,6 +71,40 @@ class OrderCreatePanel extends React.Component {
   test = () =>{
 
    
+  }
+
+  updateItem = () =>{
+    alert("update item + " + this.props.updateItemUuid);
+    /*var requestOrder;
+    if(this.props.user.serviceType == "normal"){
+      requestOrder = {
+        restaurantUuid : this.props.user.uuid,
+        tableUuid : document.getElementById("tables").value,
+        items : []
+      }
+    }else if(this.props.user.serviceType == "self"){
+      requestOrder = {
+        restaurantUuid : this.props.user.uuid,
+        items : []
+      }
+      
+    }
+    
+   
+    this.state.order.items.map((item)=>{
+      var tempOptions = [];
+      if(item.options){
+        item.options.split(";").map((opt)=>{
+          tempOptions.push(opt);
+        });
+      }
+      requestOrder.items.push({uuid:item.uuid,options:tempOptions,quantity:item.quantity});
+    });
+    console.log(requestOrder);
+    addOrder(this.props.token,requestOrder).then((response)=>{
+      console.log(response);
+    });
+      */
   }
 
 
@@ -141,6 +175,13 @@ class OrderCreatePanel extends React.Component {
         this.setState({order : order});
       });
     }
+    if(this.props.tables.length == 0){
+      
+      getTablesRequest(this.props.token).then((response)=>{
+        this.props.dispatch(setTables(response.data));
+      });
+
+    };
       var temp = [];
       requestMenu(this.props.token).then((response) => {
         for (const [key, value] of Object.entries(response.data.items)) {                                    //check missing arguments
@@ -253,20 +294,29 @@ class OrderCreatePanel extends React.Component {
                                 </select><br/></div>):(null))}
                               
                           </Grid>
-                          <Grid item xs={12} className="GridElement">                            
-                              <Button
+                          <Grid item xs={12} className="GridElement">        
+                                        {(this.props.updateItemUuid)?(<>
+                                          <Button
+                                            classes={{
+                                                root: classes.buttonRoot, // class name, e.g. `classes-nesting-root-x`
+                                                label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
+                                            }}
+                                            onClick={this.updateItem}
+                                          >Update</Button>&nbsp;
+                                          <Button
+                                            classes={{
+                                                root: classes.buttonRoot, // class name, e.g. `classes-nesting-root-x`
+                                                label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
+                                            }}
+                                        >Remove</Button>
+                                    </>):(<Button
                                             classes={{
                                                 root: classes.buttonRoot, // class name, e.g. `classes-nesting-root-x`
                                                 label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
                                             }}
                                         onClick={this.addItem}
-                                        >Done</Button>&nbsp;
-                                        <Button
-                                        classes={{
-                                            root: classes.buttonRoot, // class name, e.g. `classes-nesting-root-x`
-                                            label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
-                                        }}
-                                    >Remove</Button>
+                                        >Done</Button>)}
+                                       
                               </Grid>
                         </Grid>                           
                     </Grid>
