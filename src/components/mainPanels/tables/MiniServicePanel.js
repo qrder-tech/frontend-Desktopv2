@@ -56,25 +56,26 @@ class MiniServicePanel extends React.Component {
     console.log(this.props.tableServices);
     var temp = [];
     var serviceIcon;
-    this.props.tableServices.map((service,index)=>{     
-        switch(service.name){
-            case "waiter":
-                serviceIcon = <Face/>;
-                break;
-            case "payment":
-                serviceIcon = <AccountBalanceWallet/>
-                break;
-            default:
-                serviceIcon = <AccessibilityNew/>
-                break;
+      if(this.props.tableServices){
+      this.props.tableServices.map((service,index)=>{     
+          switch(service.name){
+              case "waiter":
+                  serviceIcon = <Face/>;
+                  break;
+              case "payment":
+                  serviceIcon = <AccountBalanceWallet/>
+                  break;
+              default:
+                  serviceIcon = <AccessibilityNew/>
+                  break;
 
-        }
-        temp.push({orderNo:index+1,
-            time : moment().diff(moment(service.createdAt),"minutes"),
-            service : serviceIcon,
-            actions : <CheckBox/>});
-    });
-
+          }
+          temp.push({orderNo:index+1,
+              time : moment().diff(moment(service.createdAt),"minutes"),
+              service : serviceIcon,
+              actions : <CheckBox/>});
+      });
+    }
     this.setState({info:{serviceCount:temp.length,
                         services :temp}});
     /*this.setState({info : getOrders()});

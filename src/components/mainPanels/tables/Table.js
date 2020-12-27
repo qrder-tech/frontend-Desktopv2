@@ -28,16 +28,20 @@ class Table extends React.Component {
                             orders : this.props.tableInfo.Orders,
                             earliestOrderTime : -1,
                             notifications : []};
-                this.props.tableInfo.services.map((service)=>{
-                    switch(service.name){
-                        case "waiter":
-                            temp.notifications.push({name:"waiter",icon:<Face className="Waiter"/>});
-                            break;
-                        case "payment":
-                            temp.notifications.push({name:"payment",icon:<AccountBalanceWallet className="Payment"/>});
-                            break;
-                    }
-                });
+
+                if(this.props.tableInfo.services){
+
+                    this.props.tableInfo.services.map((service)=>{
+                        switch(service.name){
+                            case "waiter":
+                                temp.notifications.push({name:"waiter",icon:<Face className="Waiter"/>});
+                                break;
+                            case "payment":
+                                temp.notifications.push({name:"payment",icon:<AccountBalanceWallet className="Payment"/>});
+                                break;
+                        }
+                    });
+                }
                 temp.earliestOrderTime = moment().diff(moment(this.props.tableInfo.mostDelayedDate),"minutes");
                 temp.notifications.push({name:"served",icon:<CheckBox className="Done"/>});
                 temp.orders.map((order)=>{
@@ -59,7 +63,7 @@ class Table extends React.Component {
   render() {
     return (
       
-        <div className="Table"  onClick= {this.tableDetails.bind(this,this.props.tableInfo)}style={{cursor:"pointer" , background: (this.state.earliestOrderTime)?(getViewValues(this.state.earliestOrderTime)):("#c4a748") }}>
+        <div className="Table"  onClick= {this.tableDetails.bind(this,this.props.tableInfo)}style={{cursor:"pointer" , background: (this.state.earliestOrderTime != null)?(getViewValues(this.state.earliestOrderTime+1)):("#c4a748") }}>
             <span className="TableContent">
             {this.props.tableInfo.name}
             

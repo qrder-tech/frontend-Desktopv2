@@ -4,7 +4,7 @@ import { AccountBalanceWallet, AddCircle, CheckBox, Edit, Face, HourglassFull } 
 import { connect } from "react-redux";
 import { setDisplayingPanel, setMenu } from "../../../redux/actions";
 import ItemDetailsPanel from "../Item/ItemDetailsPanel";
-import { addOrder, requestMenu } from "../../../requests/restaurant";
+import { requestMenu } from "../../../requests/restaurant";
 import MiniItemPanel from "../Item/MiniItemPanel";
 import MiniOrderPanel from "../order/MiniOrderPanel";
 import MiniServicePanel from "./MiniServicePanel";
@@ -81,8 +81,7 @@ class TableDetails extends React.Component {
     this.state.order.items.map((item)=>{
       requestOrder.items.push({uuid:item.uuid,metadata:item.metadata,quantity:item.quantity});
     });
-    addOrder(this.props.token,requestOrder);
-  }
+    }
 
 
 

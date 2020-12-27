@@ -54,6 +54,12 @@ class OrderPanel extends React.Component {
     this.setState({page:0});
   };
 
+  serveOrder = (order) =>{
+    console.log(order);
+    //update order as paid
+
+  }
+
 
 
   componentDidMount() {
@@ -74,7 +80,9 @@ class OrderPanel extends React.Component {
         this.props.dispatch(setOrders(response));
         var temp = [];
         response.map((order)=>{
-            temp.push({orderNo:order.no,
+            temp.push({
+                uuid : order.uuid,
+                orderNo:order.no,
                 time : (order.status == "waiting")?(moment().diff(moment(order.createdAt),"minutes")):("-"),
                 status : order.status ,
                 price : order.totalPrice});
@@ -100,11 +108,6 @@ class OrderPanel extends React.Component {
     const icons = [];
     
     icons["waiting"] = <HourglassFull  style={{fontSize:"40"}}/>;
-    if(this.props.user != null){
-      if(this.props.user.serviceType != "normal"){        
-        icons["waiting"] = <><HourglassFull  style={{fontSize:"40"}}/><NotificationsActive style={{fontSize:"40"}}/></>;
-      }
-    }
     icons["paid"] = <History style={{fontSize:"40"}}/>;
     icons["served"] = <CheckBox style={{fontSize:"40"}}/>;
     //<CheckBox style={{fontSize:"40"}}/>,<AccountBalanceWallet style={{fontSize:"40"}}/>,<Face  style={{fontSize:"40"}}/>,<HourglassFull  style={{fontSize:"40"}}/>
@@ -137,7 +140,7 @@ class OrderPanel extends React.Component {
                     return (
                       <TableCell key={column.id} align={column.align} >
                         <div className="OrderCell">                                                    
-                          {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?(icons[value]):(value))}
+                          {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?((this.props.user.serviceType == "self")?(<>{icons[value]}<NotificationsActive onClick={this.serveOrder.bind(this,row)} style={{fontSize:"40"}}/></>):(icons[value])):(value))}
                           
                         </div>
                       </TableCell>

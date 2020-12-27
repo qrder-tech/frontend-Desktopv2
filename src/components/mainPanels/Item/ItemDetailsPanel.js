@@ -60,7 +60,7 @@ class ItemDetailsPanel extends React.Component {
                     </Grid>
                     <Grid item xs={6} className="GridElement">
                         <div className="BigTag">
-                            <div style={{textAlign:"left"}}>
+                            <div style={{textAlign:"left",fontSize:"15px"}}>
                                 <Fastfood/>{this.state.item.name}
                                 
                                 <span style={{float:"right"}}>

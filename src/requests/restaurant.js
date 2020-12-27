@@ -155,7 +155,7 @@ export const changeItemStatus = (uuid,token,status) =>{
     console.log(error);
   });
 }
-
+/*
 export const addOrder = (token,order) =>{
 
   var tempItems = [];
@@ -188,7 +188,7 @@ export const addOrder = (token,order) =>{
   .catch(function (error) {
     console.log(error);
   });
-}
+}*/
 
 export const addSubtopic = (name,token) =>{
   var qs = require('qs');
