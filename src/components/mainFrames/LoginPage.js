@@ -20,9 +20,8 @@ class LoginPage extends React.Component{
     login = () => {
         const { history } = this.props;
 
-
-        login(this.username.value,this.password.value).then((response)=>{
-            this.setState({loading : true});
+        this.setState({loading : true});
+        login(this.username.value,this.password.value).then((response)=>{            
             if(response){            
                 this.props.dispatch(setToken(response.token));
                 getUserInfo(response.token).then((result)=>{
@@ -44,11 +43,12 @@ class LoginPage extends React.Component{
                     history.push("/mainPage");
                 });
             } else{
-                
+                this.setState({loading : false});
             }
                        
         }).catch((error)=>{
             console.log("error is : " + error );
+            this.setState({loading : false});
         });       
 
     }

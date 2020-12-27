@@ -6,7 +6,7 @@ import { setDisplayingPanel, setMenu } from "../../../redux/actions";
 import ItemDetailsPanel from "../Item/ItemDetailsPanel";
 import { requestMenu } from "../../../requests/restaurant";
 import MiniItemPanel from "../Item/MiniItemPanel";
-import { addOrder } from "../../../requests/order";
+import { addOrder, getSpecificOrder } from "../../../requests/order";
 
 class OrderCreatePanel extends React.Component {
   state = {
@@ -112,7 +112,35 @@ class OrderCreatePanel extends React.Component {
   componentDidMount() {
     //console.log("orderpanel : " + this.props.token);
 
-    
+    if(this.props.updateItemUuid){
+      getSpecificOrder(this.props.token,this.props.updateItemUuid).then((result)=>{
+        console.log(result);
+        var items = [];
+        var price = 0;
+        result.Items.map((item)=>{
+          for(var i = 0 ; i <item.OrderItems.quantity; i++){
+            if(items.find(element => element.uuid == item.uuid)){
+              items.find(element => element.uuid == item.uuid).quantity++;      
+              items.find(element => element.uuid == item.uuid).price +=item.price;
+              if(items.find(element => element.uuid == item.uuid).quantity < 3){
+                items.find(element => element.uuid == item.uuid).name +="x2";
+              }else{                
+                var tempString = items.find(element => element.uuid == item.uuid).name.substr(0,items.find(element => element.uuid == item.uuid).name.length-1);
+                items.find(element => element.uuid == item.uuid).name= tempString;
+                items.find(element => element.uuid == item.uuid).name += items.find(element => element.uuid == item.uuid).quantity;
+              }
+            }else{      
+              var tempItem = {name:item.name,price : item.price,uuid : item.uuid,options:item.options,quantity:1};
+              items.push(tempItem);  
+            }
+            price += item.price; 
+          }
+        });        
+        var order = {items : items,
+                    totalPrice : price};
+        this.setState({order : order});
+      });
+    }
       var temp = [];
       requestMenu(this.props.token).then((response) => {
         for (const [key, value] of Object.entries(response.data.items)) {                                    //check missing arguments

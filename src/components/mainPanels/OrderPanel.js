@@ -3,7 +3,8 @@ import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePag
 import { AccountBalanceWallet, CheckBox, Face, History, HourglassFull, NotificationsActive } from "@material-ui/icons";
 import { connect } from "react-redux";
 import { getUserInfo, requestOrders } from "../../requests/restaurant";
-import { setOrders } from "../../redux/actions";
+import { setDisplayingPanel, setOrders } from "../../redux/actions";
+import OrderCreatePanel from "./order/OrderCreatePanel";
 
 const moment = require('moment');
 
@@ -59,6 +60,12 @@ class OrderPanel extends React.Component {
     console.log(order);
     //update order as paid
 
+  }
+
+  showOrderDetails = (orderUuid) =>{
+    console.log(orderUuid);
+    
+    this.props.dispatch(setDisplayingPanel(<OrderCreatePanel updateItemUuid={orderUuid}/>));
   }
 
 
@@ -151,8 +158,8 @@ class OrderPanel extends React.Component {
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (
-                      <TableCell key={column.id} align={column.align} >
-                        <div className="OrderCell">                                                    
+                      <TableCell onClick={(column.id == "status")?null:this.showOrderDetails.bind(this,row.uuid)} key={column.id} align={column.align} >
+                        <div className="OrderCell" >                                                    
                           {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?((this.state.serviceType == "self")?(<>{icons[value]}<NotificationsActive onClick={this.serveOrder.bind(this,row)} style={{fontSize:"40"}}/></>):(icons[value])):(value))}
                   
                         </div>
