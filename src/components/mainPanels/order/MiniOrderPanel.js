@@ -3,8 +3,9 @@ import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePag
 import { AccountBalanceWallet, CheckBox, DeleteForever, Face, HourglassFull } from "@material-ui/icons";
 import { connect } from "react-redux";
 import { requestOrders } from "../../../requests/restaurant";
-import { setOrders } from "../../../redux/actions";
-import { getSpecificOrder } from "../../../requests/order";
+import { setDisplayingPanel, setOrders } from "../../../redux/actions";
+import { getSpecificOrder, payOrder, removeOrder, serveOrder } from "../../../requests/order";
+import OrderCreatePanel from "./OrderCreatePanel";
 
 const moment = require('moment');
 
@@ -61,31 +62,59 @@ class MiniOrderPanel extends React.Component {
     this.setState({page:0});
   };
 
+  removeOrder= (uuid) =>{
+    //console.log(this.state.info.orders);
+    removeOrder(this.props.token,uuid).then((response)=>{
+      this.updateOrders();
+    });
+  }
 
+  serveOrder = (uuid) => {
+    serveOrder(this.props.token,uuid).then((response)=>{
+      console.log(response);
+      this.updateOrders();
+    })
+  }
 
-  componentDidMount() {
-    //console.log("orderpanel : " + this.props.token);
-    console.log("here");
-    console.log(this.props.tableOrders);
+  payOrder = (uuid) =>{
+    payOrder(this.props.token,uuid).then((response)=>{
+      console.log(response);
+      this.updateOrders();
+    })
+  }
+
+  updateOrders = () =>{
     var temp = [];
 
+    this.setState({info:{orderCount:0,
+              orders : temp}});
     this.props.tableOrders.map((order)=>{
          getSpecificOrder(this.props.token,order.uuid).then((result)=>{
             console.log(result);
-            temp.push({orderNo:result.no,
+            temp.push({
+              uuid : order.uuid,
+              orderNo:result.no,
               time : moment().diff(moment(result.createdAt),"minutes"),
               status : result.status ,
               price : result.totalPrice,
-              actions : <div>{(result.status == "waiting")?(<CheckBox/>):(<AccountBalanceWallet/>) }<br/><DeleteForever/></div>});
-                
+              actions : <div>{(result.status == "waiting")?(<CheckBox onClick={this.serveOrder.bind(this,order.uuid)}/>):(<AccountBalanceWallet onClick={this.payOrder.bind(this,order.uuid)}/>) }<br/><DeleteForever onClick={this.removeOrder.bind(this,order.uuid)}/></div>});
+              
             this.setState({info:{orderCount:temp.length,
               orders :temp}});
+            
+         }).catch((error)=>{
          });
     });
-    /*this.setState({info : getOrders()});
-    setInterval(function(){      
-      this.setState({info : getOrders()});
-    }.bind(this),10);*/
+    
+  }
+
+  orderDetails = (orderUuid) =>{
+    this.props.dispatch(setDisplayingPanel(<OrderCreatePanel tableUuid={this.props.tableUuid} updateItemUuid={orderUuid}/>))
+  }
+
+  componentDidMount() {
+    this.updateOrders();
+    
   }
 
   render() {
@@ -126,7 +155,7 @@ class MiniOrderPanel extends React.Component {
                     const value = row[column.id];
                     return (
                       <TableCell key={column.id} align={column.align} >
-                        <div className="OrderCell">                                                    
+                        <div className="OrderCell" onClick={(column.id =="Edit")?(null):(this.orderDetails.bind(this,row.uuid))}>                                                    
                           {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?(icons[value]):(value))}
                           
                         </div>

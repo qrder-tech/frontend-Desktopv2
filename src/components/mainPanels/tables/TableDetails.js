@@ -8,6 +8,7 @@ import { requestMenu } from "../../../requests/restaurant";
 import MiniItemPanel from "../Item/MiniItemPanel";
 import MiniOrderPanel from "../order/MiniOrderPanel";
 import MiniServicePanel from "./MiniServicePanel";
+import OrderCreatePanel from "../order/OrderCreatePanel";
 
 class TableDetails extends React.Component {
   state = {
@@ -71,17 +72,10 @@ class TableDetails extends React.Component {
   }
 
   test = () =>{
-    /*console.log(this.state.order);
-    console.log(this.props.user.uuid);*/
-    var requestOrder = {
-      restaurantUuid : this.props.user.uuid,
-      userUuid : null,
-      items : []
+    console.log(this.props.table.uuid);
     }
-    this.state.order.items.map((item)=>{
-      requestOrder.items.push({uuid:item.uuid,metadata:item.metadata,quantity:item.quantity});
-    });
-    }
+
+   
 
 
 
@@ -129,7 +123,7 @@ class TableDetails extends React.Component {
                                             root: classes.buttonRoot, // class name, e.g. `classes-nesting-root-x`
                                             label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
                                         }}
-                                        
+                                        onClick={()=>{this.props.dispatch(setDisplayingPanel(<OrderCreatePanel tableUuid={this.props.table.uuid}/>));}}
                                           >Add Order</Button>
                                           <br/>
                                           <br/>
@@ -139,7 +133,7 @@ class TableDetails extends React.Component {
                                               <TableRow hover role="checkbox" tabIndex={-1} key={this.state.table.name} >
                                                 {this.state.columns.map((column) => {
                                                   return (<>                     
-                                                    <MiniOrderPanel tableOrders = {this.state.table.Orders}/>
+                                                    <MiniOrderPanel tableOrders = {this.state.table.Orders} tableUuid={this.props.table.uuid}/>
                                                     </>
                                                   );
                                                 })}

@@ -6,7 +6,8 @@ import { setDisplayingPanel, setMenu, setTables } from "../../../redux/actions";
 import ItemDetailsPanel from "../Item/ItemDetailsPanel";
 import { getTablesRequest, requestMenu } from "../../../requests/restaurant";
 import MiniItemPanel from "../Item/MiniItemPanel";
-import { addOrder, getSpecificOrder } from "../../../requests/order";
+import { addOrder, getSpecificOrder, removeOrder } from "../../../requests/order";
+import OrderPanel from "../OrderPanel";
 
 class OrderCreatePanel extends React.Component {
   state = {
@@ -69,42 +70,11 @@ class OrderCreatePanel extends React.Component {
   }
 
   test = () =>{
-
-   
+    
   }
 
   updateItem = () =>{
     alert("update item + " + this.props.updateItemUuid);
-    /*var requestOrder;
-    if(this.props.user.serviceType == "normal"){
-      requestOrder = {
-        restaurantUuid : this.props.user.uuid,
-        tableUuid : document.getElementById("tables").value,
-        items : []
-      }
-    }else if(this.props.user.serviceType == "self"){
-      requestOrder = {
-        restaurantUuid : this.props.user.uuid,
-        items : []
-      }
-      
-    }
-    
-   
-    this.state.order.items.map((item)=>{
-      var tempOptions = [];
-      if(item.options){
-        item.options.split(";").map((opt)=>{
-          tempOptions.push(opt);
-        });
-      }
-      requestOrder.items.push({uuid:item.uuid,options:tempOptions,quantity:item.quantity});
-    });
-    console.log(requestOrder);
-    addOrder(this.props.token,requestOrder).then((response)=>{
-      console.log(response);
-    });
-      */
   }
 
 
@@ -138,17 +108,27 @@ class OrderCreatePanel extends React.Component {
     console.log(requestOrder);
     addOrder(this.props.token,requestOrder).then((response)=>{
       console.log(response);
+      
+      this.props.dispatch(setDisplayingPanel(<OrderPanel/>));
+    });
+  }
+
+  removeOrder = () =>{
+    removeOrder(this.props.token,this.props.updateItemUuid).then((response)=>{   
+      console.log(response);   
+      this.props.dispatch(setDisplayingPanel(<OrderPanel/>));
     });
   }
 
 
 
   componentDidMount() {
-    //console.log("orderpanel : " + this.props.token);
+    if(this.props.tableUuid){      
+      document.getElementById("tables").value = this.props.tableUuid;
+    }
 
     if(this.props.updateItemUuid){
       getSpecificOrder(this.props.token,this.props.updateItemUuid).then((result)=>{
-        console.log(result);
         var items = [];
         var price = 0;
         result.Items.map((item)=>{
@@ -308,6 +288,7 @@ class OrderCreatePanel extends React.Component {
                                                 root: classes.buttonRoot, // class name, e.g. `classes-nesting-root-x`
                                                 label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
                                             }}
+                                            onClick = {this.removeOrder}
                                         >Remove</Button>
                                     </>):(<Button
                                             classes={{

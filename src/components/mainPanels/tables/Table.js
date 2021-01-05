@@ -42,7 +42,11 @@ class Table extends React.Component {
                         }
                     });
                 }
-                temp.earliestOrderTime = moment().diff(moment(this.props.tableInfo.mostDelayedDate),"minutes");
+                if(this.props.tableInfo.mostDelayedDate){                    
+                    temp.earliestOrderTime = moment().diff(moment(this.props.tableInfo.mostDelayedDate),"minutes");
+                }else{
+                    temp.earliestOrderTime = -1;
+                }
                 temp.notifications.push({name:"served",icon:<CheckBox className="Done"/>});
                 temp.orders.map((order)=>{
                     if(order.status == "waiting"){
@@ -51,11 +55,6 @@ class Table extends React.Component {
                     }
                 });
                 this.setState(temp);
-                /*
-                setInterval(function(){
-                    this.setState({earliestOrderTime : this.state.earliestOrderTime+1});
-                }.bind(this),60000);
-                */
             }
             
        }
@@ -65,7 +64,7 @@ class Table extends React.Component {
     return (
       
         <div className="Table"  onClick= {this.tableDetails.bind(this,this.props.tableInfo)}
-        style={{cursor:"pointer" , background: (this.state.earliestOrderTime != null)?(getViewValues(this.state.earliestOrderTime+1)):("#c4a748") }}>
+        style={{cursor:"pointer" , background: (this.state.earliestOrderTime != null)?(getViewValues(this.state.earliestOrderTime)):("#c4a748") }}>
             <span className="TableContent">
             {this.props.tableInfo.name}
             
@@ -105,9 +104,11 @@ function componentToHex(c) {
       thirdColor = rgbToHexFirst(255,0,0)+"40";
       var type = "radial-gradient(";*/
   
-      
+      if(time == -1){
+          return "#9c9c9c";
+      }
       //Base
-      time = (time/45)*255;
+      time = (time/45)*255;     
       const alpha = "d0";
       const firstColor = rgbToHexFirst(0,255,0)+alpha;
       const secondColor =  rgbToHexFirst(255,255,0)+alpha;

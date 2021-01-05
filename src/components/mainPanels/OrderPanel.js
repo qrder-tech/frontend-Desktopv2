@@ -1,10 +1,11 @@
 import React from "react";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@material-ui/core";
-import { AccountBalanceWallet, CheckBox, Face, History, HourglassFull, NotificationsActive } from "@material-ui/icons";
+import { AccountBalanceWallet, CheckBox, DeleteForever, Face, History, HourglassFull, NotificationsActive } from "@material-ui/icons";
 import { connect } from "react-redux";
 import { getUserInfo, requestOrders } from "../../requests/restaurant";
 import { setDisplayingPanel, setOrders } from "../../redux/actions";
 import OrderCreatePanel from "./order/OrderCreatePanel";
+import { removeOrder } from "../../requests/order";
 
 const moment = require('moment');
 
@@ -74,55 +75,47 @@ class OrderPanel extends React.Component {
     this.props.dispatch(setDisplayingPanel(<OrderCreatePanel updateItemUuid={orderUuid}/>));
   }
 
+  removeOrder = (uuid) =>{
+    removeOrder(this.props.token,uuid).then((response)=>{
+      this.updateOrders();
+    });
+  }
 
-
-  componentDidMount() {
-    //console.log("orderpanel : " + this.props.token);
-    /*if(this.props.orders.length != 0 ){
+  updateOrders = () =>{
+    requestOrders(this.props.token).then((response) => {
+      this.props.dispatch(setOrders(response));
       var temp = [];
-        this.props.orders.map((order,index)=>{
-            temp.push({orderNo:index+1,
-                time : moment().diff(moment(order.createdAt),"minutes"),
-                status : "waiting" });
-        })
-        this.setState({info:{OrderCount:this.props.orders.length,
-                      orders : temp}});
-    }
-    else{*/
-      requestOrders(this.props.token).then((response) => {
-        console.log(response);
-        this.props.dispatch(setOrders(response));
-        var temp = [];
-        response.map((order)=>{
-            temp.push({
-                uuid : order.uuid,
-                orderNo:order.no,
-                time : (order.status == "waiting")?(moment().diff(moment(order.createdAt),"minutes")):("-"),
-                status : order.status ,
-                price : order.totalPrice});
-        })
-        console.log(temp);
-        var service;
-        if(this.props.user){
-          service = this.props.user.serviceType;          
+      response.map((order)=>{
+          temp.push({
+              uuid : order.uuid,
+              orderNo:order.no,
+              time : (order.status == "waiting")?(moment().diff(moment(order.createdAt),"minutes")):("-"),
+              status : order.status ,
+              price : order.totalPrice,
+              action : <DeleteForever onClick={this.removeOrder.bind(this,order.uuid)}/>});
+      })
+      var service;
+      if(this.props.user){
+        service = this.props.user.serviceType;          
+        this.setState({info:{OrderCount:response.length,
+          orders : temp,
+          serviceType : service}});
+      }else{
+        getUserInfo(this.props.token).then((result)=>{
+          service = result.serviceType;            
           this.setState({info:{OrderCount:response.length,
             orders : temp,
             serviceType : service}});
-        }else{
-          getUserInfo(this.props.token).then((result)=>{
-            service = result.serviceType;            
-            this.setState({info:{OrderCount:response.length,
-              orders : temp,
-              serviceType : service}});
-          })
-        }
-        
-      });
-    //}
-    /*this.setState({info : getOrders()});
-    setInterval(function(){      
-      this.setState({info : getOrders()});
-    }.bind(this),10);*/
+        })
+      }
+      
+    });
+  }
+
+
+  componentDidMount() {
+    
+    this.updateOrders();
   }
 
   render() {
@@ -164,7 +157,7 @@ class OrderPanel extends React.Component {
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (
-                      <TableCell onClick={(column.id == "status")? null :this.showOrderDetails.bind(this,row.uuid)} key={column.id} align={column.align} style={(column.id == "status")?(null):{cursor:"pointer"}} >
+                      <TableCell onClick={(column.id == "status" || column.id == "action")? null :this.showOrderDetails.bind(this,row.uuid)} key={column.id} align={column.align} style={(column.id == "status")?(null):{cursor:"pointer"}} >
                         <div className="OrderCell" >                                                    
                           {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?((this.state.serviceType == "self")?(<>{icons[value]}<NotificationsActive onClick={this.serveOrder.bind(this,row)} style={{fontSize:"40"}}/></>):(icons[value])):(value))}
                   
