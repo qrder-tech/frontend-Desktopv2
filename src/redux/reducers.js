@@ -62,3 +62,23 @@ export const setRestaurantTables = (state = [] , action) =>{
             return state;
     }
 }
+
+export const setTest = (state = "" , action) =>{
+    switch(action.type){
+        case "test":
+            return action.message;
+        default :
+            return state;
+    }
+
+}
+
+export const setTest2 = (state = "" , action) =>{
+    switch(action.type){
+        case "test2":
+            return action.callback;
+        default :
+            return state;
+    }
+
+}

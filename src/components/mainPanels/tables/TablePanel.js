@@ -3,7 +3,7 @@ import Grid from "@material-ui/core/Grid";
 import Table from "./Table"
 import { createTable, getTablesRequest } from "../../../requests/restaurant";
 import { connect } from "react-redux";
-import { setTables } from "../../../redux/actions";
+import { setDisplayingPanel, setTables, test } from "../../../redux/actions";
 import { Button, TextField, withStyles } from "@material-ui/core";
 
 class TablePanel extends React.Component {
@@ -15,6 +15,7 @@ class TablePanel extends React.Component {
     },
     columns :[]
    };
+  
 
   componentDidMount(){
       if(this.props.tables.table){
@@ -41,7 +42,7 @@ class TablePanel extends React.Component {
             for (var i = 0; i < response.data.length; i++) {
             rows.push(
                 <Grid item xs={2} className="GridElement">
-                <Table tableInfo={response.data[i]}/>
+                <Table tableInfo={response.data[i]}/> 
                 </Grid>
             );
             }
@@ -61,14 +62,58 @@ class TablePanel extends React.Component {
   add = () =>{
     //alert(document.getElementById("tableAddTextField").value);
     createTable(document.getElementById("tableAddTextField").value,this.props.token).then(()=>{
-      this.componentDidMount();
+      this.update();
     });
+  }
+
+  update = () =>{
+    //this.setState({columns : []})
+    getTablesRequest(this.props.token).then((response)=>{
+      this.props.dispatch(setTables(response.data));
+      var rows = [];
+      const columns = [];
+      var rows1 = [];
+      for (var i = 0; i < response.data.length; i++) {
+        console.log(response.data[i]);
+      rows.push(
+          <Grid item xs={2} className="GridElement">
+            <Table key = {response.data[i].uuid} tableInfo={response.data[i]}/> 
+          </Grid>
+      );
+      rows1.push(
+        <Grid item xs={2} className="GridElement">
+            
+          </Grid>
+      );
+      }
+          columns.push(
+          <Grid container item xs={12} spacing={5}>
+              {rows1}
+          </Grid>         
+      );      
+      this.setState({columns});
+      columns.pop();
+      columns.push(
+        <Grid container item xs={12} spacing={5}>
+            {rows}
+        </Grid>         
+    );      
+    this.setState({columns});
+      console.log(columns);
+
+    });
+//    this.props.dispatch(setDisplayingPanel(<TablePanel/>));
   }
 
   render() {
     const {classes} = this.props;
+    if(this.props.mqtt != ""){
+      console.log(this.props.mqtt);
+      this.props.dispatch(test(""));
+      this.update();
+            
+    }
     
-      
     return (
       <div className="TablePanel">
         
@@ -109,7 +154,8 @@ const mapStateToProps = state =>({
     menu : state.menu,
     order : state.test,
     display : state.display,
-    tables : state.tables
+    tables : state.tables,
+    mqtt : state.mqtt
   })
 
   const useStyles = {

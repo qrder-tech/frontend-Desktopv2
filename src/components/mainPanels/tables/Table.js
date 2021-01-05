@@ -61,9 +61,11 @@ class Table extends React.Component {
        }
 
   render() {
+      
     return (
       
-        <div className="Table"  onClick= {this.tableDetails.bind(this,this.props.tableInfo)}style={{cursor:"pointer" , background: (this.state.earliestOrderTime != null)?(getViewValues(this.state.earliestOrderTime+1)):("#c4a748") }}>
+        <div className="Table"  onClick= {this.tableDetails.bind(this,this.props.tableInfo)}
+        style={{cursor:"pointer" , background: (this.state.earliestOrderTime != null)?(getViewValues(this.state.earliestOrderTime+1)):("#c4a748") }}>
             <span className="TableContent">
             {this.props.tableInfo.name}
             

@@ -56,3 +56,19 @@ export const setTables = (tables) =>{
         tables : tables
     }
 }
+
+export const test = (message) =>{
+    return{
+        type : "test",
+        message : message
+    }
+
+}
+
+export const test2 = (callback) =>{
+    return{
+        type : "test2",
+        callback : callback
+    }
+
+}

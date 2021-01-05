@@ -36,12 +36,18 @@ class OrderPanel extends React.Component {
       id: "price",
       label: "Price",
       minWidth: 170,
-      align: "right",
+      align: "center",
     },
     {
       id: "status",
       label: "Status",
-      minWidth: 170,
+      minWidth: 80,
+      align: "right",
+    },    
+    {
+      id: "action",
+      label: "",
+      minWidth: 80,
       align: "right",
     },
   ];
