@@ -155,7 +155,7 @@ class MiniOrderPanel extends React.Component {
                     const value = row[column.id];
                     return (
                       <TableCell key={column.id} align={column.align} >
-                        <div className="OrderCell" onClick={(column.id =="Edit")?(null):(this.orderDetails.bind(this,row.uuid))}>                                                    
+                        <div className="OrderCell" onClick={(column.id =="actions")?(null):(this.orderDetails.bind(this,row.uuid))}>                                                    
                           {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?(icons[value]):(value))}
                           
                         </div>
