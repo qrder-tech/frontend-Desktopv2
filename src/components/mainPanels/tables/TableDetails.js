@@ -4,7 +4,7 @@ import { AccountBalanceWallet, AddCircle, CheckBox, Edit, Face, HourglassFull } 
 import { connect } from "react-redux";
 import { setDisplayingPanel, setMenu } from "../../../redux/actions";
 import ItemDetailsPanel from "../Item/ItemDetailsPanel";
-import { requestMenu } from "../../../requests/restaurant";
+import { addService, removeService, requestMenu } from "../../../requests/restaurant";
 import MiniItemPanel from "../Item/MiniItemPanel";
 import MiniOrderPanel from "../order/MiniOrderPanel";
 import MiniServicePanel from "./MiniServicePanel";
@@ -73,7 +73,13 @@ class TableDetails extends React.Component {
 
   test = () =>{
     console.log(this.props.table.uuid);
-    }
+    /*addService(this.props.token,"payment",this.props.table.uuid).then((response)=>{
+      console.log(response);
+    });*/
+    removeService(this.props.token,"waiter",this.props.table.uuid).then((response)=>{
+      console.log(response);
+    });
+  }
 
    
 
@@ -105,7 +111,14 @@ class TableDetails extends React.Component {
           
           <Grid container spacing={1}>
               
-                    <Grid item xs={12} className="GridElement">
+                    <Grid item xs={6} className="GridElement">
+                                    <div className="BigTag" onClick = {this.test}>
+                                            {this.props.table.name}
+                                        </div>
+                                        
+                                        
+                    </Grid>
+                    <Grid item xs={6} className="GridElement">
                                     <div className="BigTag" onClick = {this.test}>
                                             {this.props.table.name}
                                         </div>

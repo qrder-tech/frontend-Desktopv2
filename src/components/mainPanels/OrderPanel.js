@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { getUserInfo, requestOrders } from "../../requests/restaurant";
 import { setDisplayingPanel, setOrders } from "../../redux/actions";
 import OrderCreatePanel from "./order/OrderCreatePanel";
-import { removeOrder } from "../../requests/order";
+import { payOrder, removeOrder } from "../../requests/order";
 
 const moment = require('moment');
 
@@ -66,6 +66,11 @@ class OrderPanel extends React.Component {
   serveOrder = (order) =>{
     console.log(order);
     //update order as paid
+    payOrder(this.props.token,order.uuid).then((response)=>{
+      console.log(response);
+      this.updateOrders();
+    });
+    //notify with mqtt
 
   }
 
@@ -95,19 +100,20 @@ class OrderPanel extends React.Component {
               action : <DeleteForever onClick={this.removeOrder.bind(this,order.uuid)}/>});
       })
       var service;
-      if(this.props.user){
+      /*if(this.props.user){
         service = this.props.user.serviceType;          
         this.setState({info:{OrderCount:response.length,
           orders : temp,
           serviceType : service}});
-      }else{
+      }else{*/
         getUserInfo(this.props.token).then((result)=>{
           service = result.serviceType;            
           this.setState({info:{OrderCount:response.length,
-            orders : temp,
-            serviceType : service}});
-        })
-      }
+            orders : temp},
+            serviceType : service});
+            console.log(service == "self");
+        });
+      //}
       
     });
   }
@@ -159,7 +165,7 @@ class OrderPanel extends React.Component {
                     return (
                       <TableCell onClick={(column.id == "status" || column.id == "action")? null :this.showOrderDetails.bind(this,row.uuid)} key={column.id} align={column.align} style={(column.id == "status")?(null):{cursor:"pointer"}} >
                         <div className="OrderCell" >                                                    
-                          {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?((this.state.serviceType == "self")?(<>{icons[value]}<NotificationsActive onClick={this.serveOrder.bind(this,row)} style={{fontSize:"40"}}/></>):(icons[value])):(value))}
+                          {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?((this.state.serviceType == "self" && row.status == "waiting")?(<>{icons[value]}<NotificationsActive onClick={this.serveOrder.bind(this,row)} style={{fontSize:"40"}}/></>):(icons[value])):(value))}
                   
                         </div>
                       </TableCell>

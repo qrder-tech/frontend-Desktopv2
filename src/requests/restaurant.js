@@ -1,5 +1,7 @@
 var axios = require('axios');
 
+const moment = require('moment');
+
 
 export const getUserInfo = (token) => {
 
@@ -155,40 +157,6 @@ export const changeItemStatus = (uuid,token,status) =>{
     console.log(error);
   });
 }
-/*
-export const addOrder = (token,order) =>{
-
-  var tempItems = [];
-
-  order.items.map((item)=>{
-    tempItems.push({"uuid":item.uuid,"metadata":item.metadata,"quantity" : `${item.quantity}`});
-  });
-
-  var data = JSON.stringify({
-    "restaurantUuid":"56bc78e9-05fd-454c-99ad-18d479aa8ad9",
-    "userUuid":"3d9b7b60-741f-45aa-b94a-68daa30b7ea6",
-    "table_id":"af92bacf-a01a-4903-99d6-2887359c1d23",
-    "items":tempItems});
-
-  var config = {
-    method: 'post',
-    url: 'https://qrder-web.herokuapp.com/order/new',
-    headers: { 
-      'Content-Type': 'application/json', 
-      'Authorization': `Bearer ${token}`
-    },
-    data : data
-  };
-
-  return axios(config)
-  .then(function (response) {
-    console.log(JSON.stringify(response.data));
-    return response;
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-}*/
 
 export const addSubtopic = (name,token) =>{
   var qs = require('qs');
@@ -239,6 +207,101 @@ export const getTablesRequest = (token) =>{
 }
 
 export const createTable = (name,token) =>{
+  var data = JSON.stringify({"name":name});
+
+  var config = {
+    method: 'post',
+    url: 'https://qrder-web.herokuapp.com/restaurant/table',
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    data : data
+  };
+  
+  return axios(config)
+  .then(function (response) {
+    return response;
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+
+}
+
+export const addService = (token,service,tableUuid) =>{
+    var qs = require('qs');
+    var data = qs.stringify({
+    'name': service,
+    'createdAt': moment().format() 
+    });
+    var config = {
+      method: 'post',
+      url: `https://qrder-web.herokuapp.com/restaurant/table/services?uuid=${tableUuid}`,
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      data : data
+    };
+
+    return axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+  });
+}
+
+export const removeService = (token,service,tableUuid) =>{
+  var qs = require('qs');
+  var data = qs.stringify({
+  'name': service
+  });
+  var config = {
+    method: 'delete',
+    url: `https://qrder-web.herokuapp.com/restaurant/table/services?uuid=${tableUuid}`,
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data : data
+  };
+
+  return axios(config)
+  .then(function (response) {
+    return response;
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+
+}
+
+export const getTable = (token,uuid) =>{
+  
+    var config = {
+      method: 'get',
+      url: `https://qrder-web.herokuapp.com/restaurant/table?uuid=${uuid}`,
+      headers: { 
+        'Authorization': `Bearer ${token}`
+      }
+    };
+
+    return axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+}
+
+
+
+/*export const createTable = (name,token) =>{
     var qs = require('qs');
     var data = qs.stringify({
     'name': name 
@@ -263,4 +326,4 @@ export const createTable = (name,token) =>{
       return error;
     });
 
-}
+}*/
