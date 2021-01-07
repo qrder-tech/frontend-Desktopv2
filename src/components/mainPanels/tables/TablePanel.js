@@ -5,6 +5,7 @@ import { createTable, getTablesRequest } from "../../../requests/restaurant";
 import { connect } from "react-redux";
 import { setDisplayingPanel, setTables, test } from "../../../redux/actions";
 import { Button, TextField, withStyles } from "@material-ui/core";
+import resClient from "../../../mqtt/client";
 
 class TablePanel extends React.Component {
   
@@ -13,11 +14,20 @@ class TablePanel extends React.Component {
       tableCount:null,
       tables:[{}]
     },
-    columns :[]
+    columns :[],
+    compListener : null,
    };
   
+   componentWillUnmount(){
+    document.removeEventListener("table", this.state.compListener);
+    document.removeEventListener("order", this.state.compListener);
+   }
 
   componentDidMount(){
+    var compListener = ()=>{this.update()};
+    this.setState({compListener:compListener});
+    document.addEventListener("table",compListener);    
+    document.addEventListener("order",compListener);
       if(this.props.tables.table){
         var rows = [];
         const columns = [];
@@ -107,12 +117,12 @@ class TablePanel extends React.Component {
 
   render() {
     const {classes} = this.props;
-    if(this.props.mqtt != ""){
+    /*if(this.props.mqtt != ""){
       console.log(this.props.mqtt);
       this.props.dispatch(test(""));
       this.update();
             
-    }
+    }*/
     
     return (
       <div className="TablePanel">

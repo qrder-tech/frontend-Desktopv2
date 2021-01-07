@@ -6,6 +6,7 @@ import { getUserInfo, requestOrders } from "../../requests/restaurant";
 import { setDisplayingPanel, setOrders } from "../../redux/actions";
 import OrderCreatePanel from "./order/OrderCreatePanel";
 import { payOrder, removeOrder } from "../../requests/order";
+import resClient from "../../mqtt/client";
 
 const moment = require('moment');
 
@@ -18,6 +19,7 @@ class OrderPanel extends React.Component {
     serviceType : "",
     page: 0,
     rowsPerPage : 10,
+    compListener : null
   };
 
   columns = [
@@ -71,6 +73,7 @@ class OrderPanel extends React.Component {
       this.updateOrders();
     });
     //notify with mqtt
+    resClient.client.publish(`restaurant/${this.props.user.uuid}/${order.uuid}`,"ready");
 
   }
 
@@ -100,12 +103,6 @@ class OrderPanel extends React.Component {
               action : <DeleteForever onClick={this.removeOrder.bind(this,order.uuid)}/>});
       })
       var service;
-      /*if(this.props.user){
-        service = this.props.user.serviceType;          
-        this.setState({info:{OrderCount:response.length,
-          orders : temp,
-          serviceType : service}});
-      }else{*/
         getUserInfo(this.props.token).then((result)=>{
           service = result.serviceType;            
           this.setState({info:{OrderCount:response.length,
@@ -118,9 +115,15 @@ class OrderPanel extends React.Component {
     });
   }
 
+  componentWillUnmount(){
+    document.removeEventListener("order", this.state.compListener);
+   }
 
   componentDidMount() {
     
+    var compListener = ()=>{this.updateOrders()};
+    this.setState({compListener:compListener}); 
+    document.addEventListener("order",compListener);
     this.updateOrders();
   }
 

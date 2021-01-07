@@ -11,9 +11,10 @@ import LeftDrawer from "../drawers/LeftDrawer";
 import RightDrawer from "../drawers/RightDrawer";
 import OrderPanel from "../mainPanels/OrderPanel";
 import { connect } from "react-redux";
-import { setDisplayingPanel } from "../../redux/actions";
+import { setDisplayingPanel, setUser } from "../../redux/actions";
 import TablePanel from "../mainPanels/tables/TablePanel";
-
+import resClient from "../../mqtt/client"
+import { getUserInfo } from "../../requests/restaurant";
 
 
 class MainPage extends React.Component {
@@ -23,7 +24,17 @@ class MainPage extends React.Component {
   };
 
   componentDidMount() {
+    if(this.props.user){
+      resClient.init(this.props.token,this.props.user.uuid);
+    }else{
+      getUserInfo(this.props.token).then((response)=>{
+        console.log(response);
+        this.props.dispatch(setUser(response));
+        resClient.init(this.props.token,response.uuid);
+      });
+    }
     
+
   }
 
   handleTabChange = (event, newValue) => {
