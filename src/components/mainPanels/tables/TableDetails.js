@@ -10,6 +10,8 @@ import MiniOrderPanel from "../order/MiniOrderPanel";
 import MiniServicePanel from "./MiniServicePanel";
 import OrderCreatePanel from "../order/OrderCreatePanel";
 
+var QRCode = require('qrcode.react');
+
 class TableDetails extends React.Component {
   state = {
       table:{},
@@ -111,16 +113,15 @@ class TableDetails extends React.Component {
           
           <Grid container spacing={1}>
               
-                    <Grid item xs={6} className="GridElement">
+                    <Grid item xs={12} className="GridElement">
                                     <div className="BigTag" onClick = {this.test}>
-                                            {this.props.table.name}
-                                        </div>
-                                        
+                                            {this.props.table.name} 
+                                        </div>                         
                                         
                     </Grid>
-                    <Grid item xs={6} className="GridElement">
-                                    <div className="BigTag" onClick = {this.test}>
-                                            {this.props.table.name}
+                    <Grid item xs={12} className="GridElement">
+                                    <div className="BigTag" onClick = {this.test}>                                                                                     
+                                            <QRCode value={`${this.props.user.uuid}:${this.props.table.uuid}`} bgColor="#837032" fgColor="#282c34e8"/>
                                         </div>
                                         
                                         
