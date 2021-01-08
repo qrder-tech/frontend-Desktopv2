@@ -84,7 +84,18 @@ class TableDetails extends React.Component {
   }
 
    
-
+  downloadQR = () =>{
+    const canvas = document.getElementById(`qr${this.props.table.uuid}`);
+    const pngUrl = canvas
+      .toDataURL("image/png")
+      .replace("image/png", "image/octet-stream");
+    let downloadLink = document.createElement("a");
+    downloadLink.href = pngUrl;
+    downloadLink.download = "123456.jpg";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
 
 
   componentDidMount() {
@@ -121,11 +132,13 @@ class TableDetails extends React.Component {
                     </Grid>
                     <Grid item xs={12} className="GridElement">
                                     <div className="BigTag" onClick = {this.test}>                                                                                     
-                                            <QRCode value={`${this.props.user.uuid}:${this.props.table.uuid}`} bgColor="#837032" fgColor="#282c34e8"/>
+                                            <QRCode id={`qr${this.props.table.uuid}`} value={`${this.props.user.uuid}:${this.props.table.uuid}`} bgColor="#837032" fgColor="#282c34e8"/>
                                         </div>
-                                        
-                                        
                     </Grid>
+                    <Grid item xs={12} className="GridElement">
+                                            <a style={{cursor:"pointer"}}onClick={this.downloadQR}>Download QR</a>
+                    </Grid>                  
+                                        
                     <Grid item xs={9} className="GridElement" >
                             <Grid container spacing={1}>
                                 
