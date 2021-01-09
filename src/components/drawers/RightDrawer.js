@@ -4,7 +4,7 @@ import {  Divider, Drawer, List, ListItem, ListItemIcon, ListItemText,  withStyl
 import { AccountBalanceWallet,  CheckBox,  Face,  HourglassFull } from "@material-ui/icons";
 import { connect } from "react-redux";
 import MainPage from "../mainFrames/MainPage";
-import { setDisplayingPanel } from "../../redux/actions";
+import { setDisplayingPanel, setUser } from "../../redux/actions";
 import { getMetrics, getUserInfo } from "../../requests/restaurant";
 
 class RightDrawer extends React.Component {
@@ -55,18 +55,29 @@ class RightDrawer extends React.Component {
         }
       });
     }else{
-      getUserInfo(this.props.token).then(()=>{
-      if(this.props.user.serviceType == "normal"){   
-        items = [
-          {text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:1},
-          {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : 4},
-          {text : "Payment" , item:<AccountBalanceWallet style={{fontSize:90}}/>,count : 1},
-          {text:"Waiter" , item:<Face style={{fontSize:90}}/>,count : 2}];
-      }else{
-        items = [{text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:3},
-        {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : 4}];
-      }
-      this.setState({items});
+      getUserInfo(this.props.token).then((result)=>{
+        
+        this.props.dispatch(setUser(result));
+        getMetrics(this.props.token).then((response)=>{
+          console.log(response.data);
+          if(response.data.orders){
+            if(result.serviceType == "normal"){             
+              items = [
+                {text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:response.data.orders.served},
+                {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : response.data.orders.waiting},
+                {text : "Payment" , item:<AccountBalanceWallet style={{fontSize:90}}/>,count : response.data.services.payment},
+                {text:"Waiter" , item:<Face style={{fontSize:90}}/>,count : response.data.services.waiter}];
+                tableStatus=[{text:"Occupied Tables",count:response.data.tables.occupied},
+                {text:"Free Tables",count:response.data.tables.free},
+                {text:"Most Delayed Table",count:response.data.tables.mostDelayedNo}];
+                this.setState({tableStatus});
+            }else{
+              items = [{text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:3},
+              {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : 4}];
+            }
+            this.setState({items});
+          }
+        });
     });
 
     }
