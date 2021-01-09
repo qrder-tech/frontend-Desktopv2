@@ -15,7 +15,9 @@ class RightDrawer extends React.Component {
     open : false,
     items : [],
     tableStatus : [],
-    compListener :null
+    compListener :null,
+    serviceType : null,
+    restaurantUuid : null
   }
 
   componentWillUnmount(){
@@ -30,6 +32,16 @@ class RightDrawer extends React.Component {
     document.addEventListener("table",compListener);    
     document.addEventListener("order",compListener);
     this.updateDrawer();
+    if(this.props.user){
+      this.setState({serviceType:this.props.user.serviceType});
+      this.setState({restaurantUuid : this.props.user.uuid});
+    }else{
+      getUserInfo(this.props.token).then((response)=>{
+        this.props.dispatch(setUser(response));
+        this.setState({serviceType:response.serviceType});
+        this.setState({restaurantUuid : response.uuid});
+      });
+    }
   }
 
   updateDrawer = () =>{
@@ -120,12 +132,13 @@ class RightDrawer extends React.Component {
           <div className="Drawer">
           <List >
             <ListItem>
-              <ListItemText style={{color:"black"}}>{(this.props.user.serviceType == "normal")?(<p style={{fontSize:15}}>
+              <ListItemText style={{color:"black"}}>{(this.state.serviceType == "self")?
+              ( <> &nbsp;&nbsp;&nbsp;&nbsp;
+                <QRCode id={`qr${this.state.restaurantUuid}`} value={`${this.state.restaurantUuid}`} bgColor="#837032" fgColor="#282c34e8"/>
+                &nbsp;&nbsp;&nbsp;&nbsp;<a style={{cursor:"pointer"}}onClick={this.downloadQR}>Download QR</a></>
+                                     ):(<p style={{fontSize:15}}>
                   {this.state.tableStatus.map((title)=>{return <>{`${title.text} : ${title.count}`}<hr className="Test4"/></>})}
-                  </p>):( <> &nbsp;&nbsp;&nbsp;&nbsp;
-                  <QRCode id={`qr${this.props.user.uuid}`} value={`${this.props.user.uuid}`} bgColor="#837032" fgColor="#282c34e8"/>
-                  &nbsp;&nbsp;&nbsp;&nbsp;<a style={{cursor:"pointer"}}onClick={this.downloadQR}>Download QR</a></>
-                                       )}                
+                  </p>)}                
                 </ListItemText>
             </ListItem>
             <Divider classes={{root : classes.divider}}/>
