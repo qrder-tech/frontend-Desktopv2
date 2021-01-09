@@ -7,6 +7,8 @@ import MainPage from "../mainFrames/MainPage";
 import { setDisplayingPanel, setUser } from "../../redux/actions";
 import { getMetrics, getUserInfo } from "../../requests/restaurant";
 
+var QRCode = require('qrcode.react');
+
 class RightDrawer extends React.Component {
 
   state ={
@@ -48,8 +50,8 @@ class RightDrawer extends React.Component {
               {text:"Most Delayed Table",count:response.data.tables.mostDelayedNo}];
               this.setState({tableStatus});
           }else{
-            items = [{text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:3},
-            {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : 4}];
+            items = [{text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:response.data.orders.served},
+            {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : response.data.orders.waiting}];
           }
           this.setState({items});
         }
@@ -72,8 +74,8 @@ class RightDrawer extends React.Component {
                 {text:"Most Delayed Table",count:response.data.tables.mostDelayedNo}];
                 this.setState({tableStatus});
             }else{
-              items = [{text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:3},
-              {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : 4}];
+              items = [{text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:response.data.orders.served},
+              {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : response.data.orders.waiting}];
             }
             this.setState({items});
           }
@@ -82,6 +84,20 @@ class RightDrawer extends React.Component {
 
     }
   }
+
+  downloadQR = () =>{
+    const canvas = document.getElementById(`qr${this.props.user.uuid}`);
+    const pngUrl = canvas
+      .toDataURL("image/png")
+      .replace("image/png", "image/octet-stream");
+    let downloadLink = document.createElement("a");
+    downloadLink.href = pngUrl;
+    downloadLink.download = "123456.jpg";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
+
 
   clickhandler(item){
     alert(item.text + " : " + item.count );
@@ -104,10 +120,12 @@ class RightDrawer extends React.Component {
           <div className="Drawer">
           <List >
             <ListItem>
-              <ListItemText style={{color:"black"}}>
-                <p style={{fontSize:15}}>
+              <ListItemText style={{color:"black"}}>{(this.props.user.serviceType == "normal")?(<p style={{fontSize:15}}>
                   {this.state.tableStatus.map((title)=>{return <>{`${title.text} : ${title.count}`}<hr className="Test4"/></>})}
-                  </p>
+                  </p>):( <> &nbsp;&nbsp;&nbsp;&nbsp;
+                  <QRCode id={`qr${this.props.user.uuid}`} value={`${this.props.user.uuid}`} bgColor="#837032" fgColor="#282c34e8"/>
+                  &nbsp;&nbsp;&nbsp;&nbsp;<a style={{cursor:"pointer"}}onClick={this.downloadQR}>Download QR</a></>
+                                       )}                
                 </ListItemText>
             </ListItem>
             <Divider classes={{root : classes.divider}}/>

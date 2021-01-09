@@ -6,6 +6,7 @@ import { addItem, editProfile, getUserInfo, UpdateItem } from "../../requests/re
 import { setDisplayingPanel, setUser } from "../../redux/actions";
 import MenuPanel from "./MenuPanel";
 import TablePanel from "./tables/TablePanel";
+import OrderPanel from "./OrderPanel";
 
 class ProfileEditPanel extends React.Component {
 
@@ -39,7 +40,9 @@ class ProfileEditPanel extends React.Component {
             editProfile(this.props.token,values).then(()=>{
                 getUserInfo(this.props.token).then((result)=>{
                     this.props.dispatch(setUser(result));                    
-                    this.props.dispatch(setDisplayingPanel(<TablePanel/>));
+                    this.props.dispatch(setDisplayingPanel(<OrderPanel/>));
+                    const event = new Event('user'); 
+                    document.dispatchEvent(event);
                 })
             });
 
@@ -96,8 +99,15 @@ class ProfileEditPanel extends React.Component {
     }
 
     imageRender = () =>{
+        var temp = this.state;
+        if(temp.changes.indexOf("img") == -1){
+            temp.changes.push("img");
+        }
+        temp.img = this.state.formVariables[0].reference.value;
+        this.setState(temp);
+        /*
         console.log(this.state.formVariables[0].reference.value);
-        this.setState({img:this.state.formVariables[0].reference.value});
+        this.setState({img:this.state.formVariables[0].reference.value});*/
     }
 
 

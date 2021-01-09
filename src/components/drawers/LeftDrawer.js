@@ -11,11 +11,14 @@ import MenuPanel from "../mainPanels/MenuPanel";
 import ItemPanel from "../mainPanels/Item/ItemPanel";
 import OrderCreatePanel from "../mainPanels/order/OrderCreatePanel";
 import ProfileEditPanel from "../mainPanels/ProfileEditPanel";
+import { getUserInfo } from "../../requests/restaurant";
 
 class LeftDrawer extends React.Component {
 
   state ={
-    open : false
+    open : false,
+    userImage : null,
+    compListener : null
   }
 
   clickhandler(text){
@@ -66,6 +69,27 @@ class LeftDrawer extends React.Component {
       //alert(token);
     }*/
   }
+
+  componentWillUnmount(){
+    document.removeEventListener("user", this.state.compListener);
+   }
+
+   update = () =>{
+    if(this.props.user){
+      this.setState({userImage:this.props.user.img});
+    }else{
+      getUserInfo(this.props.token).then((result)=>{
+        this.props.dispatch(setUser(result));
+        this.setState({userImage:result.img});
+      });
+    }
+   }
+  componentDidMount(){
+    var compListener = ()=>{this.update()};
+    this.setState({compListener:compListener});
+    document.addEventListener("user",compListener);
+    this.update();
+  }
   
   handleLogout(){
       
@@ -86,7 +110,8 @@ class LeftDrawer extends React.Component {
   render() {
     const { classes } = this.props;
     
-    const items = [{text:"User" , item:<AccountCircle style={{fontSize:145}}/>},
+    var image = (this.state.userImage)?(<img  src={this.state.userImage} Height="160px" />  ):(<AccountCircle style={{fontSize:145}}/>)
+    const items = [{text:"User" , item:image},
                     {text : "Edit" , item:<Edit style={{fontSize:70}}/>,label:"Edit"},
                    {text : "Menu" , item:<MenuBook style={{fontSize:70}}/>,label:"Menu"},
                    {text : "AddItem" , item:<Fastfood style={{fontSize:70}}/>,label:"AddItem"},
