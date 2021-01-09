@@ -3,7 +3,7 @@ import React from "react"
 import {  Divider, Drawer,  List, ListItem, ListItemIcon, ListItemText,  withStyles } from "@material-ui/core";
 
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { AccountCircle,  Edit, Fastfood, MenuBook, Settings } from "@material-ui/icons";
+import { AccountCircle,  Edit, Fastfood, MenuBook, Receipt, Settings } from "@material-ui/icons";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { setDisplayingPanel, setToken, setUser } from "../../redux/actions";
@@ -12,6 +12,7 @@ import ItemPanel from "../mainPanels/Item/ItemPanel";
 import OrderCreatePanel from "../mainPanels/order/OrderCreatePanel";
 import ProfileEditPanel from "../mainPanels/ProfileEditPanel";
 import { getUserInfo } from "../../requests/restaurant";
+import OffersPanel from "../mainPanels/OffersPanel";
 
 class LeftDrawer extends React.Component {
 
@@ -43,11 +44,13 @@ class LeftDrawer extends React.Component {
         break;        
       case "AddOrder":        
         console.log("order");        
-        this.props.dispatch(setDisplayingPanel(<OrderCreatePanel/>));
-        
+        this.props.dispatch(setDisplayingPanel(<OrderCreatePanel/>));        
         break;
       case "Edit":        
         this.props.dispatch(setDisplayingPanel(<ProfileEditPanel/>));
+        break;
+      case "ShowOffers":
+        this.props.dispatch(setDisplayingPanel(<OffersPanel/>));
         break;
       default:
         alert("hi " + text);
@@ -113,9 +116,10 @@ class LeftDrawer extends React.Component {
     var image = (this.state.userImage)?(<img  src={this.state.userImage} Height="160px" />  ):(<AccountCircle style={{fontSize:145}}/>)
     const items = [{text:"User" , item:image},
                     {text : "Edit" , item:<Edit style={{fontSize:70}}/>,label:"Edit"},
+                    {text : "ShowOffers" , item:<Receipt style={{fontSize:65}}/>,label:"Show Offers"},
                    {text : "Menu" , item:<MenuBook style={{fontSize:70}}/>,label:"Menu"},
-                   {text : "AddItem" , item:<Fastfood style={{fontSize:70}}/>,label:"AddItem"},
-                   {text : "AddOrder" , item:<><Fastfood style={{fontSize:20}}/><Fastfood style={{fontSize:50}}/></>,label:"AddOrder"}];
+                   {text : "AddItem" , item:<Fastfood style={{fontSize:70}}/>,label:"Add Item"},
+                   {text : "AddOrder" , item:<><Fastfood style={{fontSize:20}}/><Fastfood style={{fontSize:50}}/></>,label:"Add Order"}];
     return (
       <Drawer anchor="left"variant="permanent" classes={{paper:classes.paper}}>
           <div className="Drawer">

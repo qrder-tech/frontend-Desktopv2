@@ -15,6 +15,7 @@ import { setDisplayingPanel, setUser } from "../../redux/actions";
 import TablePanel from "../mainPanels/tables/TablePanel";
 import resClient from "../../mqtt/client"
 import { getUserInfo } from "../../requests/restaurant";
+import { Receipt } from "@material-ui/icons";
 
 
 class MainPage extends React.Component {
@@ -78,6 +79,8 @@ class MainPage extends React.Component {
                     <br/>
                     {this.state.userInfo.address}
                   </h1>
+                  
+                  <h1 className="title4"><Receipt style={{fontSize:50}}/>Title Field</h1>
                   <AppBar position="static" className="Tab-Length">
                     <Tabs
                       value={this.state.value}

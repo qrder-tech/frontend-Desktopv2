@@ -360,3 +360,68 @@ export const getMetrics = (token) =>{
 
   
 }
+
+export const getOffers = (token) =>{
+  var config = {
+    method: 'get',
+    url: 'https://qrder-web.herokuapp.com/restaurant/offers',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  };
+  
+  return axios(config)
+  .then(function (response) {
+    return response;
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+}
+
+export const newOffer = (token,src) =>{
+  var qs = require('qs');
+  var data = qs.stringify({
+  'img': src 
+  });
+  var config = {
+    method: 'post',
+    url: 'https://qrder-web.herokuapp.com/restaurant/offers',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data : data
+  };
+
+  return axios(config)
+  .then(function (response) {
+    return response;
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+}
+
+export const removeOffer = (token,uuid) =>{
+  var qs = require('qs');
+  var data = qs.stringify({
+    
+  });
+  var config = {
+    method: 'delete',
+    url: `https://qrder-web.herokuapp.com/restaurant/offers?uuid=${uuid}`,
+    headers: { 
+      'Authorization': `Bearer ${token}`
+    },
+    data : data
+  };
+
+  return axios(config)
+  .then(function (response) {
+    return response;
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+}
