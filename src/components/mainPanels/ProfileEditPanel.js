@@ -2,9 +2,10 @@ import React from "react";
 import { Button, Grid, Paper, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, withStyles } from "@material-ui/core";
 import { AccountBox,AccountBalanceWallet, AddCircle, Bookmark, CheckBox,  CheckSharp,  Face, Fastfood, HighlightOff, HourglassFull, LocalOffer, Note, LocationOn, Phone, Mail, VpnKey, AccountCircle } from "@material-ui/icons";
 import { connect } from "react-redux";
-import { addItem, UpdateItem } from "../../requests/restaurant";
-import { setDisplayingPanel } from "../../redux/actions";
+import { addItem, editProfile, getUserInfo, UpdateItem } from "../../requests/restaurant";
+import { setDisplayingPanel, setUser } from "../../redux/actions";
 import MenuPanel from "./MenuPanel";
+import TablePanel from "./tables/TablePanel";
 
 class ProfileEditPanel extends React.Component {
 
@@ -21,45 +22,66 @@ class ProfileEditPanel extends React.Component {
             username : "",
             password : "",
             type : "",
-        }
+        },
+        changes : []
     };
 
-    add = (formVars)=> {
-            var values = [];
-            formVars[1].reference = document.getElementById("types");
-            values["img"]= formVars[0].reference.value;
-            values["subtopicUuid"] = formVars[1].reference.value;
-            values["name"]= formVars[2].reference.value;
-            values["price"]= formVars[3].reference.value;
-            values["desc"]= formVars[4].reference.value;
-            values["metadata"]= formVars[5].reference.value;            
-            //console.log(values["type"].reference);
-            console.log(values);
-            if(this.props.item){
-                //console.log(this.state.item);
-                UpdateItem(values,this.props.token,this.state.item.uuid).then((response)=>{
-                    console.log(response);                    
-                    this.props.dispatch(setDisplayingPanel(<MenuPanel/>));
-                });
-            }else{
-                addItem(values,this.props.token).then((response)=>{
-                    console.log(response);
-                    this.props.dispatch(setDisplayingPanel(<MenuPanel/>));
-                });
-
-            }
-            /**/
+    editUser = (formVars)=> {
+            
+        
+        var values = {};
+        console.log(formVars);
+            formVars.map((element)=>{
+                if(this.state.changes.indexOf(element.id) != -1){
+                    values[element.id] = element.reference.value;
+                }
+            });
+            editProfile(this.props.token,values).then(()=>{
+                getUserInfo(this.props.token).then((result)=>{
+                    this.props.dispatch(setUser(result));                    
+                    this.props.dispatch(setDisplayingPanel(<TablePanel/>));
+                })
+            });
 
     }
-    componentDidMount() {
-        var formVariables = [
-            {id:"name",label : "RestaurantName",type:"text",reference : null,default: null},
-            {id:"address",label : "Address",type:"text",reference : null,default: null},
-            {id:"phone",label : "PhoneNumber",type:"text",reference : null,default: null},
-            {id:"email",label : "Email",type:"text",reference : null,default: null},
-            {id:"username",label : "Username",type:"text",reference : null,default: null},
-            {id:"password",label : "Password",type:"password",reference : null,default: null}
-        ];
+    handleTypeSwitch = () =>{
+        var prev = this.state.preview;
+        if(prev.serviceType == "normal"){
+            prev.serviceType ="self";
+        }else{
+            prev.serviceType = "normal";
+        }
+        this.setState({preview:prev});
+    }
+
+    updateView = () =>{
+        var formVariables = [];
+        if(this.props.user){
+            this.setState({preview:this.props.user});
+            formVariables = [            
+                {id:"img",label : "image",type:"text",reference : null,default1: this.props.user.img},
+                {id:"name",label : "Restaurant Name",type:"text",reference : null,default1: this.props.user.name},
+                {id:"address",label : "Address",type:"text",reference : null,default1: this.props.user.address},
+                {id:"phoneNumber",label : "Phone Number",type:"text",reference : null,default1: this.props.user.phoneNumber},
+                {id:"email",label : "Email",type:"text",reference : null,default1: this.props.user.email},
+                {id:"username",label : "Username",type:"text",reference : null,default1: this.props.user.username},
+                {id:"password",label : "Password",type:"password",reference : null,default1: this.props.user.password}
+            ];
+        }else{
+            getUserInfo(this.props.token).then((result)=>{
+                this.props.dispatch(setUser(result));
+                this.setState({preview: result});
+                formVariables = [            
+                    {id:"img",label : "image",type:"text",reference : null,default1: result.img},
+                    {id:"name",label : "Restaurant Name",type:"text",reference : null,default1: result.name},
+                    {id:"address",label : "Address",type:"text",reference : null,default1: result.address},
+                    {id:"phoneNumber",label : "Phone Number",type:"text",reference : null,default1: result.phoneNumber},
+                    {id:"email",label : "Email",type:"text",reference : null,default1: result.email},
+                    {id:"username",label : "Username",type:"text",reference : null,default1: result.username},
+                    {id:"password",label : "Password",type:"password",reference : null,default1: result.password}
+                ];
+            });
+        }
         
         if(this.props.item){
             console.log(this.props.item);
@@ -69,35 +91,32 @@ class ProfileEditPanel extends React.Component {
         }
         this.setState({formVariables});
     }
+    componentDidMount() {
+        this.updateView();
+    }
 
     imageRender = () =>{
         console.log(this.state.formVariables[0].reference.value);
         this.setState({img:this.state.formVariables[0].reference.value});
     }
 
-    typeRender = () =>{
-        
-        console.log(document.getElementById("types").value);
-        var typeName = document.getElementById(document.getElementById("types").value).innerHTML;
-        var temp = this.state;
-        temp.preview.subtopicName = typeName;
-        this.setState(temp); 
-    }
-
-    addMetadata = () =>{
-        var temp = this.state;
-        console.log(temp);
-        temp.preview.metadata.push(document.getElementById("metadata").value);
-        document.getElementById("metadata").value = "";
-        this.setState(temp);
-    }
 
     changeHandler = (contentId) =>{
         
         var temp = this.state;
         var value = document.getElementById(contentId).value;
+       /* if(temp.changes.indexOf(contentId) == -1){
+            
+            temp.changes.push(contentId);
+        }*/
+        if(contentId != "password"){
+            if(temp.changes.indexOf(contentId) == -1){
+                
+                temp.changes.push(contentId);
+            }
+        }
         switch (contentId){
-            case "name":
+            case "name":                
                 temp.preview.name = value;
                 break;
             case "address":
@@ -122,7 +141,7 @@ class ProfileEditPanel extends React.Component {
 
     render() {
         const {classes} = this.props;
-        console.log(this.state.formVariables);
+//        console.log(this.state.formVariables);
 
         var formVariables = this.state.formVariables;
 
@@ -136,7 +155,10 @@ class ProfileEditPanel extends React.Component {
                                 
                                 <Grid item xs={12} className="GridElement">
                                     <div className="BigImage">
-                                        <AccountCircle style={{fontSize:145,color:"#c4a748d0"}}/>                                        
+                                        {(this.state.img)?
+                                        ( <img  src={this.state.img} width ="60%" height ="100%"/> ):
+                                        (<AccountCircle style={{fontSize:145,color:"#c4a748d0"}}/> )}
+                                                                               
                                     </div>
                                 </Grid>
                                 <Grid item xs={12} className="GridElement">
@@ -148,10 +170,11 @@ class ProfileEditPanel extends React.Component {
                                         <Mail/>{this.state.preview.email}<br/>                                        
                                         <AccountBox/>{this.state.preview.username}<br/>                                        
                                         <VpnKey/>{this.state.preview.password}<br/> 
-                                        <LocalOffer/>self service<span style={{color:"#000000"}}>
+                                        <LocalOffer/>{this.state.preview.serviceType}<span style={{color:"#000000",float:"right"}}>
                                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Switch
                                                 color="default"
                                                 id = "registerSwitch"
+                                                onChange={this.handleTypeSwitch}
                                                 />
                                         </span>
                                         <br/>                            
@@ -165,7 +188,7 @@ class ProfileEditPanel extends React.Component {
                                             root: classes.buttonRoot, // class name, e.g. `classes-nesting-root-x`
                                             label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
                                         }}
-                                        onClick={this.add.bind(this,formVariables)}
+                                        onClick={this.editUser.bind(this,formVariables)}
                                     >Update</Button>
                                     </span>
                                 </Grid>
@@ -184,11 +207,10 @@ class ProfileEditPanel extends React.Component {
                                 <br/>
                                 </>):(<>
                                     <TextField id={index.id} label = {index.label} 
-                                    
                                     type={index.type}
                                     inputRef={el =>index.reference = el} 
                                     className = {classes.main}
-                                    defaultValue = {index.default}
+                                    defaultValue = {index.default1}
                                     onChange = {(index.id == "img") ? (this.imageRender):((index.id == "metadata")?(null):(this.changeHandler.bind(this,index.id)))}
                                     InputProps={{
                                             classes:{

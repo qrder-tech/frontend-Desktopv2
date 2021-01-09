@@ -2,6 +2,27 @@ var axios = require('axios');
 
 const moment = require('moment');
 
+export const editProfile = (token,values) => {
+  var qs = require('qs');
+  var data = qs.stringify(values);
+  var config = {
+    method: 'post',
+    url: 'https://qrder-web.herokuapp.com/restaurant/me',
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data : data
+  };
+
+  return axios(config)
+  .then(function (response) {
+    return response;
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+}
 
 export const getUserInfo = (token) => {
 
