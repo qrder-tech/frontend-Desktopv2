@@ -4,11 +4,12 @@ import { AccountBalanceWallet, AddCircle, CheckBox, Edit, Face, HourglassFull } 
 import { connect } from "react-redux";
 import { setDisplayingPanel, setMenu } from "../../../redux/actions";
 import ItemDetailsPanel from "../Item/ItemDetailsPanel";
-import { addService, removeService, requestMenu } from "../../../requests/restaurant";
+import { addService, removeService, removeTable, requestMenu } from "../../../requests/restaurant";
 import MiniItemPanel from "../Item/MiniItemPanel";
 import MiniOrderPanel from "../order/MiniOrderPanel";
 import MiniServicePanel from "./MiniServicePanel";
 import OrderCreatePanel from "../order/OrderCreatePanel";
+import TablePanel from "./TablePanel";
 
 var QRCode = require('qrcode.react');
 
@@ -75,13 +76,12 @@ class TableDetails extends React.Component {
 
   test = () =>{
     console.log(this.props.table.uuid);
-    /*addService(this.props.token,"payment",this.props.table.uuid).then((response)=>{
+    /*removeService(this.props.token,"waiter",this.props.table.uuid).then((response)=>{
       console.log(response);
     });*/
-    removeService(this.props.token,"waiter",this.props.table.uuid).then((response)=>{
-      console.log(response);
-    });
   }
+
+
 
    
   downloadQR = () =>{
@@ -95,6 +95,15 @@ class TableDetails extends React.Component {
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+  }
+
+  removeTable = () =>{
+    removeTable(this.props.token,this.props.table.uuid).then(()=>{      
+      const event = new Event('table'); 
+      document.dispatchEvent(event);
+      this.props.dispatch(setDisplayingPanel(<TablePanel/>));
+    });
+
   }
 
 
@@ -124,20 +133,23 @@ class TableDetails extends React.Component {
           
           <Grid container spacing={1}>
               
-                    <Grid item xs={12} className="GridElement">
-                                    <div className="BigTag" onClick = {this.test}>
-                                            {this.props.table.name} 
-                                        </div>                         
-                                        
-                    </Grid>
-                    <Grid item xs={12} className="GridElement">
+                    <Grid item xs={4} className="GridElement">
                                     <div className="BigTag" onClick = {this.test}>                                                                                     
                                             <QRCode id={`qr${this.props.table.uuid}`} value={`${this.props.user.uuid}:${this.props.table.uuid}`} bgColor="#837032" fgColor="#282c34e8"/>
                                         </div>
                     </Grid>
-                    <Grid item xs={12} className="GridElement">
-                                            <a style={{cursor:"pointer"}}onClick={this.downloadQR}>Download QR</a>
-                    </Grid>                  
+                    <Grid item xs={8} className="GridElement">
+                         <Grid container spacing={1}>
+                          <Grid item xs={12} className="GridElement">
+                                      <div className="BigTag" onClick = {this.test}>
+                                              {this.props.table.name} 
+                                          </div>  
+                            </Grid>           
+                          <Grid item xs={12} className="GridElement">
+                                                  <a style={{cursor:"pointer"}}onClick={this.downloadQR}>Download QR</a>
+                          </Grid>                            
+                        </Grid>           
+                    </Grid>             
                                         
                     <Grid item xs={9} className="GridElement" >
                             <Grid container spacing={1}>
@@ -183,7 +195,7 @@ class TableDetails extends React.Component {
                                             root: classes.buttonRoot, // class name, e.g. `classes-nesting-root-x`
                                             label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
                                         }}
-                                        
+                                        onClick={this.removeTable}
                                           >Remove Table</Button>
                                           <br/>
                                           <br/>
@@ -193,7 +205,7 @@ class TableDetails extends React.Component {
                                               <TableRow hover role="checkbox" tabIndex={-1} key={this.state.table.name} >
                                                 {this.state.columns.map((column) => {
                                                   return (<>   
-                                                        <MiniServicePanel tableServices = {this.state.table.services}/>
+                                                        <MiniServicePanel tableUuid={this.state.table.uuid} tableServices = {this.state.table.services}/>
                                                     </>
                                                   );
                                                 })}

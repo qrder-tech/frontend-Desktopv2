@@ -65,6 +65,8 @@ class MiniOrderPanel extends React.Component {
   removeOrder= (uuid) =>{
     //console.log(this.state.info.orders);
     removeOrder(this.props.token,uuid).then((response)=>{
+      const event = new Event('order'); 
+      document.dispatchEvent(event);
       this.updateOrders();
     });
   }
@@ -72,6 +74,8 @@ class MiniOrderPanel extends React.Component {
   serveOrder = (uuid) => {
     serveOrder(this.props.token,uuid).then((response)=>{
       console.log(response);
+      const event = new Event('order'); 
+      document.dispatchEvent(event);
       this.updateOrders();
     })
   }
@@ -79,6 +83,8 @@ class MiniOrderPanel extends React.Component {
   payOrder = (uuid) =>{
     payOrder(this.props.token,uuid).then((response)=>{
       console.log(response);
+      const event = new Event('order'); 
+      document.dispatchEvent(event);
       this.updateOrders();
     })
   }
@@ -91,16 +97,18 @@ class MiniOrderPanel extends React.Component {
     this.props.tableOrders.map((order)=>{
          getSpecificOrder(this.props.token,order.uuid).then((result)=>{
             console.log(result);
-            temp.push({
-              uuid : order.uuid,
-              orderNo:result.no,
-              time : moment().diff(moment(result.createdAt),"minutes"),
-              status : result.status ,
-              price : result.totalPrice,
-              actions : <div>{(result.status == "waiting")?(<CheckBox onClick={this.serveOrder.bind(this,order.uuid)}/>):(<AccountBalanceWallet onClick={this.payOrder.bind(this,order.uuid)}/>) }<br/><DeleteForever onClick={this.removeOrder.bind(this,order.uuid)}/></div>});
-              
-            this.setState({info:{orderCount:temp.length,
-              orders :temp}});
+            if(result.status != "paid"){
+              temp.push({
+                uuid : order.uuid,
+                orderNo:result.no,
+                time : moment().diff(moment(result.createdAt),"minutes"),
+                status : result.status ,
+                price : result.totalPrice,
+                actions : <div>{(result.status == "waiting")?(<CheckBox onClick={this.serveOrder.bind(this,order.uuid)}/>):(<AccountBalanceWallet onClick={this.payOrder.bind(this,order.uuid)}/>) }<br/><DeleteForever onClick={this.removeOrder.bind(this,order.uuid)}/></div>});
+                
+              this.setState({info:{orderCount:temp.length,
+                orders :temp}});
+            }
             
          }).catch((error)=>{
          });

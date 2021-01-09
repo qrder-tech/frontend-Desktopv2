@@ -2,7 +2,7 @@ import React from "react";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@material-ui/core";
 import { AccessibilityNew, AccountBalanceWallet, CheckBox, DeleteForever, Face, HourglassFull } from "@material-ui/icons";
 import { connect } from "react-redux";
-import { requestOrders } from "../../../requests/restaurant";
+import { removeService, requestOrders } from "../../../requests/restaurant";
 import { setOrders } from "../../../redux/actions";
 
 const moment = require('moment');
@@ -48,15 +48,11 @@ class MiniServicePanel extends React.Component {
     this.setState({page:0});
   };
 
+  updateServices = (services) =>{
 
-
-  componentDidMount() {
-    //console.log("orderpanel : " + this.props.token);
-    console.log("here");
-    console.log(this.props.tableServices);
     var temp = [];
     var serviceIcon;
-      if(this.props.tableServices){
+    if(this.props.tableServices){
       this.props.tableServices.map((service,index)=>{     
           switch(service.name){
               case "waiter":
@@ -73,15 +69,57 @@ class MiniServicePanel extends React.Component {
           temp.push({orderNo:index+1,
               time : moment().diff(moment(service.createdAt),"minutes"),
               service : serviceIcon,
-              actions : <CheckBox/>});
+              actions : <CheckBox onClick={this.serve.bind(this,service.name)} />});
       });
     }
     this.setState({info:{serviceCount:temp.length,
                         services :temp}});
-    /*this.setState({info : getOrders()});
-    setInterval(function(){      
-      this.setState({info : getOrders()});
-    }.bind(this),10);*/
+
+    
+  }
+
+ serve = (serviceName) =>{
+  console.log(this.props.tableUuid);
+  console.log(serviceName);
+  removeService(this.props.token,serviceName,this.props.tableUuid).then((response)=>{
+    console.log(response.data);    
+    const event = new Event('table'); 
+    document.dispatchEvent(event);    
+    var temp = [];
+    if(response.data.services){
+      var serviceIcon;
+      response.data.services.map((service,index)=>{     
+          switch(service.name){
+              case "waiter":
+                  serviceIcon = <Face/>;
+                  break;
+              case "payment":
+                  serviceIcon = <AccountBalanceWallet/>
+                  break;
+              default:
+                  serviceIcon = <AccessibilityNew/>
+                  break;
+
+          }
+          temp.push({orderNo:index+1,
+              time : moment().diff(moment(service.createdAt),"minutes"),
+              service : serviceIcon,
+              actions : <CheckBox onClick={this.serve.bind(this,service.name)} />});
+      });
+    }
+    this.setState({info:{serviceCount:temp.length,
+                        services :temp}});
+    
+  });
+ }
+
+
+
+  componentDidMount() {
+    //console.log("orderpanel : " + this.props.token);
+    console.log("here");
+    console.log(this.props.tableServices);
+    this.updateServices();
   }
 
   render() {

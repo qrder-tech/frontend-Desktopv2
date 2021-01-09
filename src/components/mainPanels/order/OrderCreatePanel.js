@@ -107,8 +107,9 @@ class OrderCreatePanel extends React.Component {
     });
     console.log(requestOrder);
     addOrder(this.props.token,requestOrder).then((response)=>{
-      console.log(response);
-      
+      console.log(response);      
+      const event = new Event('order'); 
+      document.dispatchEvent(event);
       this.props.dispatch(setDisplayingPanel(<OrderPanel/>));
     });
   }

@@ -5,17 +5,71 @@ import { AccountBalanceWallet,  CheckBox,  Face,  HourglassFull } from "@materia
 import { connect } from "react-redux";
 import MainPage from "../mainFrames/MainPage";
 import { setDisplayingPanel } from "../../redux/actions";
+import { getMetrics, getUserInfo } from "../../requests/restaurant";
 
 class RightDrawer extends React.Component {
 
   state ={
     open : false,
-    items : []
+    items : [],
+    tableStatus : [],
+    compListener :null
   }
 
-  componentDidMount(){
-    
+  componentWillUnmount(){
+    document.removeEventListener("table", this.state.compListener);
+    document.removeEventListener("order", this.state.compListener);
+   }
 
+  componentDidMount(){
+
+    var compListener = ()=>{this.updateDrawer()};
+    this.setState({compListener:compListener});
+    document.addEventListener("table",compListener);    
+    document.addEventListener("order",compListener);
+    this.updateDrawer();
+  }
+
+  updateDrawer = () =>{
+    var items =[];
+    var tableStatus = [];
+    if(this.props.user != null){
+      getMetrics(this.props.token).then((response)=>{
+        console.log(response.data);
+        if(response.data.orders){
+          if(this.props.user.serviceType == "normal"){             
+            items = [
+              {text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:response.data.orders.served},
+              {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : response.data.orders.waiting},
+              {text : "Payment" , item:<AccountBalanceWallet style={{fontSize:90}}/>,count : response.data.services.payment},
+              {text:"Waiter" , item:<Face style={{fontSize:90}}/>,count : response.data.services.waiter}];
+              tableStatus=[{text:"Occupied Tables",count:response.data.tables.occupied},
+              {text:"Free Tables",count:response.data.tables.free},
+              {text:"Most Delayed Table",count:response.data.tables.mostDelayedNo}];
+              this.setState({tableStatus});
+          }else{
+            items = [{text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:3},
+            {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : 4}];
+          }
+          this.setState({items});
+        }
+      });
+    }else{
+      getUserInfo(this.props.token).then(()=>{
+      if(this.props.user.serviceType == "normal"){   
+        items = [
+          {text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:1},
+          {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : 4},
+          {text : "Payment" , item:<AccountBalanceWallet style={{fontSize:90}}/>,count : 1},
+          {text:"Waiter" , item:<Face style={{fontSize:90}}/>,count : 2}];
+      }else{
+        items = [{text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:3},
+        {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : 4}];
+      }
+      this.setState({items});
+    });
+
+    }
   }
 
   clickhandler(item){
@@ -33,35 +87,26 @@ class RightDrawer extends React.Component {
 
   render() {
     const { classes } = this.props;
-    var items =[];
-    if(this.props.user != null){
-      if(this.props.user.serviceType == "normal"){   
-        items = [{text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:1},
-        {text : "Payment" , item:<AccountBalanceWallet style={{fontSize:90}}/>,count : 1},
-        {text:"Waiter" , item:<Face style={{fontSize:90}}/>,count : 2},
-      {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : 4}];
-      }else{
-        items = [{text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:3},
-  {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : 4}];
-      }
-    }else{
-      
-    }
+    
     return (
       <Drawer anchor="right"variant="permanent" classes={{paper:classes.paper}}>
           <div className="Drawer">
           <List >
             <ListItem>
-              <ListItemText style={{color:"black"}}><p style={{fontSize:15}}>Occupied Tables : 6<hr className="Test4"/>Free Tables : 14<hr className="Test4"/>Most Delayed Table: 14<hr className="Test4"/></p></ListItemText>
+              <ListItemText style={{color:"black"}}>
+                <p style={{fontSize:15}}>
+                  {this.state.tableStatus.map((title)=>{return <>{`${title.text} : ${title.count}`}<hr className="Test4"/></>})}
+                  </p>
+                </ListItemText>
             </ListItem>
             <Divider classes={{root : classes.divider}}/>
-          {items.map((text,index) => (
+          {this.state.items.map((text,index) => (
             <>
-              <ListItem key={text} onClick={()=>this.clickhandler(items[index])} classes={{root:classes.padding}}> 
+              <ListItem key={text} onClick={()=>this.clickhandler(this.state.items[index])} classes={{root:classes.padding}}> 
                  <ListItemIcon  style={{color:"#282c34e8"}}>
-                  {items[index].item}
+                  {this.state.items[index].item}
                 </ListItemIcon>
-                <ListItemText style={{color:"black"}}><p style={{fontSize:30,marginLeft:"40px"}}>{items[index].count}</p></ListItemText>
+                <ListItemText style={{color:"black"}}><p style={{fontSize:30,marginLeft:"40px"}}>{this.state.items[index].count}</p></ListItemText>
               </ListItem>
               <Divider classes={{root : classes.divider}}/>
               </>

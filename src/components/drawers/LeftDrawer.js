@@ -36,7 +36,7 @@ class LeftDrawer extends React.Component {
         break;
       case "AddItem":        
         console.log("item");
-        this.props.dispatch(setDisplayingPanel(<ItemPanel/>));
+        this.props.dispatch(setDisplayingPanel(<ItemPanel id="itemPanelDrawer"/>));
         break;        
       case "AddOrder":        
         console.log("order");        

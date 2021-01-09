@@ -71,8 +71,9 @@ class TablePanel extends React.Component {
 
   add = () =>{
     //alert(document.getElementById("tableAddTextField").value);
-    createTable(document.getElementById("tableAddTextField").value,this.props.token).then(()=>{
-      this.update();
+    createTable(document.getElementById("tableAddTextField").value,this.props.token).then(()=>{      
+      const event = new Event('table'); 
+      document.dispatchEvent(event);
     });
   }
 

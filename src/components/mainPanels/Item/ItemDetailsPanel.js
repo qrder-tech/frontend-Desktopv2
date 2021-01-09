@@ -22,7 +22,7 @@ class ItemDetailsPanel extends React.Component {
         
     }
     editItem = () =>{
-        this.props.dispatch(setDisplayingPanel(<ItemPanel item = {this.state.item}/>));
+        this.props.dispatch(setDisplayingPanel(<ItemPanel id="itemPanelUpdate" item = {this.state.item}/>));
     }
     /*<Button
         classes={{

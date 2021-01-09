@@ -4,7 +4,7 @@ import { AccountBalanceWallet, AddCircle, Bookmark, CheckBox,  CheckSharp,  Face
 import { connect } from "react-redux";
 import { addItem, requestMenu, requestOrders, UpdateItem } from "../../../requests/restaurant";
 import MenuPanel from "../MenuPanel";
-import { setDisplayingPanel } from "../../../redux/actions";
+import { setDisplayingPanel, setMenu } from "../../../redux/actions";
 
 class ItemPanel extends React.Component {
 
@@ -19,7 +19,8 @@ class ItemPanel extends React.Component {
             price : 0,
             desc : 0,
             options : [],
-        }
+        },
+        catalog : []
     };
 
     add = (formVars)=> {
@@ -50,7 +51,8 @@ class ItemPanel extends React.Component {
             /**/
 
     }
-    componentDidMount() {
+
+    updateView = () =>{
         var formVariables = [
             {id:"img",label : "Image(URL)",type:"text",reference : null,default: null},
             {id:"type",label : "type",type:"select",reference : null,default: null},
@@ -60,7 +62,8 @@ class ItemPanel extends React.Component {
             {id:"options",label : "Optionals",type:"text",reference : null,default: null}
         ];
         
-        if(this.props.item){
+        if(this.props.item){            
+            console.log("hey1");
             console.log(this.props.item);
             this.setState({item : this.props.item})
             var tempPrev = {                
@@ -88,8 +91,42 @@ class ItemPanel extends React.Component {
             tempPrev.options = temp;            
             this.setState({preview:tempPrev});
             this.setState({img:this.props.item.img})
+        }else{
+            this.setState({
+                loading : false,
+                item : {},
+                formVariables : [],
+                img : null,
+                preview:{
+                    type:0,
+                    name : 0,
+                    price : 0,
+                    desc : 0,
+                    options : [],
+                },
+                catalog : []
+            })
+        }
+        if(this.props.menu.catalog){
+            this.setState({catalog:this.props.menu.catalog})
+        }else{
+            var temp = [];
+            requestMenu(this.props.token).then((response) => {   
+                for (const [key, value] of Object.entries(response.data.items)) {                                    //check missing arguments
+                  temp.push({name:key,
+                            Items:value});
+              }
+              this.setState({rows:temp});
+              this.props.dispatch(setMenu({catalog:response.data.catalog,
+                                            items:temp}));
+              
+              this.setState({catalog:response.data.catalog})
+            });
         }
         this.setState({formVariables});
+    }
+    componentDidMount() {
+       this.updateView();
     }
 
     imageRender = () =>{
@@ -206,7 +243,7 @@ class ItemPanel extends React.Component {
                                 <div className="SelectLabel">Type</div> 
                                 <input id="types" autoComplete="off" className="Select" type="text" list="typelist" onChange={this.typeRender} defaultValue={index.default}/>
                                 <datalist id="typelist" className="Select">
-                                    {this.props.menu.catalog.map((type)=>(
+                                    {this.state.catalog.map((type)=>(
                                     <option id = {type.uuid} value={type} className="Option">{type}</option>))}
                                 </datalist> 
                                 <br/>
