@@ -87,7 +87,7 @@
 }
 
 .App-Header{
-  background: linear-gradient(120deg, #282c34e8 10%,   #c4a748d0 30%);  
+  background: linear-gradient(60deg, #282c34e8 20%,   #c4a748d0 50%);  
   justify-content: center;  
   align-items: center;
   text-align: center;
@@ -103,6 +103,26 @@
   
   font-size: 100%;
   color: #000000d0;
+
+}
+.title2{
+  display: flex;
+  position: absolute;
+  left: 11%;
+  top: 2%;
+  font-size: 100%;
+  color: #c4a748d0;
+
+}
+.title3{
+  line-height: 25px;
+  text-align: left;
+  display: flex;
+  position: absolute;
+  left: 11%;
+  top: 8%;
+  font-size: 50%;
+  color: #c4a748d0;
 
 }
 

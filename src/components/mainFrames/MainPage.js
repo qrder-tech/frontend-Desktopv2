@@ -20,16 +20,20 @@ import { getUserInfo } from "../../requests/restaurant";
 class MainPage extends React.Component {
   state = {
     value: 0,
-    drawerStyle:null
+    drawerStyle:null,
+    userInfo : {
+    }
   };
 
   componentDidMount() {
     if(this.props.user){
       resClient.init(this.props.token,this.props.user.uuid);
+      this.setState({userInfo:this.props.user});
     }else{
       getUserInfo(this.props.token).then((response)=>{
         console.log(response);
         this.props.dispatch(setUser(response));
+        this.setState({userInfo:response});
         resClient.init(this.props.token,response.uuid);
       });
     }
@@ -64,7 +68,16 @@ class MainPage extends React.Component {
           <LeftDrawer/> 
           <RightDrawer/>    
           <header className="App-Header">
-                  <h1 className="title">Qrder</h1>
+                  <h1 className="title">Qrder</h1>                  
+                  <h1 className="title2">{this.state.userInfo.name}</h1>                                   
+                  
+                  <h1 className="title3">
+                    {this.state.userInfo.email}
+                    <br/>
+                    {this.state.userInfo.phoneNumber}
+                    <br/>
+                    {this.state.userInfo.address}
+                  </h1>
                   <AppBar position="static" className="Tab-Length">
                     <Tabs
                       value={this.state.value}
