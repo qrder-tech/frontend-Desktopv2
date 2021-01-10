@@ -7,6 +7,7 @@ import { setDisplayingPanel, setOrders } from "../../redux/actions";
 import OrderCreatePanel from "./order/OrderCreatePanel";
 import { payOrder, removeOrder } from "../../requests/order";
 import resClient from "../../mqtt/client";
+import Loader from "react-loader-spinner";
 
 const moment = require('moment');
 
@@ -19,7 +20,8 @@ class OrderPanel extends React.Component {
     serviceType : "",
     page: 0,
     rowsPerPage : 10,
-    compListener : null
+    compListener : null,
+    loading : true
   };
 
   columns = [
@@ -89,7 +91,8 @@ class OrderPanel extends React.Component {
     });
   }
 
-  updateOrders = () =>{
+  updateOrders = () =>{    
+    this.setState({loading:true});
     requestOrders(this.props.token).then((response) => {
       this.props.dispatch(setOrders(response));
       var temp = [];
@@ -110,7 +113,7 @@ class OrderPanel extends React.Component {
             serviceType : service});
             console.log(service == "self");
         });
-      //}
+      this.setState({loading:false});
       
     });
   }
@@ -138,63 +141,62 @@ class OrderPanel extends React.Component {
     icons["waiting"] = <HourglassFull  style={{fontSize:"40"}}/>;
     icons["paid"] = <History style={{fontSize:"40"}}/>;
     icons["served"] = <CheckBox style={{fontSize:"40"}}/>;
-    //<CheckBox style={{fontSize:"40"}}/>,<AccountBalanceWallet style={{fontSize:"40"}}/>,<Face  style={{fontSize:"40"}}/>,<HourglassFull  style={{fontSize:"40"}}/>
-    return (
-      <div >
-        <TableContainer  className="Test2">
-        <Table stickyHeader aria-label="sticky table" >
-          <TableHead >
-            <TableRow >
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                  classes={{
-                    root:"Chart-header-specs"
-                  }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody  >
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
-              return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code} >
-                  {columns.map((column) => {
-                    const value = row[column.id];
-                    return (
-                      <TableCell onClick={(column.id == "status" || column.id == "action")? null :this.showOrderDetails.bind(this,row.uuid,row.status)} key={column.id} align={column.align} style={(column.id == "status")?(null):{cursor:"pointer"}} >
-                        <div className="OrderCell" >                                                    
-                          {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?((this.state.serviceType == "self" && row.status == "waiting")?(<>{icons[value]}<NotificationsActive onClick={this.serveOrder.bind(this,row)} style={{fontSize:"40"}}/></>):(icons[value])):(value))}
-                  
-                        </div>
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
+    return ((this.state.loading)?(<Loader style={{position:"absolute",left:"45%",top:"45%"}}type="Oval" color="#837032"/>):(<div >
+      <TableContainer  className="Test2">
+      <Table stickyHeader aria-label="sticky table" >
+        <TableHead >
+          <TableRow >
+            {columns.map((column) => (
+              <TableCell
+                key={column.id}
+                align={column.align}
+                style={{ minWidth: column.minWidth }}
+                classes={{
+                  root:"Chart-header-specs"
+                }}
+              >
+                {column.label}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody  >
+          {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
+            return (
+              <TableRow hover role="checkbox" tabIndex={-1} key={row.code} >
+                {columns.map((column) => {
+                  const value = row[column.id];
+                  return (
+                    <TableCell onClick={(column.id == "status" || column.id == "action")? null :this.showOrderDetails.bind(this,row.uuid,row.status)} key={column.id} align={column.align} style={(column.id == "status")?(null):{cursor:"pointer"}} >
+                      <div className="OrderCell" >                                                    
+                        {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?((this.state.serviceType == "self" && row.status == "waiting")?(<>{icons[value]}<NotificationsActive onClick={this.serveOrder.bind(this,row)} style={{fontSize:"40"}}/></>):(icons[value])):(value))}
+                
+                      </div>
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </TableContainer>
+    <TablePagination
+    
+      rowsPerPageOptions={[ 10]}
+      component="div"
+      count={rows.length}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      onChangePage={handleChangePage}
+      onChangeRowsPerPage={handleChangeRowsPerPage}  
+      className="Test3"      
+      classes={{
+        root:"Chart-header-specs"
+      }}
+    />
+  </div>)
       
-        rowsPerPageOptions={[ 10]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}  
-        className="Test3"      
-        classes={{
-          root:"Chart-header-specs"
-        }}
-      />
-    </div>
     );
   }
 }

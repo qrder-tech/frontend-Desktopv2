@@ -6,6 +6,7 @@ import { requestOrders } from "../../../requests/restaurant";
 import { setDisplayingPanel, setOrders } from "../../../redux/actions";
 import { getSpecificOrder, payOrder, removeOrder, serveOrder } from "../../../requests/order";
 import OrderCreatePanel from "./OrderCreatePanel";
+import Loader from "react-loader-spinner";
 
 const moment = require('moment');
 
@@ -17,6 +18,7 @@ class MiniOrderPanel extends React.Component {
     },
     page: 0,
     rowsPerPage : 10,
+    loading : true
   };
 
   columns = [
@@ -90,11 +92,15 @@ class MiniOrderPanel extends React.Component {
   }
 
   updateOrders = () =>{
+    this.setState({loading : true});
+    if(this.props.tableOrders.length == 0){
+      this.setState({loading : false});
+    }
     var temp = [];
 
     this.setState({info:{orderCount:0,
               orders : temp}});
-    this.props.tableOrders.map((order)=>{
+    this.props.tableOrders.map((order,index)=>{
          getSpecificOrder(this.props.token,order.uuid).then((result)=>{
             console.log(result);
             if(result.status != "paid"){
@@ -109,9 +115,12 @@ class MiniOrderPanel extends React.Component {
               this.setState({info:{orderCount:temp.length,
                 orders :temp}});
             }
-            
+            if(index == this.props.tableOrders.length-1){              
+              this.setState({loading : false});
+            }
          }).catch((error)=>{
          });
+         
     });
     
   }
@@ -135,48 +144,48 @@ class MiniOrderPanel extends React.Component {
     icons["waiting"] = <HourglassFull  style={{fontSize:"40"}}/>;
     icons["served"] = <CheckBox style={{fontSize:"40"}}/>;
     //<CheckBox style={{fontSize:"40"}}/>,<AccountBalanceWallet style={{fontSize:"40"}}/>,<Face  style={{fontSize:"40"}}/>,<HourglassFull  style={{fontSize:"40"}}/>
-    return (
-      <div >
-        <TableContainer  className="Test2">
-        <Table stickyHeader aria-label="sticky table" >
-          <TableHead >
-            <TableRow >
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                  classes={{
-                    root:"Chart-header-specs"
-                  }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody  >
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
-              return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code} >
-                  {columns.map((column) => {
-                    const value = row[column.id];
-                    return (
-                      <TableCell key={column.id} align={column.align} onClick={(column.id =="actions")?(null):(this.orderDetails.bind(this,row.uuid))}>
-                        <div className="OrderCell" >                                                    
-                          {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?(icons[value]):(value))}
-                          
-                        </div>
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </div>
+    return ((this.state.loading)?(<Loader type="Oval" color="#837032"/>):(<div >
+      <TableContainer  className="Test2">
+      <Table stickyHeader aria-label="sticky table" >
+        <TableHead >
+          <TableRow >
+            {columns.map((column) => (
+              <TableCell
+                key={column.id}
+                align={column.align}
+                style={{ minWidth: column.minWidth }}
+                classes={{
+                  root:"Chart-header-specs"
+                }}
+              >
+                {column.label}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody  >
+          {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
+            return (
+              <TableRow hover role="checkbox" tabIndex={-1} key={row.code} >
+                {columns.map((column) => {
+                  const value = row[column.id];
+                  return (
+                    <TableCell key={column.id} align={column.align} onClick={(column.id =="actions")?(null):(this.orderDetails.bind(this,row.uuid))}>
+                      <div className="OrderCell" >                                                    
+                        {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?(icons[value]):(value))}
+                        
+                      </div>
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </div>)
+      
     );
   }
 }

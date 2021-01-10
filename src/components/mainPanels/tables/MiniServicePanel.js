@@ -4,6 +4,7 @@ import { AccessibilityNew, AccountBalanceWallet, CheckBox, DeleteForever, Face, 
 import { connect } from "react-redux";
 import { removeService, requestOrders } from "../../../requests/restaurant";
 import { setOrders } from "../../../redux/actions";
+import Loader from "react-loader-spinner";
 
 const moment = require('moment');
 
@@ -15,6 +16,7 @@ class MiniServicePanel extends React.Component {
     },
     page: 0,
     rowsPerPage : 10,
+    loading : true
   };
 
   columns = [    
@@ -49,7 +51,7 @@ class MiniServicePanel extends React.Component {
   };
 
   updateServices = (services) =>{
-
+    this.setState({loading : true});
     var temp = [];
     var serviceIcon;
     if(this.props.tableServices){
@@ -74,8 +76,7 @@ class MiniServicePanel extends React.Component {
     }
     this.setState({info:{serviceCount:temp.length,
                         services :temp}});
-
-    
+    this.setState({loading : false});
   }
 
  serve = (serviceName) =>{
@@ -132,48 +133,48 @@ class MiniServicePanel extends React.Component {
     icons["waiting"] = <HourglassFull  style={{fontSize:"40"}}/>;
     icons["served"] = <CheckBox style={{fontSize:"40"}}/>;
     //<CheckBox style={{fontSize:"40"}}/>,<AccountBalanceWallet style={{fontSize:"40"}}/>,<Face  style={{fontSize:"40"}}/>,<HourglassFull  style={{fontSize:"40"}}/>
-    return (
-      <div >
-        <TableContainer  className="Test2">
-        <Table stickyHeader aria-label="sticky table" >
-          <TableHead >
-            <TableRow >
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                  classes={{
-                    root:"Chart-header-specs"
-                  }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody  >
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
-              return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code} >
-                  {columns.map((column) => {
-                    const value = row[column.id];
-                    return (
-                      <TableCell key={column.id} align={column.align} >
-                        <div className="OrderCell">                                                    
-                          {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?(icons[value]):(value))}
-                          
-                        </div>
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </div>
+    return ((this.state.loading)?(<Loader type="Oval" color="#837032"/>):(<div >
+      <TableContainer  className="Test2">
+      <Table stickyHeader aria-label="sticky table" >
+        <TableHead >
+          <TableRow >
+            {columns.map((column) => (
+              <TableCell
+                key={column.id}
+                align={column.align}
+                style={{ minWidth: column.minWidth }}
+                classes={{
+                  root:"Chart-header-specs"
+                }}
+              >
+                {column.label}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody  >
+          {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
+            return (
+              <TableRow hover role="checkbox" tabIndex={-1} key={row.code} >
+                {columns.map((column) => {
+                  const value = row[column.id];
+                  return (
+                    <TableCell key={column.id} align={column.align} >
+                      <div className="OrderCell">                                                    
+                        {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?(icons[value]):(value))}
+                        
+                      </div>
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </div>)
+      
     );
   }
 }

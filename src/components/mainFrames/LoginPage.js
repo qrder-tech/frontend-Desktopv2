@@ -8,6 +8,7 @@ import { getUserInfo, requestMenu } from '../../requests/restaurant';
 import TablePanel from '../mainPanels/tables/TablePanel';
 import { AccountBox, VpnKey } from '@material-ui/icons';
 import OrderPanel from '../mainPanels/OrderPanel';
+import Loader from 'react-loader-spinner';
 
 
 
@@ -73,7 +74,7 @@ class LoginPage extends React.Component{
         <div className="Panel"> 
           <div className="LoginPanel">
             {loading ? (<>
-            loging in...</>
+            <Loader type="Oval" color="#837032"/></>
                 ):(
                      <>
                      

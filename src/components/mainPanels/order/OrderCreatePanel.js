@@ -8,6 +8,7 @@ import { getTablesRequest, requestMenu } from "../../../requests/restaurant";
 import MiniItemPanel from "../Item/MiniItemPanel";
 import { addOrder, getSpecificOrder, removeOrder, updateOrder } from "../../../requests/order";
 import OrderPanel from "../OrderPanel";
+import Loader from "react-loader-spinner";
 const moment = require('moment');
 
 class OrderCreatePanel extends React.Component {
@@ -22,7 +23,8 @@ class OrderCreatePanel extends React.Component {
     rowsPerPage : 10,
     status : null,
     tableName : null,
-    backup : null
+    backup : null,
+    loading : true
   };
 
   columns = [
@@ -277,6 +279,7 @@ class OrderCreatePanel extends React.Component {
       this.setState({menu:temp});
       this.props.dispatch(setMenu({catalog:response.data.catalog,
                                     items:temp}));   
+        this.setState({loading:false});
       });
       
     
@@ -301,7 +304,7 @@ class OrderCreatePanel extends React.Component {
                             <Grid container spacing={1}>
                                 
                                 <Grid item xs={12} className="GridElement">
-                                <div className="BigTag" onClick = {this.test}>
+                                <div className="BigTag" onClick = {this.test} style={{height :"50px"}}>
                                         Order
                                     </div>
                                 </Grid>
@@ -321,7 +324,7 @@ class OrderCreatePanel extends React.Component {
                                     Serve Time : {this.state.backup && moment(this.state.backup.updatedAt).diff(moment(this.state.backup.createdAt),"minutes")} mins
                                   </div>
                               </div>
-                          </div>):(<TableContainer  className="BigMenu2">
+                          </div>):((this.state.loading)?(<Loader style={{position:"absolute",top:"45%"}}type="Oval" color="#837032"/>):(<TableContainer  className="BigMenu2">
                                       <Table stickyHeader aria-label="sticky table" >
                                         <TableHead >
                                           <TableRow >
@@ -364,7 +367,7 @@ class OrderCreatePanel extends React.Component {
                                           })}
                                         </TableBody>
                                       </Table>
-                                    </TableContainer>)}
+                                    </TableContainer>))}
                                     
                                 </Grid>
                             </Grid>

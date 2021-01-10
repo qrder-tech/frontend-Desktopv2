@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { setDisplayingPanel, setTables, test } from "../../../redux/actions";
 import { Button, TextField, withStyles } from "@material-ui/core";
 import resClient from "../../../mqtt/client";
+import Loader from "react-loader-spinner";
 
 class TablePanel extends React.Component {
   
@@ -16,6 +17,7 @@ class TablePanel extends React.Component {
     },
     columns :[],
     compListener : null,
+    loading : true
    };
   
    componentWillUnmount(){
@@ -44,6 +46,7 @@ class TablePanel extends React.Component {
             </Grid>
         );
         this.setState({columns});
+        this.setState({loading:false});
       }else{
         getTablesRequest(this.props.token).then((response)=>{
             this.props.dispatch(setTables(response.data));
@@ -61,7 +64,8 @@ class TablePanel extends React.Component {
                     {rows}
                 </Grid>
             );
-            this.setState({columns});
+            this.setState({columns});            
+            this.setState({loading:false});
           });
       }
        
@@ -111,7 +115,7 @@ class TablePanel extends React.Component {
     );      
     this.setState({columns});
       console.log(columns);
-
+        
     });
 //    this.props.dispatch(setDisplayingPanel(<TablePanel/>));
   }
@@ -152,9 +156,10 @@ class TablePanel extends React.Component {
                                     >Add</Button>
           </span>
           <hr/>
-        <Grid container spacing={1}>
+          {(this.state.loading)?(<Loader style={{position:"absolute",left:"45%",top:"45%"}}type="Oval" color="#837032"/>):(<Grid container spacing={1}>
           {this.state.columns}
-        </Grid>
+        </Grid>)}
+        
       </div>
     );
   }

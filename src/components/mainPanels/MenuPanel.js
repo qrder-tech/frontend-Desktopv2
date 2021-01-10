@@ -7,6 +7,7 @@ import { setDisplayingPanel, setMenu, setOrders, setUser } from "../../redux/act
 import { setRestaurantMenu } from "../../redux/reducers";
 import ItemDetailsPanel from "./Item/ItemDetailsPanel";
 import ItemsPanel from "./Item/ItemsPanel";
+import Loader from "react-loader-spinner";
 
 class MenuPanel extends React.Component {
   state = {
@@ -17,6 +18,7 @@ class MenuPanel extends React.Component {
     },
     page: null,
     rowsPerPage : 10,
+    loading : true
   };
 
   columns = [
@@ -91,6 +93,7 @@ class MenuPanel extends React.Component {
 
   updateHandler = () =>{
     var temp = [];
+    this.setState({loading:true});
     requestMenu(this.props.token).then((response) => {   
       for (const [key, value] of Object.entries(response.data.items)) {                                    //check missing arguments
         temp.push({name:key,
@@ -99,7 +102,8 @@ class MenuPanel extends React.Component {
     this.setState({rows:temp});
     this.props.dispatch(setMenu({catalog:response.data.catalog,
                                   items:temp}));
-  });
+      this.setState({loading:false});
+    });
 
     /*
     
@@ -118,7 +122,7 @@ class MenuPanel extends React.Component {
     //console.log("orderpanel : " + this.props.token);
 
     var temp = [];
-        
+      
       requestMenu(this.props.token).then((response) => {   
           for (const [key, value] of Object.entries(response.data.items)) {                                    //check missing arguments
             temp.push({name:key,
@@ -127,7 +131,8 @@ class MenuPanel extends React.Component {
         this.setState({rows:temp});
         this.props.dispatch(setMenu({catalog:response.data.catalog,
                                       items:temp}));
-      });
+          this.setState({loading : false});
+     });
     
     /*this.setState({info : getOrders()});
     setInterval(function(){      
@@ -143,54 +148,54 @@ class MenuPanel extends React.Component {
     const handleChangePage = this.handleChangePage.bind(this);
     const handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
 
-    return (
-      <div >
-        <TableContainer  className="Test2">
-       
-        <Table stickyHeader aria-label="sticky table" >
-          <TableHead >
-            <TableRow >
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                  classes={{
-                    root:"Chart-header-specs"
-                  }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody  >
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-              return (<>
+    return ((this.state.loading)?(<Loader style={{position:"absolute",left:"45%",top:"45%"}}type="Oval" color="#837032"/>):( <div >
+      <TableContainer  className="Test2">
+     
+      <Table stickyHeader aria-label="sticky table" >
+        <TableHead >
+          <TableRow >
+            {columns.map((column) => (
+              <TableCell
+                key={column.id}
+                align={column.align}
+                style={{ minWidth: column.minWidth }}
+                classes={{
+                  root:"Chart-header-specs"
+                }}
+              >
+                {column.label}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody  >
+          {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+            return (<>
+            <TableRow hover role="checkbox" tabIndex={-1} key={row.code} >
+                 
+                    <TableCell align="center" classes={{
+                        root:"Chart-header-specs3"
+                      }} >
+                        {row.name}
+                    </TableCell>
+                     
+              </TableRow>
               <TableRow hover role="checkbox" tabIndex={-1} key={row.code} >
-                   
-                      <TableCell align="center" classes={{
-                          root:"Chart-header-specs3"
-                        }} >
-                          {row.name}
-                      </TableCell>
-                       
-                </TableRow>
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code} >
-                  {columns.map((column) => {
-                    const value = row[column.id];
-                    return (<>                     
-                      <ItemsPanel items = {row.Items} type={row} update={this.updateHandler}/>
-                      </>
-                    );
-                  })}
-                </TableRow>
-              </>);
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </div>
+                {columns.map((column) => {
+                  const value = row[column.id];
+                  return (<>                     
+                    <ItemsPanel items = {row.Items} type={row} update={this.updateHandler}/>
+                    </>
+                  );
+                })}
+              </TableRow>
+            </>);
+          })}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </div>)
+     
     );
   }
 }

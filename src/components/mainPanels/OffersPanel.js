@@ -1,6 +1,7 @@
 import { Button, Grid, TextField, withStyles } from "@material-ui/core";
 import { HighlightOff } from "@material-ui/icons";
 import React from "react";
+import Loader from "react-loader-spinner";
 import { connect } from "react-redux";
 import { getOffers, newOffer, removeOffer } from "../../requests/restaurant";
 
@@ -8,13 +9,16 @@ class OffersPanel extends React.Component {
 
     state={
         offers:[],
-        previewImg : null
+        previewImg : null,
+        loading : true
 
     }
 
     updateView = () =>{
+        this.setState({loading:true});
         getOffers(this.props.token).then((response)=>{
             this.setState({offers:response.data});
+            this.setState({loading:false});
         });
     }
 
@@ -48,18 +52,17 @@ class OffersPanel extends React.Component {
         const classes = this.props.classes;
         return(<Grid container spacing ={6}>
             <Grid item xs={6} className="GridElement">
-                <Grid container spacing ={1}>
+                
+            {(this.state.loading)?(<Loader style={{position:"absolute",top:"45%"}}type="Oval" color="#837032"/>):(<Grid container spacing ={1}>
                     {this.state.offers.map((offer)=> (<>
                         <div className="BigImage" style={{marginBottom:"20px",marginLeft:"100px"}}>
                         <Grid item xs={14} className="GridElement">
-                        
-                            <img  src={offer.img} width ="100%" height ="100%"/>                                        
-                        
+                            <img  src={offer.img} width ="100%" height ="100%"/> 
                         </Grid>
                         </div>
                     <Grid item xs={1} className="GridElement" style={{position:"relative"}}><HighlightOff style={{position:"absolute",top:"35%",left:"10%",fontSize:"50px"}}onClick={this.removeOffer.bind(this,offer.uuid)}/></Grid>
                     </>))}
-                </Grid>
+                </Grid>)}
             </Grid>
             
             <Grid item xs={6} className="GridElement" style={{maxHeight:"200px"}}>

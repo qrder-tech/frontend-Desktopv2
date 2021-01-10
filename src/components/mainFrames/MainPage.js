@@ -133,12 +133,11 @@ class MainPage extends React.Component {
           </header>
           <body className="App-body">
             <div className="Panel">
-              <div className="MainPanel">
+              <div className="MainPanel" style={{position:"relative"}}>
                 {this.props.display}                
               </div>
             </div>
-          </body>
-          
+          </body>          
           </div>    
         </div>
         
