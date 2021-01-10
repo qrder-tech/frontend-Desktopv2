@@ -46,16 +46,18 @@ class OffersPanel extends React.Component {
 
     render(){
         const classes = this.props.classes;
-        return(<Grid container spacing ={1}>
+        return(<Grid container spacing ={6}>
             <Grid item xs={6} className="GridElement">
                 <Grid container spacing ={1}>
                     {this.state.offers.map((offer)=> (<>
-                        <Grid item xs={11} className="GridElement">
-                        <div className="BigImage">
-                            <img  src={offer.img} width ="60%" height ="60%"/>                                        
+                        <div className="BigImage" style={{marginBottom:"20px",marginLeft:"100px"}}>
+                        <Grid item xs={14} className="GridElement">
+                        
+                            <img  src={offer.img} width ="100%" height ="100%"/>                                        
+                        
+                        </Grid>
                         </div>
-                    </Grid>
-                    <Grid item xs={1} className="GridElement" style={{align:"center"}}><HighlightOff onClick={this.removeOffer.bind(this,offer.uuid)}/></Grid>
+                    <Grid item xs={1} className="GridElement" style={{position:"relative"}}><HighlightOff style={{position:"absolute",top:"35%",left:"10%",fontSize:"50px"}}onClick={this.removeOffer.bind(this,offer.uuid)}/></Grid>
                     </>))}
                 </Grid>
             </Grid>
@@ -63,17 +65,18 @@ class OffersPanel extends React.Component {
             <Grid item xs={6} className="GridElement" style={{maxHeight:"200px"}}>
                 
                 <Grid container spacing ={1}>
-                    <Grid item xs={12} className="GridElement">
-                        <div className="BigImage">
-                            <img  src={this.state.previewImg} width ="60%" height ="100%"/>                                        
-                        </div>
-                    </Grid>
+                        <Grid item xs={12} className="GridElement">
+                            <div className="BigImage" style={{height:"200px"}}>
+                                    <img  src={this.state.previewImg} width ="100%" height ="100%"/>                                        
+                            </div>
+                        </Grid>
                     <Grid item xs={12} className="GridElement">
                         <TextField id="NewOfferImage" label = "New Offer" 
                                             
                                             type="text"
                                             className = {classes.main}
                                             onChange = {this.previewHandler}
+                                            style = {{marginTop:"10px"}}
                                             InputProps={{
                                                     classes:{
                                                         input:classes.font
@@ -94,6 +97,7 @@ class OffersPanel extends React.Component {
                                             label: classes.buttonLabel, // class name, e.g. `classes-nesting-label-x`
                                         }}
                                         onClick={this.addOffer}
+                                        style = {{marginTop:"20px"}}
                                     >add</Button>
                     </Grid>
                 </Grid>                  

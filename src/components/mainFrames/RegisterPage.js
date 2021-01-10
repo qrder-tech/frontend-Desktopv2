@@ -3,7 +3,7 @@ import React from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { login, registration } from '../../requests/auth';
-import {setToken, setUser} from '../../redux/actions'
+import { setToken, setUser} from '../../redux/actions'
 import { getUserInfo } from '../../requests/restaurant';
 import { AccountBox, LocationOn, Mail, Note, Phone, VpnKey } from '@material-ui/icons';
 
@@ -84,6 +84,12 @@ class RegisterPage extends React.Component{
         this.setState({loading : false});        
     }
 
+    login =() =>{
+        
+        const { history } = this.props;
+        history.push("/login");
+    }
+
     render(){
         const {classes } = this.props;
 
@@ -117,6 +123,7 @@ class RegisterPage extends React.Component{
                 type={index.type}
                 inputRef={el =>index.id = el}                                               /*input reference to get form variables for registration*/
                 className = {classes.main}
+                onKeyUp = {(event)=>{if(event.key == "Enter"){this.register.bind(this,formVariables)}}}
                 InputProps={{
                         classes:{
                             input:classes.font
@@ -136,6 +143,7 @@ class RegisterPage extends React.Component{
                 type={index.type}
                 inputRef={el =>index.id = el}                                                /*input reference to get form variables for registration*/
                 className = {classes.main}
+                onKeyUp = {(event)=>{if(event.key == "Enter"){this.register.bind(this,formVariables)}}}
                 InputProps={{
                         classes:{
                             input:classes.font

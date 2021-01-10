@@ -3,7 +3,7 @@ import { Button, Grid, Paper, Switch, Table, TableBody, TableCell, TableContaine
 import { AccountBox,AccountBalanceWallet, AddCircle, Bookmark, CheckBox,  CheckSharp,  Face, Fastfood, HighlightOff, HourglassFull, LocalOffer, Note, LocationOn, Phone, Mail, VpnKey, AccountCircle } from "@material-ui/icons";
 import { connect } from "react-redux";
 import { addItem, editProfile, getUserInfo, UpdateItem } from "../../requests/restaurant";
-import { setDisplayingPanel, setUser } from "../../redux/actions";
+import { setDisplayingPanel, setDisplayValue, setUser } from "../../redux/actions";
 import MenuPanel from "./MenuPanel";
 import TablePanel from "./tables/TablePanel";
 import OrderPanel from "./OrderPanel";
@@ -39,7 +39,9 @@ class ProfileEditPanel extends React.Component {
             });
             editProfile(this.props.token,values).then(()=>{
                 getUserInfo(this.props.token).then((result)=>{
-                    this.props.dispatch(setUser(result));                    
+                    this.props.dispatch(setUser(result));  
+                    const event1 = new CustomEvent("tab",{detail:"0"});
+                    document.dispatchEvent(event1);                 
                     this.props.dispatch(setDisplayingPanel(<OrderPanel/>));
                     const event = new Event('user'); 
                     document.dispatchEvent(event);
@@ -60,7 +62,7 @@ class ProfileEditPanel extends React.Component {
     updateView = () =>{
         var formVariables = [];
         if(this.props.user){
-            this.setState({preview:this.props.user});
+            this.setState({preview:this.props.user,img : this.props.user.img});
             formVariables = [            
                 {id:"img",label : "image",type:"text",reference : null,default1: this.props.user.img},
                 {id:"name",label : "Restaurant Name",type:"text",reference : null,default1: this.props.user.name},
@@ -73,7 +75,7 @@ class ProfileEditPanel extends React.Component {
         }else{
             getUserInfo(this.props.token).then((result)=>{
                 this.props.dispatch(setUser(result));
-                this.setState({preview: result});
+                this.setState({preview: result,img: result.img});
                 formVariables = [            
                     {id:"img",label : "image",type:"text",reference : null,default1: result.img},
                     {id:"name",label : "Restaurant Name",type:"text",reference : null,default1: result.name},

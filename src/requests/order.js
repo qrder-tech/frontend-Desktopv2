@@ -49,6 +49,34 @@ export const addOrder = (token,values) =>{
 
 }
 
+export const updateOrder = (token,values,orderUuid) =>{
+  
+  var data = JSON.stringify({"restaurantUuid":values.restaurantUuid,
+  "tableUuid":values.tableUuid,
+  "items":values.items});
+  console.log(data);
+  var config = {
+    method: 'post',
+    url: `https://qrder-web.herokuapp.com/order?uuid=${orderUuid}`,
+    headers: { 
+      'Content-Type': 'application/json', 
+      'Authorization': `Bearer ${token}`
+    },
+    data : data
+  };
+
+  return axios(config)
+  .then(function (response) {
+    //console.log(JSON.stringify(response.data));
+    return response.data;
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+
+
+}
+
 export const removeOrder = (token,uuid) =>{
   var data = '';
 

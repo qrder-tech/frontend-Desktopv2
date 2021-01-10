@@ -17,29 +17,58 @@ import resClient from "../../mqtt/client"
 import { getUserInfo } from "../../requests/restaurant";
 import { Receipt } from "@material-ui/icons";
 
+var QRCode = require('qrcode.react');
 
 class MainPage extends React.Component {
   state = {
     value: 0,
     drawerStyle:null,
     userInfo : {
-    }
+    },
+    restaurantUuid : null,
+    compListener : null
   };
 
+  componentWillUnmount(){
+    document.removeEventListener("tab", this.state.compListener);
+   }
+
+   updateTab = (tab) =>{
+     console.log(tab);
+     this.setState({value:parseInt(tab)});
+   }
+
   componentDidMount() {
+    
+    var compListener = (tab)=>{this.updateTab(tab.detail)};
+    this.setState({compListener:compListener}); 
+    document.addEventListener("tab",compListener);
     if(this.props.user){
       resClient.init(this.props.token,this.props.user.uuid);
-      this.setState({userInfo:this.props.user});
+      this.setState({userInfo:this.props.user,restaurantUuid:this.props.user.uuid});
     }else{
       getUserInfo(this.props.token).then((response)=>{
         console.log(response);
         this.props.dispatch(setUser(response));
-        this.setState({userInfo:response});
+        this.setState({userInfo:response,restaurantUuid:response.uuid});
         resClient.init(this.props.token,response.uuid);
       });
     }
     
 
+  }
+
+  downloadQR = () =>{
+    const canvas = document.getElementById(`mainqr${this.props.user.uuid}`);
+    const pngUrl = canvas
+      .toDataURL("image/png")
+      .replace("image/png", "image/octet-stream");
+    let downloadLink = document.createElement("a");
+    downloadLink.href = pngUrl;
+    downloadLink.download = "123456.jpg";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
   }
 
   handleTabChange = (event, newValue) => {
@@ -80,7 +109,10 @@ class MainPage extends React.Component {
                     {this.state.userInfo.address}
                   </h1>
                   
-                  <h1 className="title4"><Receipt style={{fontSize:50}}/>Title Field</h1>
+                  <div className="title4">
+                    <QRCode id={`mainqr${this.state.restaurantUuid}`} value={`${this.state.restaurantUuid}`} size="100" bgColor="#837032" fgColor="#282c34e8"/>                
+                  </div>
+                  <div className="title5"><a style={{cursor:"pointer"}}onClick={this.downloadQR}>Download QR</a></div>
                   <AppBar position="static" className="Tab-Length">
                     <Tabs
                       value={this.state.value}

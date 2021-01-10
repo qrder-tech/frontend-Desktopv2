@@ -1,23 +1,28 @@
 import React from "react";
-import { Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, withStyles } from "@material-ui/core";
-import { AccountBalanceWallet, AddCircle, CheckBox, Edit, Face, HourglassFull } from "@material-ui/icons";
+import { Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, ThemeProvider, withStyles } from "@material-ui/core";
+import { AccountBalanceWallet, AddCircle, CheckBox, Edit, Face, HighlightOff, HourglassFull } from "@material-ui/icons";
 import { connect } from "react-redux";
-import { setDisplayingPanel, setMenu, setTables } from "../../../redux/actions";
+import { setDisplayingPanel, setDisplayValue, setMenu, setTables } from "../../../redux/actions";
 import ItemDetailsPanel from "../Item/ItemDetailsPanel";
 import { getTablesRequest, requestMenu } from "../../../requests/restaurant";
 import MiniItemPanel from "../Item/MiniItemPanel";
-import { addOrder, getSpecificOrder, removeOrder } from "../../../requests/order";
+import { addOrder, getSpecificOrder, removeOrder, updateOrder } from "../../../requests/order";
 import OrderPanel from "../OrderPanel";
+const moment = require('moment');
 
 class OrderCreatePanel extends React.Component {
   state = {
     order : {
         items : [],
+        newItems :[],
         totalPrice : 0,
     },
     menu : [],
     page: null,
     rowsPerPage : 10,
+    status : null,
+    tableName : null,
+    backup : null
   };
 
   columns = [
@@ -49,7 +54,28 @@ class OrderCreatePanel extends React.Component {
   }*/
 
   addItemToOrderHandler = (item) => {
-    var items = this.state.order.items;
+    var items = this.state.order.newItems;
+    var items2 = this.state.order.items;
+    if(items.find(element => element.uuid == item.uuid)){
+      items.find(element => element.uuid == item.uuid).quantity++;      
+      items.find(element => element.uuid == item.uuid).price +=item.price;
+      if(items.find(element => element.uuid == item.uuid).quantity < 3){
+        items.find(element => element.uuid == item.uuid).name +="x2";
+      }else{                
+        var tempString = items.find(element => element.uuid == item.uuid).name.substr(0,items.find(element => element.uuid == item.uuid).name.length-1);
+        items.find(element => element.uuid == item.uuid).name= tempString;
+        items.find(element => element.uuid == item.uuid).name += items.find(element => element.uuid == item.uuid).quantity;
+      }
+    }else{      
+      var tempItem = {name:item.name,price : item.price,uuid : item.uuid,options:item.options,quantity:1};
+      items.push(tempItem); 
+      items2.push(tempItem); 
+    } 
+    var order = {items : items2,
+                newItems : items,
+                totalPrice : this.state.order.totalPrice + item.price};
+    this.setState({order : order});
+    /*var items = this.state.order.items;
     if(items.find(element => element.uuid == item.uuid)){
       items.find(element => element.uuid == item.uuid).quantity++;      
       items.find(element => element.uuid == item.uuid).price +=item.price;
@@ -66,7 +92,7 @@ class OrderCreatePanel extends React.Component {
     } 
     var order = {items : items,
                 totalPrice : this.state.order.totalPrice + item.price};
-    this.setState({order : order});
+    this.setState({order : order});*/
   }
 
   test = () =>{
@@ -74,7 +100,43 @@ class OrderCreatePanel extends React.Component {
   }
 
   updateItem = () =>{
-    alert("update item + " + this.props.updateItemUuid);
+    //alert("update item + " + this.props.updateItemUuid);
+    /*console.log(this.state.order.newItems);
+    console.log(this.props.updateItemUuid);*/
+    var requestOrder;
+    if(this.props.user.serviceType == "normal"){
+      requestOrder = {
+        restaurantUuid : this.props.user.uuid,
+        tableUuid : document.getElementById("tables").value,
+        items : []
+      }
+    }else if(this.props.user.serviceType == "self"){
+      requestOrder = {
+        restaurantUuid : this.props.user.uuid,
+        items : []
+      }
+      
+    }    
+   
+    this.state.order.newItems.map((item)=>{
+      var tempOptions = [];
+      if(item.options){
+        item.options.split(";").map((opt)=>{
+          tempOptions.push(opt);
+        });
+      }
+      requestOrder.items.push({uuid:item.uuid,options:tempOptions,quantity:item.quantity});
+    });
+    console.log(requestOrder);
+    
+    updateOrder(this.props.token,requestOrder,this.props.updateItemUuid).then((response)=>{
+      console.log(response);      
+      const event = new Event('order'); 
+      document.dispatchEvent(event);
+      const event1 = new CustomEvent("tab",{detail:"0"});
+      document.dispatchEvent(event1);                     
+      this.props.dispatch(setDisplayingPanel(<OrderPanel/>));
+    });
     
   }
 
@@ -110,27 +172,68 @@ class OrderCreatePanel extends React.Component {
     addOrder(this.props.token,requestOrder).then((response)=>{
       console.log(response);      
       const event = new Event('order'); 
-      document.dispatchEvent(event);
+      document.dispatchEvent(event); 
+      const event1 = new CustomEvent("tab",{detail:"0"});
+      document.dispatchEvent(event1);           
       this.props.dispatch(setDisplayingPanel(<OrderPanel/>));
     });
   }
 
   removeOrder = () =>{
     removeOrder(this.props.token,this.props.updateItemUuid).then((response)=>{   
-      console.log(response);   
+      console.log(response);         
+      const event1 = new CustomEvent("tab",{detail:"0"});
+      document.dispatchEvent(event1);                      
       this.props.dispatch(setDisplayingPanel(<OrderPanel/>));
     });
+  }
+
+  removeItemFromBasket = (item) =>{
+    var items = this.state.order.newItems;
+    var items2 = this.state.order.items;
+    console.log(items2);
+    console.log(items);
+    if(items.find(element => element.uuid == item.uuid)){
+      console.log(items.find(element => element.uuid == item.uuid));
+      items.find(element => element.uuid == item.uuid).quantity--;      
+      items.find(element => element.uuid == item.uuid).price -=item.price;
+      if(items.find(element => element.uuid == item.uuid).quantity == 0){
+        items.pop(items.find(element => element.uuid == item.uuid));
+      }else if(items.find(element => element.uuid == item.uuid).quantity == 1){
+        items.find(element => element.uuid == item.uuid).name.substr(0,items.find(element => element.uuid == item.uuid).name.length-2);
+      }else{                
+        var tempString = items.find(element => element.uuid == item.uuid).name.substr(0,items.find(element => element.uuid == item.uuid).name.length-1);
+        items.find(element => element.uuid == item.uuid).name= tempString;
+        items.find(element => element.uuid == item.uuid).name += items.find(element => element.uuid == item.uuid).quantity;
+      }
+    }else{      
+      var tempItem = {name:item.name,price : -item.price,uuid : item.uuid,options:item.options,quantity:-1};
+      items.push(tempItem); 
+      //alert("bug ?");
+    } 
+    console.log(items2);
+    console.log(items);
+    var order = {items : items2,
+                newItems : items,
+                totalPrice : this.state.order.totalPrice - item.price/item.quantity};
+    this.setState({order : order});
+    console.log(order);
   }
 
 
 
   componentDidMount() {
+    this.setState({status:this.props.status});
     if(this.props.tableUuid){      
       document.getElementById("tables").value = this.props.tableUuid;
     }
 
     if(this.props.updateItemUuid){
       getSpecificOrder(this.props.token,this.props.updateItemUuid).then((result)=>{
+        if(this.state.serviceType == "normal"){
+          this.setState({tableName:this.props.tables.find((table)=>table.uuid == result.tableUuid).name});
+        }
+        this.setState({backup:result});
         var items = [];
         var price = 0;
         result.Items.map((item)=>{
@@ -153,6 +256,7 @@ class OrderCreatePanel extends React.Component {
           }
         });        
         var order = {items : items,
+                    newItems : [],
                     totalPrice : price};
         this.setState({order : order});
       });
@@ -202,7 +306,22 @@ class OrderCreatePanel extends React.Component {
                                     </div>
                                 </Grid>
                                 <Grid item xs={12} className="GridElement" style={{maxHeight:"390px"}}>
-                                    <TableContainer  className="BigMenu2">
+                                  {(this.state.status == "paid")?(<div className="BigTag2">
+                              <div style={{textAlign:"center",fontSize:"20px"}}>
+                                Details
+                                  <hr/>
+                                  <br/>
+                                  <div style={{textAlign:"center"}}>
+                                    Date : {this.state.backup && moment(this.state.backup.createdAt).format("MMM Do YY")}
+                                    <br/>
+                                    <br/>
+                                    CreatedAt : {this.state.backup && moment(this.state.backup.createdAt).format('LT')}                                    
+                                    <br/>
+                                    <br/>
+                                    Serve Time : {this.state.backup && moment(this.state.backup.updatedAt).diff(moment(this.state.backup.createdAt),"minutes")} mins
+                                  </div>
+                              </div>
+                          </div>):(<TableContainer  className="BigMenu2">
                                       <Table stickyHeader aria-label="sticky table" >
                                         <TableHead >
                                           <TableRow >
@@ -245,7 +364,8 @@ class OrderCreatePanel extends React.Component {
                                           })}
                                         </TableBody>
                                       </Table>
-                                    </TableContainer>
+                                    </TableContainer>)}
+                                    
                                 </Grid>
                             </Grid>
                             
@@ -258,7 +378,7 @@ class OrderCreatePanel extends React.Component {
                                   {this.state.order.items.map((item) =>(
                                   <>{item.name}
                                       <span style={{float:"right"}}>
-                                      &nbsp;&nbsp;&nbsp;&nbsp;{item.price}
+                                      &nbsp;&nbsp;&nbsp;&nbsp;{item.price}{(this.state.status == "paid")?(null):(<HighlightOff onClick={this.removeItemFromBasket.bind(this,item)} style ={{fontSize:"16px"}}/>)}
                                       </span><br/></>))}
                                   <hr/>
                                   <div style={{textAlign:"right"}}>
@@ -270,13 +390,13 @@ class OrderCreatePanel extends React.Component {
                                            
                           <Grid item xs={12} className="GridElement">                            
                             
-                              {this.props.user == null ? (null):(this.props.user.serviceType == "normal" ? (<div className="BigTag3"><select name="tables" id="tables" className="Select2">
+                              {this.props.user == null ? (null):((this.state.status == "paid")?((this.state.serviceType == "normal")?(<>Table : {this.state.tableName}</>):(null)):(this.props.user.serviceType == "normal" ? (<div className="BigTag3"><select name="tables" id="tables" className="Select2">
                                       {this.props.tables.map((table)=>(
                                   <option value={table.uuid} className="Option">{table.name}</option>))}
-                                </select><br/></div>):(null))}
+                                </select><br/></div>):(null)))}
                               
                           </Grid>
-                          <Grid item xs={12} className="GridElement">        
+                          {(this.state.status == "paid")?(null):(<Grid item xs={12} className="GridElement">        
                                         {(this.props.updateItemUuid)?(<>
                                           <Button
                                             classes={{
@@ -300,7 +420,8 @@ class OrderCreatePanel extends React.Component {
                                         onClick={this.addItem}
                                         >Done</Button>)}
                                        
-                              </Grid>
+                              </Grid>)}
+                          
                         </Grid>                           
                     </Grid>
                 </Grid>

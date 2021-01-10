@@ -81,6 +81,7 @@ class LoginPage extends React.Component{
             defaultValue = "test10"
             className = {classes.main}
             inputRef={el => this.username = el} 
+            onKeyUp = {(event)=>{if(event.key == "Enter"){this.login()}}}
             InputProps={{
                     classes:{
                         input:classes.font
@@ -100,6 +101,7 @@ class LoginPage extends React.Component{
                   defaultValue = "test10"
                   type="password"
                   inputRef={el => this.password = el} 
+                  onKeyUp = {(event)=>{if(event.key == "Enter"){this.login()}}}
                     className = {classes.main}
                     InputProps={{
                             classes:{

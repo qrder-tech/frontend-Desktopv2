@@ -104,7 +104,7 @@ class MiniOrderPanel extends React.Component {
                 time : moment().diff(moment(result.createdAt),"minutes"),
                 status : result.status ,
                 price : result.totalPrice,
-                actions : <div>{(result.status == "waiting")?(<CheckBox onClick={this.serveOrder.bind(this,order.uuid)}/>):(<AccountBalanceWallet onClick={this.payOrder.bind(this,order.uuid)}/>) }<br/><DeleteForever onClick={this.removeOrder.bind(this,order.uuid)}/></div>});
+                actions : <div>{(result.status == "waiting")?(<CheckBox style={{cursor:"pointer"}} onClick={this.serveOrder.bind(this,order.uuid)}/>):(<AccountBalanceWallet style={{cursor:"pointer"}} onClick={this.payOrder.bind(this,order.uuid)}/>) }<br/><DeleteForever  style={{cursor:"pointer"}} onClick={this.removeOrder.bind(this,order.uuid)}/></div>});
                 
               this.setState({info:{orderCount:temp.length,
                 orders :temp}});

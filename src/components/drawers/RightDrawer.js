@@ -62,8 +62,10 @@ class RightDrawer extends React.Component {
               {text:"Most Delayed Table",count:response.data.tables.mostDelayedNo}];
               this.setState({tableStatus});
           }else{
-            items = [{text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:response.data.orders.served},
-            {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : response.data.orders.waiting}];
+            items = [{text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : response.data.orders.waiting}];
+            tableStatus=[
+              {text:"Most Delayed Order",count:response.data.tables.mostDelayedNo}];
+              this.setState({tableStatus});
           }
           this.setState({items});
         }
@@ -80,14 +82,16 @@ class RightDrawer extends React.Component {
                 {text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:response.data.orders.served},
                 {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : response.data.orders.waiting},
                 {text : "Payment" , item:<AccountBalanceWallet style={{fontSize:90}}/>,count : response.data.services.payment},
-                {text:"Waiter" , item:<Face style={{fontSize:90}}/>,count : response.data.services.waiter}];
+                {text:"Waiter" , item:<Face style={{fontSize:90}}/>,count : response.data.services.waiter}];                
                 tableStatus=[{text:"Occupied Tables",count:response.data.tables.occupied},
                 {text:"Free Tables",count:response.data.tables.free},
                 {text:"Most Delayed Table",count:response.data.tables.mostDelayedNo}];
-                this.setState({tableStatus});
+                this.setState({tableStatus});               
             }else{
-              items = [{text:"Done" , item:<CheckBox style={{fontSize:90}}/>,count:response.data.orders.served},
-              {text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : response.data.orders.waiting}];
+              items = [{text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : response.data.orders.waiting}];              
+              tableStatus=[
+                {text:"Most Delayed Order",count:response.data.tables.mostDelayedNo}];
+                this.setState({tableStatus});
             }
             this.setState({items});
           }
@@ -132,13 +136,14 @@ class RightDrawer extends React.Component {
           <div className="Drawer">
           <List >
             <ListItem>
-              <ListItemText style={{color:"black"}}>{(this.state.serviceType == "self")?
-              ( <> &nbsp;&nbsp;&nbsp;&nbsp;
-                <QRCode id={`qr${this.state.restaurantUuid}`} value={`${this.state.restaurantUuid}`} bgColor="#837032" fgColor="#282c34e8"/>
-                &nbsp;&nbsp;&nbsp;&nbsp;<a style={{cursor:"pointer"}}onClick={this.downloadQR}>Download QR</a></>
-                                     ):(<p style={{fontSize:15}}>
-                  {this.state.tableStatus.map((title)=>{return <>{`${title.text} : ${title.count}`}<hr className="Test4"/></>})}
-                  </p>)}                
+              <ListItemText style={{color:"black"}}>
+                <div style={{fontSize:15,height:"140px"}}>{(this.state.serviceType == "self")?(
+                  <p style={{position:"absolute",top:"25%"}}>
+                  {this.state.tableStatus.map((title)=>{return <>{`${title.text} : ${title.count}`}<hr className="Test4"/></>})}</p>
+                ):(<p style={{position:"absolute",top:"10px"}}>
+                {this.state.tableStatus.map((title)=>{return <>{`${title.text} : ${title.count}`}<hr className="Test4"/></>})}</p>)}
+                  
+                  </div>                
                 </ListItemText>
             </ListItem>
             <Divider classes={{root : classes.divider}}/>

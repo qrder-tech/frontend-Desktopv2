@@ -69,7 +69,7 @@ class MiniServicePanel extends React.Component {
           temp.push({orderNo:index+1,
               time : moment().diff(moment(service.createdAt),"minutes"),
               service : serviceIcon,
-              actions : <CheckBox onClick={this.serve.bind(this,service.name)} />});
+              actions : <CheckBox style={{cursor:"pointer"}} onClick={this.serve.bind(this,service.name)} />});
       });
     }
     this.setState({info:{serviceCount:temp.length,
@@ -104,7 +104,7 @@ class MiniServicePanel extends React.Component {
           temp.push({orderNo:index+1,
               time : moment().diff(moment(service.createdAt),"minutes"),
               service : serviceIcon,
-              actions : <CheckBox onClick={this.serve.bind(this,service.name)} />});
+              actions : <CheckBox style={{cursor:"pointer"}} onClick={this.serve.bind(this,service.name)} />});
       });
     }
     this.setState({info:{serviceCount:temp.length,

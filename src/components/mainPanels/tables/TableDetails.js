@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, withStyles } from "@material-ui/core";
 import { AccountBalanceWallet, AddCircle, CheckBox, Edit, Face, HourglassFull } from "@material-ui/icons";
 import { connect } from "react-redux";
-import { setDisplayingPanel, setMenu } from "../../../redux/actions";
+import { setDisplayingPanel, setDisplayValue, setMenu } from "../../../redux/actions";
 import ItemDetailsPanel from "../Item/ItemDetailsPanel";
 import { addService, removeService, removeTable, requestMenu } from "../../../requests/restaurant";
 import MiniItemPanel from "../Item/MiniItemPanel";
@@ -100,7 +100,9 @@ class TableDetails extends React.Component {
   removeTable = () =>{
     removeTable(this.props.token,this.props.table.uuid).then(()=>{      
       const event = new Event('table'); 
-      document.dispatchEvent(event);
+      document.dispatchEvent(event);      
+      const event1 = new CustomEvent("tab",{detail:"1"});
+      document.dispatchEvent(event1);                     
       this.props.dispatch(setDisplayingPanel(<TablePanel/>));
     });
 

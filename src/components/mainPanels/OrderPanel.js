@@ -77,10 +77,10 @@ class OrderPanel extends React.Component {
 
   }
 
-  showOrderDetails = (orderUuid) =>{
+  showOrderDetails = (orderUuid,status) =>{
     console.log(orderUuid);
     
-    this.props.dispatch(setDisplayingPanel(<OrderCreatePanel updateItemUuid={orderUuid}/>));
+    this.props.dispatch(setDisplayingPanel(<OrderCreatePanel updateItemUuid={orderUuid} status={status}/>));
   }
 
   removeOrder = (uuid) =>{
@@ -166,7 +166,7 @@ class OrderPanel extends React.Component {
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (
-                      <TableCell onClick={(column.id == "status" || column.id == "action")? null :this.showOrderDetails.bind(this,row.uuid)} key={column.id} align={column.align} style={(column.id == "status")?(null):{cursor:"pointer"}} >
+                      <TableCell onClick={(column.id == "status" || column.id == "action")? null :this.showOrderDetails.bind(this,row.uuid,row.status)} key={column.id} align={column.align} style={(column.id == "status")?(null):{cursor:"pointer"}} >
                         <div className="OrderCell" >                                                    
                           {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?((this.state.serviceType == "self" && row.status == "waiting")?(<>{icons[value]}<NotificationsActive onClick={this.serveOrder.bind(this,row)} style={{fontSize:"40"}}/></>):(icons[value])):(value))}
                   

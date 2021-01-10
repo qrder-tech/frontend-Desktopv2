@@ -37,21 +37,31 @@ class LeftDrawer extends React.Component {
         
         history.push("/login");
       case "Menu":
-        console.log("menu");
+        console.log("menu");         
+        const event = new CustomEvent("tab",{detail:"2"});
+        document.dispatchEvent(event);    
         this.props.dispatch(setDisplayingPanel(<MenuPanel/>));
         break;
       case "AddItem":        
-        console.log("item");
+        console.log("item");           
+        const event1 = new CustomEvent("tab",{detail:"2"});
+        document.dispatchEvent(event1);
         this.props.dispatch(setDisplayingPanel(<ItemPanel id="itemPanelDrawer"/>));
         break;        
       case "AddOrder":        
         console.log("order");        
+        const event2 = new CustomEvent("tab",{detail:"2"});
+        document.dispatchEvent(event2);
         this.props.dispatch(setDisplayingPanel(<OrderCreatePanel/>));        
         break;
-      case "Edit":        
+      case "Edit":  
+         const event3 = new CustomEvent("tab",{detail:"2"});
+        document.dispatchEvent(event3);      
         this.props.dispatch(setDisplayingPanel(<ProfileEditPanel/>));
         break;
       case "ShowOffers":
+        const event4 = new CustomEvent("tab",{detail:"2"});
+        document.dispatchEvent(event4);
         this.props.dispatch(setDisplayingPanel(<OffersPanel/>));
         break;
       default:
