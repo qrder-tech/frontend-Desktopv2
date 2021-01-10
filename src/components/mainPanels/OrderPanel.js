@@ -76,6 +76,9 @@ class OrderPanel extends React.Component {
     });
     //notify with mqtt
     resClient.client.publish(`restaurant/${this.props.user.uuid}/${order.uuid}`,"ready");
+    /*if(order.deviceId != null){
+      resClient.client.publish(`restaurant/${this.props.user.uuid}/${order.deviceId}`,"ready");
+    }*/
 
   }
 
@@ -99,6 +102,7 @@ class OrderPanel extends React.Component {
       response.map((order)=>{
           temp.push({
               uuid : order.uuid,
+              device : order.deviceId,
               orderNo:order.no,
               time : (order.status == "waiting")?(moment().diff(moment(order.createdAt),"minutes")):("-"),
               status : order.status ,

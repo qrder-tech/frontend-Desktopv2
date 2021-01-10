@@ -59,12 +59,12 @@ class RightDrawer extends React.Component {
               {text:"Waiter" , item:<Face style={{fontSize:90}}/>,count : response.data.services.waiter}];
               tableStatus=[{text:"Occupied Tables",count:response.data.tables.occupied},
               {text:"Free Tables",count:response.data.tables.free},
-              {text:"Most Delayed Table",count:response.data.tables.mostDelayedNo}];
+              {text:"Most Delayed Table",count:response.data.tables.mostDelayedName}];
               this.setState({tableStatus});
           }else{
             items = [{text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : response.data.orders.waiting}];
             tableStatus=[
-              {text:"Most Delayed Order",count:response.data.tables.mostDelayedNo}];
+              {text:"Most Delayed Order",count:response.data.orders.mostDelayedNo}];
               this.setState({tableStatus});
           }
           this.setState({items});
@@ -85,12 +85,12 @@ class RightDrawer extends React.Component {
                 {text:"Waiter" , item:<Face style={{fontSize:90}}/>,count : response.data.services.waiter}];                
                 tableStatus=[{text:"Occupied Tables",count:response.data.tables.occupied},
                 {text:"Free Tables",count:response.data.tables.free},
-                {text:"Most Delayed Table",count:response.data.tables.mostDelayedNo}];
+                {text:"Most Delayed Table",count:response.data.tables.mostDelayedName}];
                 this.setState({tableStatus});               
             }else{
               items = [{text : "Waiting" , item:<HourglassFull style={{fontSize:90}}/>,count : response.data.orders.waiting}];              
               tableStatus=[
-                {text:"Most Delayed Order",count:response.data.tables.mostDelayedNo}];
+                {text:"Most Delayed Order",count:response.data.orders.mostDelayedNo}];
                 this.setState({tableStatus});
             }
             this.setState({items});
