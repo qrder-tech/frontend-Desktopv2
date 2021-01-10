@@ -13,6 +13,7 @@ import OrderCreatePanel from "../mainPanels/order/OrderCreatePanel";
 import ProfileEditPanel from "../mainPanels/ProfileEditPanel";
 import { getUserInfo } from "../../requests/restaurant";
 import OffersPanel from "../mainPanels/OffersPanel";
+import resClient from "../../mqtt/client";
 
 class LeftDrawer extends React.Component {
 
@@ -32,6 +33,7 @@ class LeftDrawer extends React.Component {
         this.props.dispatch(setUser(""));   
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+        resClient.connected=false;
         
         history.push("/login");
       case "Menu":

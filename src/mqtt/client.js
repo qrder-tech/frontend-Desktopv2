@@ -29,7 +29,7 @@ resClient.init = (token,uuid)=>{
       if(message.toString() == "table"){
         const event = new Event('table'); 
         document.dispatchEvent(event);
-      }else if(message.toString() == "order"){
+      }else if(message.toString() == "order" || message.toString() == "ready"){
         const event = new Event('order'); 
         document.dispatchEvent(event);
       }else{
