@@ -266,7 +266,7 @@ class ItemPanel extends React.Component {
                                                 root: classes.font,
                                             }
                                         }}
-                                    />   {(index.id == "options")?(<AddCircle style={{paddingTop:"20px"}} onClick={this.addMetadata} />):(null)}                          
+                                    />   {(index.id == "options")?(<AddCircle style={{paddingTop:"20px",cursor:"pointer"}} onClick={this.addMetadata} />):(null)}                          
                                     <br/>
                                     <br/>
                                     </>)

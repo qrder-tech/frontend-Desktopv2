@@ -131,9 +131,9 @@ class MiniItemPanel extends React.Component {
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (
-                      <TableCell key={column.id} align={column.align} onClick={(column.id == "buttons")?(null):(this.detailsHandler.bind(this,row))} style={{cursor:"pointer"}}>
+                      <TableCell key={column.id} align={column.align} onClick={(column.id == "buttons")?(null):(null)}>
                         {(column.id == "image")?(<img alt={row.img} src={row.img} width ="50"/>):(
-                        (column.id == "buttons")?(<AddCircle style={{color:"#ffda61"}} onClick={this.props.addHandler.bind(this,row)}></AddCircle>):(<div className="OrderCell">                                                    
+                        (column.id == "buttons")?(<AddCircle style={{color:"#ffda61",cursor:"pointer"}} onClick={this.props.addHandler.bind(this,row)}></AddCircle>):(<div className="OrderCell">                                                    
                           {column.format && typeof value === 'number' ? column.format(value) : (value)}
                         </div>))}
                         

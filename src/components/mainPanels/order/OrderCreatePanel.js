@@ -381,7 +381,7 @@ class OrderCreatePanel extends React.Component {
                                   {this.state.order.items.map((item) =>(
                                   <>{item.name}
                                       <span style={{float:"right"}}>
-                                      &nbsp;&nbsp;&nbsp;&nbsp;{item.price}{(this.state.status == "paid")?(null):(<HighlightOff onClick={this.removeItemFromBasket.bind(this,item)} style ={{fontSize:"16px"}}/>)}
+                                      &nbsp;&nbsp;&nbsp;&nbsp;{item.price}{(this.state.status == "paid")?(null):(<HighlightOff onClick={this.removeItemFromBasket.bind(this,item)} style ={{fontSize:"16px",cursor:"pointer"}}/>)}
                                       </span><br/></>))}
                                   <hr/>
                                   <div style={{textAlign:"right"}}>
@@ -393,7 +393,7 @@ class OrderCreatePanel extends React.Component {
                                            
                           <Grid item xs={12} className="GridElement">                            
                             
-                              {this.props.user == null ? (null):((this.state.status == "paid")?((this.state.serviceType == "normal")?(<>Table : {this.state.tableName}</>):(null)):(this.props.user.serviceType == "normal" ? (<div className="BigTag3"><select name="tables" id="tables" className="Select2">
+                              {this.props.user == null ? (null):((this.state.status == "paid")?((this.state.serviceType == "normal")?(<>Table : {this.state.tableName}</>):(null)):(this.props.user.serviceType == "normal" ? (<div className="BigTag3" ><select name="tables" id="tables" className="Select2" style={{cursor:"pointer"}}>
                                       {this.props.tables.map((table)=>(
                                   <option value={table.uuid} className="Option">{table.name}</option>))}
                                 </select><br/></div>):(null)))}

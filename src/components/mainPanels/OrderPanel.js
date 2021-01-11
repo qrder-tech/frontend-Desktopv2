@@ -107,7 +107,7 @@ class OrderPanel extends React.Component {
               time : (order.status == "waiting")?(moment().diff(moment(order.createdAt),"minutes")):("-"),
               status : order.status ,
               price : order.totalPrice,
-              action : <DeleteForever onClick={this.removeOrder.bind(this,order.uuid)}/>});
+              action : <DeleteForever onClick={this.removeOrder.bind(this,order.uuid)} style={{cursor:"pointer"}}/>});
       })
       var service;
         getUserInfo(this.props.token).then((result)=>{
@@ -171,7 +171,7 @@ class OrderPanel extends React.Component {
                 {columns.map((column) => {
                   const value = row[column.id];
                   return (
-                    <TableCell onClick={(column.id == "status" || column.id == "action")? null :this.showOrderDetails.bind(this,row.uuid,row.status)} key={column.id} align={column.align} style={(column.id == "status")?(null):{cursor:"pointer"}} >
+                    <TableCell onClick={(column.id == "action")? null :this.showOrderDetails.bind(this,row.uuid,row.status)} key={column.id} align={column.align} style={(column.id == "action")?(null):{cursor:"pointer"}} >
                       <div className="OrderCell" >                                                    
                         {column.format && typeof value === 'number' ? column.format(value) : ((column.id == "status")?((this.state.serviceType == "self" && row.status == "waiting")?(<>{icons[value]}<NotificationsActive onClick={this.serveOrder.bind(this,row)} style={{fontSize:"40"}}/></>):(icons[value])):(value))}
                 
