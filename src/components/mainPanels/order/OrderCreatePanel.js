@@ -9,6 +9,7 @@ import MiniItemPanel from "../Item/MiniItemPanel";
 import { addOrder, getSpecificOrder, removeOrder, updateOrder } from "../../../requests/order";
 import OrderPanel from "../OrderPanel";
 import Loader from "react-loader-spinner";
+import Item from "antd/lib/list/Item";
 const moment = require('moment');
 
 class OrderCreatePanel extends React.Component {
@@ -61,7 +62,12 @@ class OrderCreatePanel extends React.Component {
     if(items.find(element => element.uuid == item.uuid)){
       items.find(element => element.uuid == item.uuid).quantity++;      
       items.find(element => element.uuid == item.uuid).price +=item.price;
-      if(items.find(element => element.uuid == item.uuid).quantity < 3){
+      if(items.find(element => element.uuid == item.uuid).quantity < 0){
+        items.find(element => element.uuid == item.uuid).name = items.find(element => element.uuid == item.uuid).name.substr(0,items.find(element => element.uuid == item.uuid).name.length -4) + `${items.find(element => element.uuid == item.uuid).quantity}`
+      }else if(items.find(element => element.uuid == item.uuid).quantity == 0){
+
+      }
+      else if(items.find(element => element.uuid == item.uuid).quantity < 3){
         items.find(element => element.uuid == item.uuid).name +="x2";
       }else{                
         var tempString = items.find(element => element.uuid == item.uuid).name.substr(0,items.find(element => element.uuid == item.uuid).name.length-1);
@@ -73,6 +79,8 @@ class OrderCreatePanel extends React.Component {
       items.push(tempItem); 
       items2.push(tempItem); 
     } 
+    console.log(items);
+    console.log(items2);
     var order = {items : items2,
                 newItems : items,
                 totalPrice : this.state.order.totalPrice + item.price};
@@ -190,36 +198,91 @@ class OrderCreatePanel extends React.Component {
     });
   }
 
-  removeItemFromBasket = (item) =>{
-    var items = this.state.order.newItems;
+
+  removeItemFromBasket = (item) =>{    
+    /*var items = this.state.order.newItems;
     var items2 = this.state.order.items;
+    var priceX;
+    if(items.find(element => element.uuid == item.uuid)){
+      if(item.quantity > 0){
+        alert("yay");//yeni eklenenlerde || old itemsda
+        if(item.quantity > 1){
+          priceX = items.find(element =>element.uuid == item.uuid).price/items.find(element =>element.uuid == item.uuid).quantity;
+          items.find(element =>element.uuid == item.uuid).quantity--;
+          items.find(element =>element.uuid == item.uuid).price -= priceX;
+          items2.find(element =>element.uuid == item.uuid &&element.quantity == -item.quantity).name.substr(0,items2.find(element =>element.uuid == item.uuid &&element.quantity == -item.quantity).name.length-4);
+          items2.find(element =>element.uuid == item.uuid &&element.quantity == -item.quantity).name += `(${items2.find(element =>element.uuid == item.uuid &&element.quantity == -item.quantity).quantity})`
+          console.log(items);
+          console.log(items2);
+        }else if(item.quantity == 1){
+          items.splice(items.indexOf(item),1);
+          items2.splice(items.indexOf(item),1);
+        }
+      }else{
+        alert("hey");//yeni silinenlerde
+      }
+      
+    }else{
+      priceX = item.price/item.quantity;
+      var tempItem = {name:item.name.substr(0,item.name.length-2) + "(-1)",price : -priceX,uuid : item.uuid,options:item.options,quantity:-1};
+      items.push(tempItem); 
+      items2.push(tempItem);
+      alert("nay");//1
+    }*/
+    /*
+    console.log(item);
     console.log(items2);
     console.log(items);
     if(items.find(element => element.uuid == item.uuid)){
       console.log(items.find(element => element.uuid == item.uuid));
-      items.find(element => element.uuid == item.uuid).quantity--;      
-      items.find(element => element.uuid == item.uuid).price -=item.price;
-      if(items.find(element => element.uuid == item.uuid).quantity == 0){
-        items.pop(items.find(element => element.uuid == item.uuid));
-      }else if(items.find(element => element.uuid == item.uuid).quantity == 1){
-        items.find(element => element.uuid == item.uuid).name.substr(0,items.find(element => element.uuid == item.uuid).name.length-2);
-      }else{                
-        var tempString = items.find(element => element.uuid == item.uuid).name.substr(0,items.find(element => element.uuid == item.uuid).name.length-1);
-        items.find(element => element.uuid == item.uuid).name= tempString;
-        items.find(element => element.uuid == item.uuid).name += items.find(element => element.uuid == item.uuid).quantity;
+      if(item.price < 0){
+        console.log(item);
+        console.log(items2.find(element =>element.uuid == item.uuid));
+        if(items2.find(element =>element.uuid == item.uuid).quantity + item.quantity > 0){
+          items.find(element => element.uuid == item.uuid).quantity--;  
+          priceX =  item.price/(item.quantity+1);
+        }else{
+          return;
+        }        
+      }else{
+        console.log(item);
+        console.log( items.find(element => element.uuid == item.uuid));
+        if(item.quantity + items.find(element => element.uuid == item.uuid).quantity > 0){
+          items.find(element => element.uuid == item.uuid).quantity--;  
+          
+          priceX =  item.price/ (items.find(element => element.uuid == item.uuid).quantity + 1);
+          //alert(priceX);
+        }else{
+          return;
+        }
       }
-    }else{      
-      var tempItem = {name:item.name,price : -item.price,uuid : item.uuid,options:item.options,quantity:-1};
+      if(items.find(element => element.uuid == item.uuid).quantity == 0){
+        items.splice(items.indexOf(item),1);
+        items2.splice(items.indexOf(item),1);
+      }else if(items.find(element => element.uuid == item.uuid).quantity == 1){
+        items.find(element => element.uuid == item.uuid).name.substr(0,items.find(element => element.uuid == item.uuid).name.length-2);        
+        items.find(element => element.uuid == item.uuid).price -=priceX;
+      }else{                
+        var tempString = items.find(element => element.uuid == item.uuid).name.substr(0,items.find(element => element.uuid == item.uuid).name.length-4);
+        items.find(element => element.uuid == item.uuid).name= tempString;
+        items.find(element => element.uuid == item.uuid).name += `(${items.find(element => element.uuid == item.uuid).quantity})`;
+        items.find(element => element.uuid == item.uuid).price -=priceX;
+      }      
+    }else{ 
+      priceX = item.price/item.quantity;
+      //alert("first");
+      var tempItem = {name:item.name.substr(0,item.name.length-2) + "(-1)",price : -priceX,uuid : item.uuid,options:item.options,quantity:-1};
       items.push(tempItem); 
+      items2.push(tempItem);
       //alert("bug ?");
     } 
     console.log(items2);
     console.log(items);
     var order = {items : items2,
                 newItems : items,
-                totalPrice : this.state.order.totalPrice - item.price/item.quantity};
+                totalPrice : this.state.order.totalPrice - priceX};
     this.setState({order : order});
-    console.log(order);
+    console.log(order);*/
   }
 
 
