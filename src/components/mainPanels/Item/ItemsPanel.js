@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { setDisplayingPanel, setMenu } from "../../../redux/actions";
 import ItemDetailsPanel from "./ItemDetailsPanel";
 import { changeItemStatus, removeItem, requestMenu } from "../../../requests/restaurant";
+import resClient from "../../../mqtt/client";
 
 class ItemsPanel extends React.Component {
   state = {
@@ -100,13 +101,15 @@ class ItemsPanel extends React.Component {
   }
 
   disableHandler = (item)=>{
+    resClient.client.publish(`restaurant/${this.props.user.uuid}`,"menuUpdate"); 
     changeItemStatus(item.uuid,this.props.token,false).then(()=>{
-      this.props.update();
+      this.props.update();      
     });
   }
   enableHandler = (item) =>{
+    resClient.client.publish(`restaurant/${this.props.user.uuid}`,"menuUpdate"); 
     changeItemStatus(item.uuid,this.props.token,true).then(()=>{
-        this.props.update();   
+        this.props.update();  
     });
   }
 

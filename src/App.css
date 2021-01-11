@@ -154,7 +154,7 @@
 .App-body {
   
   padding:40px;
-  min-height: 70vh;
+  height: 69vh;
   display: flex;
   flex-direction: row;
   align-items: center;

@@ -3,6 +3,7 @@ import { HighlightOff } from "@material-ui/icons";
 import React from "react";
 import Loader from "react-loader-spinner";
 import { connect } from "react-redux";
+import resClient from "../../mqtt/client";
 import { getOffers, newOffer, removeOffer } from "../../requests/restaurant";
 
 class OffersPanel extends React.Component {
@@ -27,11 +28,14 @@ class OffersPanel extends React.Component {
     }
     addOffer = () =>{
         var src = document.getElementById("NewOfferImage");
+        var desc = document.getElementById("NewOfferDesc");
         newOffer(this.props.token,src.value).then(()=>{
             this.updateView();
+            resClient.client.publish(`consumer/all`,JSON.stringify({name:this.props.user.name,img:src.value,desc:desc.value})); 
             src.value = null;
+            desc.value = null;
             this.setState({previewImg:null});
-            //mqtt
+            //mqtt            
         });
     }
 
@@ -60,7 +64,7 @@ class OffersPanel extends React.Component {
                             <img  src={offer.img} width ="100%" height ="100%"/> 
                         </Grid>
                         </div>
-                    <Grid item xs={1} className="GridElement" style={{position:"relative"}}><HighlightOff style={{position:"absolute",top:"35%",left:"10%",fontSize:"50px"}}onClick={this.removeOffer.bind(this,offer.uuid)}/></Grid>
+                    <Grid item xs={1} className="GridElement" style={{position:"relative"}}><HighlightOff style={{position:"absolute",top:"35%",left:"10%",fontSize:"50px",cursor:"pointer"}}onClick={this.removeOffer.bind(this,offer.uuid)}/></Grid>
                     </>))}
                 </Grid>)}
             </Grid>
@@ -74,12 +78,31 @@ class OffersPanel extends React.Component {
                             </div>
                         </Grid>
                     <Grid item xs={12} className="GridElement">
-                        <TextField id="NewOfferImage" label = "New Offer" 
-                                            
+                        <TextField id="NewOfferImage" label = "New Offer Banner"                                             
                                             type="text"
                                             className = {classes.main}
                                             onChange = {this.previewHandler}
                                             style = {{marginTop:"10px"}}
+                                            InputProps={{
+                                                    classes:{
+                                                        input:classes.font
+                                                    }
+                                                }}
+                                                InputLabelProps={{
+                                                    classes:{
+                                                        root: classes.font,
+                                                    }
+                                                }}
+                                            />
+                    </Grid>
+                    <Grid item xs={12} className="GridElement">
+                        <TextField id="NewOfferDesc" label = "Description" 
+                                            
+                                            type="text"
+                                            className = {classes.main}                                            
+                                            multiline rowsmax = {4} 
+                                            onChange = {this.previewHandler}
+                                            style = {{marginTop:"10px",width:"75%"}}
                                             InputProps={{
                                                     classes:{
                                                         input:classes.font
@@ -138,7 +161,8 @@ const useStyles = {
     },
   }
 const mapStateToProps = state =>({
-    token : state.token
+    token : state.token,
+    user : state.user
   })
 
 export default connect(mapStateToProps,null)(withStyles(useStyles)(OffersPanel));
