@@ -443,7 +443,7 @@ class OrderCreatePanel extends React.Component {
                                   {this.state.order.items.map((item) =>(
                                   <>{item.name}
                                       <span style={{float:"right"}}>
-                                      &nbsp;&nbsp;&nbsp;&nbsp;{item.price}{(this.state.status == "paid")?(null):(<HighlightOff onClick={this.removeItemFromBasket.bind(this,item)} style ={{fontSize:"16px",cursor:"pointer"}}/>)}
+                                      &nbsp;&nbsp;&nbsp;&nbsp;{item.price}{(this.state.status == "paid")?(null):(<>{/*<HighlightOff onClick={this.removeItemFromBasket.bind(this,item)} style ={{fontSize:"16px",cursor:"pointer"}}/>*/}</>)}
                                       </span><br/></>))}
                                   <hr/>
                                   <div style={{textAlign:"right"}}>
