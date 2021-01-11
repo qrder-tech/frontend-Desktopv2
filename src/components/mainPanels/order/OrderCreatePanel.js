@@ -9,7 +9,6 @@ import MiniItemPanel from "../Item/MiniItemPanel";
 import { addOrder, getSpecificOrder, removeOrder, updateOrder } from "../../../requests/order";
 import OrderPanel from "../OrderPanel";
 import Loader from "react-loader-spinner";
-import Item from "antd/lib/list/Item";
 const moment = require('moment');
 
 class OrderCreatePanel extends React.Component {
